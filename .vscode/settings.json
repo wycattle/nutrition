@@ -1,0 +1,23 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/node_modules": true,
+        "node_modules": true,
+        "**/postcss.config.js": true,
+        "postcss.config.js": true,
+        "**/next.config.mjs": true,
+        "next.config.mjs": true,
+        "**/README.md": true,
+        "*.md": true,
+        "README.md": true,
+        "**/*.md": true,
+        "**/.eslintrc.json": true,
+        ".eslintrc.json": true
+    },
+    "explorerExclude.backup": {}
+}
