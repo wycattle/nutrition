@@ -1,50 +1,40 @@
-// pages/nutrition_app.js
-import nutrition_table from '../utils/nutrition_table';
+// pages/index.js
+import Link from 'next/link';
+import Image from 'next/image';
+import '../styles/styles.css'
 
-export async function getServerSideProps() {
-  const jsonData = await nutrition_table();
-
-  return {
-    props: {
-      jsonData,
-    },
-  };
-}
-
-const NutritionApp = ({ jsonData }) => {
+export default function Home() {
   return (
-    <div>
-      <h1>Nutrition Table</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Description 1</th>
-            <th>Description 2</th>
-            <th>Portion</th>
-            <th>Calories</th>
-            <th>Carb</th>
-            <th>Fat</th>
-            <th>Protein</th>
-            <th>Fiber</th>
-          </tr>
-        </thead>
-        <tbody>
-          {jsonData.map((item, index) => (
-            <tr key={index}>
-              <td>{item.description_1}</td>
-              <td>{item.description_2}</td>
-              <td>{item.portion}</td>
-              <td>{item.calories}</td>
-              <td>{item.carb}</td>
-              <td>{item.fat}</td>
-              <td>{item.protein}</td>
-              <td>{item.fiber}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className='outer_box'>
+        <h1 className="header">Welcome to my Nutrition App</h1>
+
+        <div>
+          <div className="image1-container">
+            <div className="image1">
+                  
+              <Image
+                  src="/images/IMG_0748.JPG" 
+                  alt="Splash Image"
+                  width={500}
+                  height={500}
+                  priority
+              />
+              
+            </div>
+          </div>
+        </div>
+
+        <div className='textbox1-container'>
+          <p className="textbox1">
+            Click the button below to view the nutrition table.
+          </p>
+        </div>
+
+        <div className='button-container'>
+          <Link href="/nutrition_app">
+              <button className="button">Go to Nutrition Table</button>
+          </Link>
+        </div>
     </div>
   );
-};
-
-export default NutritionApp;
+}
