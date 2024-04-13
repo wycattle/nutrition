@@ -1,9 +1,9 @@
-// app/csvToJson.js
-import csv from 'csvtojson';
+// utils/csvToJson.js
+import csv from 'csvtojson'; //this imports the package
 
 const csvToJson = async (csvFilePath) => {
   try {
-    const jsonObj = await csv().fromFile('E:\\old_F_drive\\human_nutrition\\nutrition_table.csv');
+    const jsonObj = await csv().fromFile(csvFilePath);
     return jsonObj;
   } catch (error) {
     console.error('Error while converting CSV to JSON:', error);

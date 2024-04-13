@@ -1,9 +1,12 @@
 // pages/nutrition_app.js
-import nutrition_table from '../utils/nutrition_table';
+import nutrition_table from '../utils/nutrition_table.js';
 import '../styles/styles.css'
 
 export async function getServerSideProps() {
   const jsonData = await nutrition_table();
+
+  console.log('jsonData: ', jsonData);
+  console.log('jsonData 1st element value: ', jsonData[0]);
 
   return {
     props: {

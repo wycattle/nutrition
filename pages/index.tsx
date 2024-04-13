@@ -24,12 +24,6 @@ export default function Home() {
           </div>
         </div>
 
-        <div className='textbox1-container'>
-          <p className="textbox1">
-            Click the button below to view the nutrition table.
-          </p>
-        </div>
-
         <div className='button-container'>
           <Link href="/nutrition_app">
               <button className="button">Go to Nutrition Table</button>

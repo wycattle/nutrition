@@ -7,12 +7,24 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: var(--font-family);
+
+    font-size: var(--font-size);
+    color: var(--color);
+    background-color: var(--background-color);
+
   }
 
 :root {
   --foreground-rgb: #fcc5c5;
+  --background-color: #253038;
   --background-start-rgb: #fcc5c5;
   --background-end-rgb: #fcc5c5;
+  --border: 2px solid #182641;
+  --box-shadow: 0px 0px 0px 5px rgba(55, 20, 20, .2);
+  --font-size: 16px;
+  --font-family: Verdana;
+  --color: #f0e2ef; 
 }
 /* The @media rule is used in CSS to apply different styles for different media types/devices. 
 In this case, (prefers-color-scheme: dark) is a media feature that is
@@ -22,6 +34,7 @@ In this case, (prefers-color-scheme: dark) is a media feature that is
     --foreground-rgb: #1b59dd;
     --background-start-rgb: #ce28c6;
     --background-end-rgb: #319c61;
+  
   }
 }
 
@@ -49,7 +62,6 @@ In this case, (prefers-color-scheme: dark) is a media feature that is
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* border: 25px solid #94b0e8; */
     background: radial-gradient(circle farthest-corner at center, #00040a, #435e93);
 }
 
@@ -57,49 +69,38 @@ In this case, (prefers-color-scheme: dark) is a media feature that is
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #ce28c6; 
-  background-color: #2a384e;
-  font-size: 24px;
-  border: 5px solid #182641;
+
+  /* background-color: #2a384e; */
+  /* font-size: 24px; */
+  border: var(--border);
   border-radius: 20px;
-  padding: 30px;
+  padding: 20px;
+
   margin: 30px;
-  box-shadow: 0px 0px 10px 5px rgba(55, 20, 20, 0.5)
+  box-shadow: var(--box-shadow);
 }
 
 .image1 {
     display: flex;
     flex-direction: column;
-    border: 25px solid #3057a4;
+    margin: 30px;
+    border: var(--border);
     border-radius: 20px;
-    box-shadow: 0px 0px 10px 5px rgba(55, 20, 20, 0.5)
+    box-shadow: var(--box-shadow);
   }
-
-.textbox1-container {
-display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 10px solid #3057a4;
-    border-radius: 20px;
-    padding: 10px;
-    margin-top: 30px;
-}
-
-.textbox1 {
-  color: #ce28c6;
-}
 
 .button-container {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 10px;
-    border: 10px solid #3057a4;
+    border: var(--border);
+    box-shadow: var(--box-shadow);
     border-radius: 20px;
     margin: 30px;
 }
 
-.button {
-  color: #ce28c6;
-}
+/* .button {
+
+} */
 

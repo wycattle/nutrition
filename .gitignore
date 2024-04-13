@@ -39,3 +39,4 @@ tree.txt
 
 .eslintrc.json
 public/images/IMG_0748.JPG
+app/layout.tsx
