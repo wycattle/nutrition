@@ -21,7 +21,7 @@
         "**/.next": true,
         ".next": true,
         ".vscode": true,
-        "tsconfig.json": true,
+        "tsconfig.json": false,
         "**/package-lock.json": true,
         "package-lock.json": true,
         "next-env.d.ts": true
