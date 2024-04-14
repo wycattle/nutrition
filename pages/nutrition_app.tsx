@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
+import dynamic from 'next/dynamic';
 import nutritionTable from '../utils/nutrition_table';
+
+const Select = dynamic(() => import('react-select'), { ssr: false})
 
 interface Option {
   label: string;
@@ -22,28 +24,30 @@ interface NutritionItem {
 }
 
 const NutritionApp = () => {
-  console.log('NutritionApp is rendering')
-  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValue, setSelectedValue] = useState<Option | null>(null);
+  const [selectedRow, setSelectedRow] = useState<NutritionItem | null>(null);
+  const [portionNumber, setPortionNumber] = useState<number | undefined>(undefined);
   const [options, setOptions] = useState<Option[]>([]);
+  const [data, setData] = useState<NutritionItem[]>([]);
 
   useEffect(() => {
-    console.log( 'useEffect is running');
-
     fetch('/api/nutrition')
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-
-
-      const uniqueValues = Array.from(new Set(data.map((item: NutritionItem) => item.desc_1)));
-      setOptions(uniqueValues.map(value => ({ label: value as string, value: value as string })));
-    });
+      .then(response => response.json())
+      .then(fetchedData => {
+        setData(fetchedData || []);
+        const uniqueValues = Array.from(new Set(fetchedData.map((item: NutritionItem) => item.desc_1)));
+        setOptions(uniqueValues.map(value => ({ label: value as string, value: value as string })));
+      })
+      .catch(error => console.error('Error:', error));
   }, []);
 
-  async function fetchData(): Promise<NutritionItem[]> {
-    const data = await nutritionTable();
-    return data;
-  }
+  useEffect(() => {
+    if (selectedValue) {
+      const selectedRow = data.find(item => item.desc_1 === selectedValue.value);
+      setSelectedRow(selectedRow || null);
+    }
+  }, [selectedValue, data]);
+
 
   return (
     <div>
@@ -51,7 +55,7 @@ const NutritionApp = () => {
       <Select 
         className="select-component"
         options={options} 
-        onChange={(option: { value: string; label: string } | null) => setSelectedValue(option ? option.value : null)}
+        onChange={(newValue: unknown | null, _actionMeta) => setSelectedValue(newValue as Option | null)}
         theme={(theme) => ({
           ...theme,
           colors: {
