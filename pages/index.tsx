@@ -25,10 +25,22 @@ export default function Home() {
         </div>
 
         <div className='button-container'>
-          <Link href="/nutrition_app">
-              <button className="button">Go to Nutrition Table</button>
-          </Link>
-        </div>
-    </div>
-  );
+  <Link href="/nutrition_app">
+    <button className="button">create a recipe or meal</button>
+  </Link>
+  </div>
+
+  <div className='button-container'>
+    <Link href="/view_recipe_json">
+      <button className="button">view a recipe</button>
+    </Link>
+  </div>
+
+  <div className='button-container'>
+    <Link href="/view_meal_json">
+      <button className="button">view a meal</button>
+    </Link>
+  </div>
+  </div>
+    );
 }
