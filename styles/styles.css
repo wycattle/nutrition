@@ -17,15 +17,19 @@
 
 :root {
   --foreground-rgb: #fcc5c5;
-  --background-color: #272e34;
+  --background-color: #301e25;
   --background-start-rgb: #fcc5c5;
   --background-end-rgb: #fcc5c5;
   --border: 2px solid #182641;
   --box-shadow: 0px 0px 0px 5px rgba(55, 20, 20, .2);
-  --font-size: 20px;
+  --font-size: 14px;
   --font-family: Verdana;
   --color: #efc6ec; 
 }
+
+.root {}  /* this sets props of children of :root
+
+
 /* The @media rule is used in CSS to apply different styles for different media types/devices. 
 In this case, (prefers-color-scheme: dark) is a media feature that is
  used to detect if the user has requested the system use a light or dark color theme. */
@@ -33,7 +37,7 @@ In this case, (prefers-color-scheme: dark) is a media feature that is
   :root {
     --foreground-rgb: #1b59dd;
     --background-start-rgb: #ce28c6;
-    --background-end-rgb: #319c61;
+    --background-end-rgb: #2f483a;
   
   }
 }
@@ -68,13 +72,6 @@ In this case, (prefers-color-scheme: dark) is a media feature that is
 
   margin: 30px;
   box-shadow: var(--box-shadow);
-}
-
-.select-component {
-  margin-bottom: 20px;
-  border: 2px ;
-  border-color: #ce28c6;
-  background-color: #b13669;
 }
 
 .image1 {

@@ -14,7 +14,7 @@ const ViewRecipeJson: React.FC = () => {
 
   useEffect(() => {
     // Fetch recipes.json
-    fetch('/recipes.json')
+    fetch('lib/recipes.json')
       .then((response) => response.json())
       .then((data) => setRecipes(data))
       .catch((error) => console.error('Error fetching recipes.json:', error));

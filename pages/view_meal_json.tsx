@@ -1,41 +1,84 @@
-import React, { useEffect, useState } from 'react';
+//pages/view_meal_json.tsx
 
-type Meal = {
-  name: string;
-  date: string;
-  items: any[];
-};
+import React, { useState, useEffect } from 'react';
+// import fs from 'fs';
+// import path from 'path';
 
-const ViewMealJson: React.FC = () => {
-  const [meals, setMeals] = useState<Meal[]>([]);
-  const [selectedItem, setSelectedItem] = useState<Meal | null>(null);
+interface Item {
+    desc_1:   string;
+    desc_2:   string;
+    portion:  number | undefined;
+    calories: number | undefined;
+    carb:     number | undefined;
+    fat:      number | undefined;
+    protein:  number | undefined;
+    fiber:    number | undefined;
+    GI:       number | undefined;
+    note:     string;       
+  }
 
-  useEffect(() => {
-    // Fetch meal.json
-    fetch('/view_meal.json')
-      .then((response) => response.json())
-      .then((data) => setMeals(data))
-      .catch((error) => console.error('Error fetching meal.json:', error));
-  }, []);
+  interface Meal {
+    name: string;
+    date: Date;
+    items: Item[];
+  }
 
-  const handleSelectItem = (item: Meal) => {
-    setSelectedItem(item);
+
+  const ViewMealJson = () => {
+    const [meals, setMeals] = useState<Meal[]>([]);
+    const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
+  
+    useEffect(() => {
+      fetch('/api/getMeals')
+        .then(response => response.json())
+        .then(data => setMeals(data));
+    }, []);
+
+  const handleSelectMeal = (meal:Meal) => {
+    setSelectedMeal(meal);
+  };
+
+  const handleSaveMeal = (meal: Meal) => {
+    fetch('/api/updateMeal', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(meal),
+    })
+      .then(response => response.json())
+      .then(() => {
+        const updatedMeals = meals.map((m: Meal) => m.name === meal.name ? meal : m);
+        setMeals(updatedMeals);
+        setSelectedMeal(null);
+      });
   };
 
   return (
     <div>
-      <h1>Meals</h1>
-      {meals.map((meal, index) => (
-        <div key={index}>
-          <span>{meal.date}</span>
-          <button onClick={() => handleSelectItem(meal)}>Select</button>
-        </div>
-      ))}
+      <table>
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {meals.map(Meal => (
+            <tr key={Meal.name}>
+              <td><input type="checkbox" onChange={() => handleSelectMeal(Meal)} /></td>
+              <td>{Meal.name}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      {selectedItem && (
+      {selectedMeal && (
         <div>
-          <h1>Selected Meal</h1>
-          <pre>{JSON.stringify(selectedItem, null, 2)}</pre>
+          <table>
+            {/* Render table with full details of selectedMeal */}
+          </table>
+          <button onClick={() => handleSaveMeal(selectedMeal)}>Save</button>
         </div>
       )}
     </div>
