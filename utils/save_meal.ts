@@ -30,9 +30,7 @@ const saveAsMeal = async (nomen: string, datex: Date, selectedRows: Array<any>) 
     }
 
     const data = await response.json();
-
     console.log('Response data:', data);
-
 
     return data;
   } catch (error) {

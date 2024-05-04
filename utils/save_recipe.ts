@@ -1,34 +1,43 @@
-// // pages/api/saveRecipe.ts
-// import fs from 'fs';
-// import { NextApiRequest, NextApiResponse } from 'next';
-
-// export default function handler(req: NextApiRequest, res: NextApiResponse) {
-//   console.log('Received request to save recipe');
-
-//   if (req.method === 'POST') {
-//     try {
-//       console.log('Processing POST request');
-
-//       const { name, date, items } = req.body; // Extract data from the request body
-//       console.log('Received data:', { name, date, items });
-
-//       // Logic to append data to the "recipes.json" file
-//       const recipes = JSON.parse(fs.readFileSync('recipes.json', 'utf-8'));
-//       console.log('Existing recipes:', recipes);
-
-//       recipes.push({ name, date, items });
-//       console.log('Updated recipes:', recipes);
-
-//       fs.writeFileSync('recipes.json', JSON.stringify(recipes));
-//       console.log('Recipes saved successfully');
-
-//       res.status(200).json({ message: 'Recipe saved successfully' });
-//     } catch (error) {
-//       console.error('Error saving recipe:', error);
-//       res.status(500).json({ message: 'Internal server error' });
-//     }
-//   } else {
-//     console.log('Received unsupported method:', req.method);
-//     res.status(405).json({ message: 'Method Not Allowed' });
-//   }
-// }
+// utils/save_recipe.ts
+const saveAsRecipe = async (nomen: string, datex: Date, selectedRows: Array<any>) => {
+    console.log('saveAsRecipe called with:', nomen, datex, selectedRows);
+    
+    
+    const selectedRecipes = selectedRows;
+  
+    const recipeData = {
+      name: nomen,
+      date: datex,
+      items: selectedRecipes
+    };
+  
+    console.log('recipeData:', recipeData);
+  
+    try {
+      const response = await fetch('/api/saveRecipe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipeData),
+      });
+  
+  
+      console.log('Response received:', response);
+  
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+  
+      const data = await response.json();
+  
+      console.log('Response data:', data);
+  
+  
+      return data;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  export default saveAsRecipe;

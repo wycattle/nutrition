@@ -17,17 +17,16 @@
 
 :root {
   --foreground-rgb: #fcc5c5;
-  --background-color: #301e25;
+  --background-color: #28222c;
   --background-start-rgb: #fcc5c5;
   --background-end-rgb: #fcc5c5;
-  --border: 2px solid #182641;
-  --box-shadow: 0px 0px 0px 5px rgba(55, 20, 20, .2);
-  --font-size: 14px;
+  /* --border: 2px solid #110f0f; */
+  /* --box-shadow: 0px 0px 0px 5px rgba(55, 20, 20, .2); */
+  --font-size: 18px;
   --font-family: Verdana;
-  --color: #efc6ec; 
+  --color: #c1a1b1; 
 }
 
-.root {}  /* this sets props of children of :root
 
 
 /* The @media rule is used in CSS to apply different styles for different media types/devices. 
@@ -48,51 +47,61 @@ In this case, (prefers-color-scheme: dark) is a media feature that is
   }
 }
 
-.outer_box {
-    width: 100vw;
+.outerbox {
+    width: 85vw;
     height: 100vh;
-    position: relative;
+    margin: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle farthest-corner at center, #00040a, #435e93);
+    border: 1px solid #16a78f;
+    border-radius: 200px;
+    background: radial-gradient(circle farthest-corner at center, #00040a, #36435c);
+
+      
+    .header{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 100;
+      background-color: #352c30;
+      border: 1px solid #16a78f;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 30px;
+
+    }
+
+    .homepage {
+      width:'50%';
+      justify-content: center;
+      align-items: center;
+      /* margin: '30px'; */
+      border: 1px solid #139781;
+      border-radius: 30px;
+
+
+          .image1 {
+            display: flex;
+            flex-direction: column;
+            justify-content: 'center';
+            align-items: 'center';
+            border-radius: 30px;
+
+          }
+
+          .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #16a78f;
+            box-shadow: var(--box-shadow);
+            border-radius: 20px;
+            margin: 30px;
+        }
+    }
+
 }
-
-.header1{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 100;
-  background-color: #764d61;
-  /* font-size: 24px; */
-  border: var(--border);
-  border-radius: 20px;
-  padding: 20px;
-
-  margin: 30px;
-  box-shadow: var(--box-shadow);
-}
-
-.image1 {
-    display: flex;
-    flex-direction: column;
-    margin: 30px;
-    border: var(--border);
-    border-radius: 20px;
-    box-shadow: var(--box-shadow);
-  }
-
-.button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border: var(--border);
-    box-shadow: var(--box-shadow);
-    border-radius: 20px;
-    margin: 30px;
-}
-
-
 

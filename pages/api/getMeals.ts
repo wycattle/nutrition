@@ -1,5 +1,5 @@
 // pages/api/getMeals.ts
-import { NextApiRequest, NextApiResponse } from 'next';
+import  { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import path from 'path';
 

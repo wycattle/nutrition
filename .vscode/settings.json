@@ -21,10 +21,14 @@
         "**/.next": true,
         ".next": true,
         ".vscode": true,
-        "tsconfig.json": false,
+        "tsconfig.json": true,
         "**/package-lock.json": true,
         "package-lock.json": true,
-        "next-env.d.ts": true
+        "next-env.d.ts": true,
+        "**/.gitignore": true,
+        ".gitignore": true,
+        "package.json": true,
+        "eslint.config.mjs": true
     },
     "explorerExclude.backup": {}
 }

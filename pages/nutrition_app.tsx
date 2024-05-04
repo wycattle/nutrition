@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import saveAsMeal from '@/utils/save_meal';
-import link from 'next/link';
+import saveAsRecipe from '@/utils/save_recipe';
+import Link from 'next/link';
+
+// import link from 'next/link';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
@@ -25,20 +28,20 @@ interface NutritionItem {
 }
 
 const NutritionApp = () => {
-  const [selectedValue, setSelectedValue] = useState<Option | null>(null);
-  const [selectedRowOption, setSelectedRowOption] = useState<Option | null>(null);
-  const [selectedRow, setSelectedRow] = useState<NutritionItem | null>(null);
-  const [selectedRows, setSelectedRows] = useState<NutritionItem[]>([]);
+  const [selectedValue,       setSelectedValue] =     useState<Option | null>(null);
+  const [selectedRowOption,   setSelectedRowOption] = useState<Option | null>(null);
+  const [selectedRow,         setSelectedRow] =       useState<NutritionItem | null>(null);
+  const [selectedRows,        setSelectedRows] =      useState<NutritionItem[]>([]);
   
-  const [options, setOptions] = useState<Option[]>([]);
-  const [data, setData] = useState<NutritionItem[]>([]);
-  const [portionSize, setPortionSize] = useState<number>(0);
-  const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
+  const [options,             setOptions] =           useState<Option[]>([]);
+  const [data,                setData] =              useState<NutritionItem[]>([]);
+  const [portionSize,         setPortionSize] =       useState<number>(0);
+  const [checkedRows,         setCheckedRows] =       useState<Set<number>>(new Set());
 
-  const [nomen, setNomen] = useState<string>('');
-  const [datex, setDatex] = useState<Date>(new Date());
-  const [data2, setData2] = useState<{ name: string; date: string; items: string[] }>({ name: '', date: '', items: [] });
-  const [message, setMessage] = useState<string>('');
+  const [nomen,               setNomen] =             useState<string>('');
+  const [datex,               setDatex] =             useState<Date>(new Date());
+  const [data2,               setData2] =             useState<{ name: string; date: string; items: string[] }>({ name: '', date: '', items: [] });
+  const [message,             setMessage] =           useState<string>('');
 
 
   useEffect(() => {
@@ -104,9 +107,26 @@ const NutritionApp = () => {
     }
   };
 
+  const handleSaveAsRecipe = async () => {
+    const data = await saveAsRecipe(nomen, datex, selectedRows);
+    if (data) {
+      setData2(data);
+      setNomen('');
+      setDatex(new Date());
+      setMessage('Recipe saved successfully.');
+    }
+  };
+
 
   return (
     <div>
+
+      <div>
+        <Link href="/"> {}
+          <a> Back to Home Page </a> {}
+        </Link>
+      </div>
+
       <div id='select food-group container' style={{ width: '25vw', margin: '25px auto', textAlign: 'center', fontSize: '20px', border: '2px solid #efc6ec', padding: '5px' }}>
         <Select className="select food-group item"
           options={options}
@@ -279,41 +299,84 @@ const NutritionApp = () => {
         </tbody>
       </table>
 
-      <input
-        id='nameItBox'
-        type="text" 
-        value={nomen} 
-        onChange={e => setNomen(e.target.value)} 
-        placeholder="Give it a name" 
-      />
+        <div>
+          <label htmlFor='nameItBox' style={{marginRight: '10px'}}> Give it a name:</label>
+          <input
+            id='nameItBox'
+            style={{
+              width: '15vw',
+              marginLeft: '25px',
+              marginBottom: '25px',
+              fontSize: '16px',
+              border: '1px solid #efc6ec',
+            }}
+            type="text" 
+            value={nomen} 
+            onChange={e => setNomen(e.target.value)} 
+            placeholder="fill me in" 
+          />
+        </div>  
 
-      <input
-        id='dateItBox'
-        type="date" 
-        value={datex?.toISOString().split('T')[0]} 
-        onChange={e => setDatex(new Date(e.target.value))} 
-      />
+        <div>
+        <label htmlFor='dateItBox' style={{marginRight: '10px'}}> default date is today :</label>
+          <input
+            id='dateItBox'
+            style={{
+              width: '15vw',
+              marginLeft: '25px',
+              fontSize: '16px',
+              border: '1px solid #efc6ec',
+            }}
+            type="date" 
+            value={datex?.toISOString().split('T')[0]} 
+            onChange={e => setDatex(new Date(e.target.value))} 
+          />
+        </div>
 
-      <button
-        id='saveAsMealButton'
-        style={{
-          width: '25vw',
-          margin: '25px auto',
-          textAlign: 'center',
-          fontSize: '20px',
-          border: '2px solid #efc6ec',
-          backgroundColor: "#694242",
-          padding: '5px',
-        }}
-        onClick={handleSaveAsMeal}
-      >
-        Save as Meal
-      </button>
+
+      <div>
+          <button
+            id='saveAsMealButton'
+            style={{
+              width: '15vw',
+              margin: '25px ',
+              textAlign: 'center',
+              fontSize: '16px',
+              border: '2px solid #efc6ec',
+              backgroundColor: "#694242",
+              padding: '5px',
+            }}
+            onClick={handleSaveAsMeal}
+          >
+            Save as Meal
+          </button>
+
+          <button
+            id='saveAsRecipeButton'
+            style={{
+              width: '15vw',
+              margin: '25px ',
+              textAlign: 'center',
+              fontSize: '16px',
+              border: '2px solid #efc6ec',
+              backgroundColor: "#694242",
+              padding: '5px',
+            }}
+            onClick={handleSaveAsRecipe}
+          >
+            Save as Recipe
+          </button>
+        </div>
+
+
+
 
       {message && <p>{message}</p>}
 
     </div>
   );
+
+
 };
 
 export default NutritionApp;

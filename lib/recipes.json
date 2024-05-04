@@ -1,8 +1,1 @@
-[
-    {
-      "name": "Recipe 1",
-      "date": "2022-01-01",
-      "items": ["item1", "item2"]
-    }
-
-  ]
+[{"name":"test_recipe1","date":"2024-05-04T03:14:25.236Z","items":[{"desc_1":"fruit","desc_2":"papaya","portion":2,"calories":78,"carb":20,"fat":0,"protein":2,"fiber":4,"GI":"2","note":""}]}]

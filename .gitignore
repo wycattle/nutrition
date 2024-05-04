@@ -40,3 +40,7 @@ tree.txt
 .eslintrc.json
 public/images/IMG_0748.JPG
 app/layout.tsx
+lib/mydb.sqlite
+tsconfig.json
+tsconfig.json
+.vscode/settings.json
