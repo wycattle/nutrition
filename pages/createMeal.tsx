@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import saveAsMeal from '@/utils/save_meal';
-import { saveMealGroupedByDate } from '@/lib/db';
+
 import Link from 'next/link';
 import { CSSObject } from '@emotion/react';
 import { OptionProps, GroupBase, MenuListProps } from 'react-select';
@@ -89,22 +89,6 @@ const CreateMeal = () => {
       const selectedRowIndex = parseInt(selectedRowOption.value);
       const selectedRow = data.find((item, index) => index === selectedRowIndex);
       setSelectedRow(selectedRow || null);
-      console.log('5 State after selectedRowOption change:', {
-        selectedValue,
-        selectedRowOption,
-        selectedRow,
-        selectedRows,
-        options,
-        data,
-        portionSize,
-        checkedRows,
-        nomen,
-        datex,
-        data2,
-        message,
-        startDate,
-        endDate,
-      });
     }
   }, [selectedRowOption, data]);
 
@@ -281,7 +265,136 @@ const CreateMeal = () => {
           </tbody>
         </table>
       )}
+
+
+      <div className="w-88 m-9 bg-purple-900 border-black">
+        <label htmlFor="portionSize"
+          style={{
+            width: '15px',
+            fontSize: '20px',
+            color: 'rgb(219 190 204)',
+            padding: '10px',
+            margin: '5px',
+          }}> enter a portion size number and click Enter </label>
+        <input
+          id="portionSize"
+          type="number"
+          placeholder='1'
+          style={{
+            width: "75px",
+            backgroundColor: "rgb(66 33 49)",
+            fontSize: '15px',
+            color: 'rgb(219 190 204)',
+            padding: '10px',
+            margin: '5px',
+          }}
+          onFocus={(e) => e.target.value = ""}
+          value={portionSize}
+          onChange={(e) => setPortionSize(Number(e.target.value))}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleApplyPortion();
+            };
+          }}
+        />
       </div>
+
+      
+      <h2>Selected Rows </h2>
+      <table
+        id="tableForSelectedRows"
+        className='w-screen m-9 bg-gray-800 border border-black'>
+        <thead className='m-9 bg-blue-900 border border-black' >
+          <tr>
+            <th className='text-left'>Desc 1</th>
+            <th className='text-left'>Desc 2</th>
+            <th className='text-right'>Portion </th>
+            <th className='text-right'>Calories</th>
+            <th className='text-right'>Carb</th>
+            <th className='text-right'>Fat</th>
+            <th className='text-right'>Protein</th>
+            <th className='text-right'>Fiber</th>
+          </tr>
+        </thead>
+        <tbody>
+          {selectedRows.map((item, index) => (
+            <tr key={index}>
+              <td className='text-left'>{item.desc_1}</td>
+              <td className='text-left'>{item.desc_2}</td>
+              <td className='text-right'>{item.portion}</td>
+              <td className='text-right'>{item.calories}</td>
+              <td className='text-right'>{item.carb}</td>
+              <td className='text-right'>{item.fat}</td>
+              <td className='text-right'>{item.protein}</td>
+              <td className='text-right'>{item.fiber}</td>
+              <td className='text-right'><button onClick={() => handleDeleteRow(index)}>Delete</button></td>
+            </tr>
+          ))}
+
+          <tr>
+            <td>Total</td>
+            <td></td>
+            <td>{selectedRows.reduce((total, row) => total + Number(row.portion || 0), 0)}</td>
+            <td>{selectedRows.reduce((total, row) => total + Number(row.calories || 0), 0)}</td>
+            <td>{selectedRows.reduce((total, row) => total + Number(row.carb || 0), 0)}</td>
+            <td>{selectedRows.reduce((total, row) => total + Number(row.fat || 0), 0)}</td>
+            <td>{selectedRows.reduce((total, row) => total + Number(row.protein || 0), 0)}</td>
+            <td>{selectedRows.reduce((total, row) => total + Number(row.fiber || 0), 0)}</td>
+            <td></td>
+          </tr>
+
+        </tbody>
+      </table>
+
+
+      <div>
+          <label htmlFor='nameItBox' className='label'> Give it a name:</label>
+          <input
+            id='nameItBox'
+            className='input'
+            type="text" 
+            value={nomen} 
+            onChange={e => setNomen(e.target.value)} 
+            placeholder="fill me in" 
+          />
+
+          <style jsx>{`
+            .label {
+              margin-right: 10px;
+            }
+            .input {
+              width: 16.6666666667%; 
+              margin-left: 1.5rem;
+              margin-bottom: 1.5rem; 
+              font-size: 0.875rem; 
+              border: 1px solid #ed64a6; 
+            }
+          `}</style>
+      </div>
+      <div>
+          <button
+            id='saveAsMealButton'
+            style={{
+              width: '15vw',
+              margin: '25px ',
+              textAlign: 'center',
+              fontSize: '16px',
+              border: '2px solid #efc6ec',
+              backgroundColor: "#694242",
+              padding: '5px',
+            }}
+            onClick={handleSaveAsMeal}
+          >
+            Save as Meal
+          </button>
+      </div>
+
+
+      {message && <p>{message}</p>}
+
+
+      </div>
+      
   );
 }
  export default CreateMeal;

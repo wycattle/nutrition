@@ -1,19 +1,20 @@
 // utils/save_meal.ts
 
-import { saveMealGroupedByDate } from '../lib/db';
-const saveAsMealGroupedByDate = async (nomen: string, totalsByDate: Record<string, any>)  => {
-  console.log('saveAsMealGroupedByDate called with:', nomen, totalsByDate);
+import { saveMeal } from '../lib/db';
+
+const saveMealData = async (nomen: string, date: Date, items: any[])  => {
+  console.log('saveMealData called with:', nomen, date, items);
 
   const mealData = {
     name: nomen,
-    totalsByDate: totalsByDate
+    date: date,
+    items: items
   };
 
   console.log('mealData:', mealData);
 
-
   try {
-    await saveMealGroupedByDate(mealData);
+    await saveMeal(mealData);
 
     console.log('Meal saved successfully');
 
@@ -23,4 +24,4 @@ const saveAsMealGroupedByDate = async (nomen: string, totalsByDate: Record<strin
   }
 };
 
-export default saveAsMealGroupedByDate;
+export default saveMealData;

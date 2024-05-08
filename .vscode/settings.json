@@ -8,8 +8,7 @@
         "**/Thumbs.db": true,
         "**/node_modules": true,
         "node_modules": true,
-        "**/postcss.config.js": true,
-        "postcss.config.js": true,
+        "**/postcss.config.js": false,
         "**/next.config.mjs": true,
         "next.config.mjs": true,
         "**/README.md": true,
@@ -27,7 +26,7 @@
         "next-env.d.ts": true,
         "**/.gitignore": true,
         ".gitignore": true,
-        "package.json": true,
+        "package.json": false,
         "eslint.config.mjs": true
     },
     "explorerExclude.backup": {}
