@@ -1,58 +1,81 @@
 // pages/index.tsx
 import Link from 'next/link';
 import Image from 'next/image';
-// import '../styles/styles.css'
 
 export default function Home() {
   return (
-    <div className='outerbox'>
-        <h1 className="header" >
-          Welcome to my Nutrition App</h1>
-     
-        <div className="homepage"
-          style={{
-            width:'25%'
-          }}>
-          <div className="image1" >
-            <Image
-                src="/images/IMG_0748.JPG" 
-                alt="Splash Image"
-                width={300}
-                height={300}
-                priority
-                style={{
-                  margin: 'auto'
-                }}
-            />
+    
+  <div className="outerbox">
+        <style jsx>{`
+          .outerbox {
+            width: 80vw;
+            height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid green;
+            border-radius: 50%;
+            background: linear-gradient(to right, #010a09, #66bdb4);
+          }
 
-          </div>
+          .header {
+            text-align: center;
+            font-weight: 200;
+            background-color: #6b7280;
+            border: 1px solid green;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 32px;
+          }
+        `}</style>
 
-          <div className='button-container'>
-            <Link href="/nutrition_app">
-              <button className="button">
-                Create a Recipe or Meal
-              </button>
-            </Link>
-          </div>
+      <div id="homepage" style={{ width: '20vw', height: '25vh' }} >
+        <h1 className="header">  Welcome to my Nutrition App  </h1>
 
-          <div className='button-container'>
-            <Link href="/view_recipe_json">
-              <button className="button">
-                View / Modify a Recipe
-              </button>
-            </Link>
-          </div>
-
-          <div className='button-container'>
-            <Link href="/view_meal_json">
-              <button className="button">
-                View / Modify a Meal
-              </button>
-            </Link>
-          </div> 
-
+        <div id="image1" >
+          <Image
+              src="/images/IMG_0748.JPG" 
+              alt="Splash Image"
+              width={300}
+              height={300}
+              priority
+              style={{
+                display: 'block',
+                marginLeft: 'auto',
+                marginRight:'auto'
+              }}
+          />
 
         </div>
+
+        <div className='button-container'>
+          <Link href="/createMeal">
+            <button className="button">
+              Create a Meal
+            </button>
+          </Link>
+        </div>
+
+        {/* <div className='button-container'>
+          <Link href="/view_recipe_json">
+            <button className="button">
+              View / Modify a Recipe
+            </button>
+          </Link>
+        </div>
+
+        <div className='button-container'>
+          <Link href="/view_meal_json">
+            <button className="button">
+              View / Modify a Meal
+            </button>
+          </Link>
+        </div>  */}
+
+
       </div>
+  </div>
   );
 }

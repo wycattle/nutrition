@@ -27,81 +27,22 @@
   --color: #c1a1b1; 
 }
 
-
-
-/* The @media rule is used in CSS to apply different styles for different media types/devices. 
-In this case, (prefers-color-scheme: dark) is a media feature that is
- used to detect if the user has requested the system use a light or dark color theme. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: #1b59dd;
-    --background-start-rgb: #ce28c6;
-    --background-end-rgb: #2f483a;
-  
-  }
+/* the background (which looks like a border) around the dropdown */
+.css-1fdsijx-ValueContainer {
+  background-color: #574a5f; 
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.css-qbdosj-Input {
+  background-color: #45685b;
 }
 
-.outerbox {
-    width: 85vw;
-    height: 100vh;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #16a78f;
-    border-radius: 200px;
-    background: radial-gradient(circle farthest-corner at center, #00040a, #36435c);
-
-      
-    .header{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: 100;
-      background-color: #352c30;
-      border: 1px solid #16a78f;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 30px;
-
-    }
-
-    .homepage {
-      width:'50%';
-      justify-content: center;
-      align-items: center;
-      /* margin: '30px'; */
-      border: 1px solid #139781;
-      border-radius: 30px;
-
-
-          .image1 {
-            display: flex;
-            flex-direction: column;
-            justify-content: 'center';
-            align-items: 'center';
-            border-radius: 30px;
-
-          }
-
-          .button-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            border: 1px solid #16a78f;
-            box-shadow: var(--box-shadow);
-            border-radius: 20px;
-            margin: 30px;
-        }
-    }
-
+.css-1smkccv-menu {
+  background-color: #c8728a; /* Replace #yourColorHere with the color you want */
 }
+
+.css-1dimb5e-singleValue {
+  background-color: #490eed;
+  color: #f7b4ed;
+}
+
 

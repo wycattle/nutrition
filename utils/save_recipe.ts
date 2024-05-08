@@ -1,6 +1,6 @@
 // utils/save_recipe.ts
-const saveAsRecipe = async (nomen: string, datex: Date, selectedRows: Array<any>) => {
-    console.log('saveAsRecipe called with:', nomen, datex, selectedRows);
+const saveAsRecipe = async (nomen: string, datex: Date, selectedRows: Array<any>, per100g: any) => {
+    console.log('saveAsRecipe called with:', nomen, datex, selectedRows, per100g);
     
     
     const selectedRecipes = selectedRows;
@@ -8,7 +8,8 @@ const saveAsRecipe = async (nomen: string, datex: Date, selectedRows: Array<any>
     const recipeData = {
       name: nomen,
       date: datex,
-      items: selectedRecipes
+      items: selectedRecipes,
+      per100g: per100g 
     };
   
     console.log('recipeData:', recipeData);

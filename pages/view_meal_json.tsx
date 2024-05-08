@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+
 interface Item {
     desc_1:   string;
     desc_2:   string;
@@ -84,7 +85,7 @@ const handlePortionChange = (itemIndex: number, newPortion: number) => {
 
       <div>
         <Link href="/"> {}
-          <a> Back to Home Page </a> {}
+          <a> Back to Home Page </a>
         </Link>
       </div>
 

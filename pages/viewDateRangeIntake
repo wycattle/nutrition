@@ -1,0 +1,10 @@
+<h1>Select a date range</h1>
+      <DateRangePicker
+        startDate={startDate}
+        startDateId="your_unique_start_date_id"
+        endDate={endDate}
+        endDateId="your_unique_end_date_id"
+        onDatesChange={({ startDate, endDate }) => handleDateRangeChange(startDate, endDate)}
+        focusedInput={focusedInput}
+        onFocusChange={focusedInput => setFocusedInput(focusedInput)}
+      />

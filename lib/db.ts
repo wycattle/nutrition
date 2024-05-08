@@ -2,7 +2,6 @@
 import { open, Database } from 'sqlite';
 import sqlite3 from 'sqlite3';
 
-
 type Recipe = {
   name: string;
   date: string;
@@ -15,6 +14,12 @@ type Meal = {
   items: any[];
 };
 
+type MealGroupedByDate = {
+  name: string;
+  totalsByDate: Record<string, any>;
+
+};
+
 let db: Database | null = null;
 
 export async function openDb() {
@@ -25,48 +30,30 @@ export async function openDb() {
     });
     await db.run('CREATE TABLE IF NOT EXISTS recipes (name TEXT, date TEXT, items TEXT)');
     await db.run('CREATE TABLE IF NOT EXISTS meals (name TEXT, date TEXT, items TEXT)');
+    await db.run('CREATE TABLE IF NOT EXISTS mealsGroupedByDate (name TEXT, totalsByDate TEXT)');
   }
   return db;
 }
 
-export async function getRecipes(): Promise<Recipe[]> {
+// Existing functions...
+
+export async function getMealsGroupedByDate(): Promise<MealGroupedByDate[]> {
   const db = await openDb();
-  const rows = await db.all('SELECT * FROM recipes');
-  return rows.map(row => ({ name: row.name, date: row.date, items: JSON.parse(row.items) }));
+  const rows = await db.all('SELECT * FROM mealsGroupedByDate');
+  return rows.map(row => ({ name: row.name, totalsByDate: JSON.parse(row.totalsByDate) }));
 }
 
-export async function getMeals(): Promise<Meal[]> {
+export async function saveMealGroupedByDate(meal: MealGroupedByDate) {
   const db = await openDb();
-  const rows = await db.all('SELECT * FROM meals');
-  return rows.map(row => ({ name: row.name, date: new Date(row.date), items: JSON.parse(row.items) }));
+  await db.run('INSERT INTO mealsGroupedByDate (name, totalsByDate) VALUES (?, ?, ?)', meal.name, JSON.stringify(meal.totalsByDate));
 }
 
-export async function saveRecipe(recipe: Recipe) {
+export async function updateMealGroupedByDate(meal: MealGroupedByDate) {
   const db = await openDb();
-  await db.run('INSERT INTO recipes (name, date, items) VALUES (?, ?, ?)', recipe.name, recipe.date, JSON.stringify(recipe.items));
+  await db.run('UPDATE mealsGroupedByDate SET totalsByDate = ? = ? WHERE name = ?', JSON.stringify(meal.totalsByDate), meal.name);
 }
 
-export async function saveMeal(meal: Meal) {
+export async function deleteMealGroupedByDate(mealName: string) {
   const db = await openDb();
-  await db.run('INSERT INTO meals (name, date, items) VALUES (?, ?, ?)', meal.name, meal.date.toISOString(), JSON.stringify(meal.items));
-}
-
-export async function updateRecipe(recipe: Recipe) {
-  const db = await openDb();
-  await db.run('UPDATE recipes SET date = ?, items = ? WHERE name = ?', recipe.date, JSON.stringify(recipe.items), recipe.name);
-}
-
-export async function updateMeal(meal: Meal) {
-  const db = await openDb();
-  await db.run('UPDATE meals SET date = ?, items = ? WHERE name = ?', meal.date.toISOString(), JSON.stringify(meal.items), meal.name);
-}
-
-export async function deleteMeal(mealName: string) {
-  const db = await openDb();
-  await db.run('DELETE FROM meals WHERE name = ?', mealName);
-}
-
-export async function deleteRecipe(recipeName: string) {
-  const db = await openDb();
-  await db.run('DELETE FROM recipes WHERE name = ?', recipeName);
+  await db.run('DELETE FROM mealsGroupedByDate WHERE name = ?', mealName);
 }

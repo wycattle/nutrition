@@ -13,7 +13,8 @@ interface Item {
     protein:  number | undefined;
     fiber:    number | undefined;
     GI:       number | undefined;
-    note:     string;       
+    note?:     string;  
+    name?:    string;     
   }
 
   interface recipe {
@@ -81,35 +82,35 @@ interface Item {
   return (
     <div>
       
-      <div>
+      <div style={{margin: '10px'}}>
         <Link href="/"> {}
-          <a> Back to Home Page </a> {}
+          <a> Back to Home Page </a> 
         </Link>
       </div>
 
-      <table>
-        <thead>
+      <table style={{margin: '10px', padding:'10px'}}>
+        <thead  style={{margin: '10px'}}>
           <tr>
-            <th>Select</th>
-            <th>Delete</th>
-            <th>Name</th>
+            <th  style={{margin: '10px', padding:'10px'}}>Select</th>
+            <th  style={{margin: '10px', padding:'10px'}}>Delete</th>
+            <th  style={{margin: '10px', padding:'10px'}}>Name</th>
           </tr>
         </thead>
         <tbody>
           {recipes.map(recipe => (
-            <tr key={recipe.name}>
-              <td><input type="checkbox" onChange={() => handleSelectrecipe(recipe)} /></td>
-              <td><input type="checkbox" onChange={() => handleDeleterecipe(recipe)} title="Delete" /></td>
-              <td>{recipe.name}</td>
+            <tr key={recipe.name} >
+              <td style={{margin: '10px', padding:'10px'}}><input type="checkbox" onChange={() => handleSelectrecipe(recipe)} /></td>
+              <td style={{margin: '10px', padding:'10px'}}><input type="checkbox" onChange={() => handleDeleterecipe(recipe)} title="Delete" /></td>
+              <td style={{margin: '10px', padding:'10px'}}>{recipe.name}</td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </table >
 
     {selectedrecipe && (
-      <div>
-        <h2>{selectedrecipe.name}</h2>
-        <p>{selectedrecipe.date.toString()}</p>
+      <div style={{margin: '10px', padding:'10px'}}>
+        <h2> recipe name: {selectedrecipe.name}</h2>
+        <p style={{margin: '10px 0px 10px 0px'}}>{selectedrecipe.date.toString()}</p>
         <table>
           <thead>
             <tr>
@@ -128,7 +129,7 @@ interface Item {
           <tbody>
             {selectedrecipe.items.map((item, index) => (
               <tr key={index}>
-                <td>{item.desc_1}</td>
+                <td>{item.name || `${item.desc_1} ${item.desc_2}`}</td>
                 <td>{item.desc_2}</td>
                 <td>
                   <input

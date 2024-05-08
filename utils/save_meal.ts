@@ -1,41 +1,26 @@
 // utils/save_meal.ts
-const saveAsMeal = async (nomen: string, datex: Date, selectedRows: Array<any>) => {
-  console.log('saveAsMeal called with:', nomen, datex, selectedRows);
-  
-  
-  const selectedMeals = selectedRows;
+
+import { saveMealGroupedByDate } from '../lib/db';
+const saveAsMealGroupedByDate = async (nomen: string, totalsByDate: Record<string, any>)  => {
+  console.log('saveAsMealGroupedByDate called with:', nomen, totalsByDate);
 
   const mealData = {
     name: nomen,
-    date: datex,
-    items: selectedMeals
+    totalsByDate: totalsByDate
   };
 
   console.log('mealData:', mealData);
 
+
   try {
-    const response = await fetch('/api/saveMeal', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(mealData),
-    });
+    await saveMealGroupedByDate(mealData);
 
+    console.log('Meal saved successfully');
 
-    console.log('Response received:', response);
-
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-
-    const data = await response.json();
-    console.log('Response data:', data);
-
-    return data;
+    return mealData;
   } catch (error) {
     console.error('Error:', error);
   }
 };
 
-export default saveAsMeal;
+export default saveAsMealGroupedByDate;
