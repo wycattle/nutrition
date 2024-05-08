@@ -175,9 +175,6 @@ const CreateMeal = () => {
           <a> Back to Home Page </a>
         </Link>
       </div>
-  
-    
-      
 
       <div id='select food-group container'
           style={{
@@ -199,18 +196,9 @@ const CreateMeal = () => {
              Select a food group
         </label>
 
-
-
-  
-
         <Select id="select food-group item"
           options={options}
           onChange={(newValue: unknown | null, _actionMeta) => {
-
-
-            console.log('New value:', newValue);
-
-
 
             setSelectedValue(newValue as Option | null);
           }}
