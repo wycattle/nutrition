@@ -1,5 +1,4 @@
 // lib/db.ts
-// lib/db.ts
 import { open, Database } from 'sqlite';
 import sqlite3 from 'sqlite3';
 
@@ -28,8 +27,6 @@ export async function openDb() {
   }
   return db;
 }
-
-// Existing functions...
 
 export async function getMeals(): Promise<Meal[]> {
   const db = await openDb();

@@ -1,7 +1,6 @@
 // pages/createMeal.tsx
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import saveAsMeal from '@/utils/save_meal';
 
 import Link from 'next/link';
 import { CSSObject } from '@emotion/react';
@@ -49,28 +48,36 @@ const CreateMeal = () => {
   const [selectedRow, setSelectedRow] = useState<NutritionItem | null>(null);
   const [selectedRows, setSelectedRows] = useState<NutritionItem[]>([]);
   const [options, setOptions] = useState<Option[]>([]);
+
   const [data, setData] = useState<NutritionItem[]>([]);
   const [portionSize, setPortionSize] = useState<number>(0);
   const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
   const [nomen, setNomen] = useState<string>('');
   const [datex, setDatex] = useState<Date>(new Date());
-  const [data2, setData2] = useState<{ name: string; date: string; items: string[] }>({ name: '', date: '', items: [] });
+  // const [data2, setData2] = useState<{ name: string; date: string; items: string[] }>({ name: '', date: '', items: [] });
   const [message, setMessage] = useState<string>('');
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  // const [startDate, setStartDate] = useState<Date>(new Date());
+  // const [endDate, setEndDate] = useState<Date>(new Date()); 
 
 
   useEffect(() => {
-    fetch('/api/nutrition')
-      .then(response => response.json())
+    fetch('/api/nutrition')   //don't erase - this is just the nutrition json
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(fetchedData => {
-        setData(fetchedData || []);
-
+        setData(fetchedData || []);          //the 'data' var holds the state value
+  
         const uniqueValues = Array.from(new Set(fetchedData.map((item: NutritionItem) => item.desc_1)));
         setOptions(uniqueValues.map(value => ({ label: value as string, value: value as string })));
       })
-      .catch(error => console.error('Error:', error));
-    }, []);
+      .catch(error => {
+        console.error('Stack:', error.stack);
+      });
+  }, []);
 
   useEffect(() => {
     
@@ -135,11 +142,12 @@ const CreateMeal = () => {
         body: JSON.stringify(newMeal),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
         throw new Error('Failed to save meal');
       }
 
-      const data = await response.json();
       setMessage(data.message);
       setSelectedRows([]); // Clear the selected rows
     } catch (error) {
