@@ -1,6 +1,7 @@
 // pages/createMeal.tsx
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import * as R from 'ramda';
 
 import Link from 'next/link';
 import { CSSObject } from '@emotion/react';
@@ -34,6 +35,7 @@ interface TotalsRow {
   proteinTotal: number;
   fiberTotal: number;
 }
+
 
 const customStyles = {
   menuList: (provided: CSSObject, state: MenuListProps<unknown, boolean, GroupBase<unknown>>) => ({
@@ -71,9 +73,10 @@ const CreateMeal = () => {
       .then(fetchedData => {
         setData(fetchedData || []);          //the 'data' var holds the state value
   
-        const uniqueValues = Array.from(new Set(fetchedData.map((item: NutritionItem) => item.desc_1)));
-        setOptions(uniqueValues.map(value => ({ label: value as string, value: value as string })));
-      })
+         // Use Ramda's uniq and map functions to create unique options
+      const uniqueValues = R.uniq(R.map((item: NutritionItem) => item.desc_1, fetchedData));
+      setOptions(R.map((value: string) => ({ label: value, value }), uniqueValues));
+    })
       .catch(error => {
         console.error('Stack:', error.stack);
       });
@@ -132,7 +135,9 @@ const CreateMeal = () => {
       date: datex,
       items: selectedRows,
     };
-
+  
+    console.log('Saving new meal:', newMeal);
+  
     try {
       const response = await fetch('/api/saveMeal', {
         method: 'POST',
@@ -141,13 +146,14 @@ const CreateMeal = () => {
         },
         body: JSON.stringify(newMeal),
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
-        throw new Error('Failed to save meal');
+        console.error('Error saving meal:', data);
+        throw new Error(data.message || 'Failed to save meal');
       }
-
+  
       setMessage(data.message);
       setSelectedRows([]); // Clear the selected rows
     } catch (error) {
