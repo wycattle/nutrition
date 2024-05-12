@@ -1,9 +1,9 @@
 // CreateRecipe.tsx
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { saveMealGroupedByDate } from '@/lib/db';
-import Link from 'next/link';
+import * as R from 'ramda';;
 
+import Link from 'next/link';
 import { CSSObject } from '@emotion/react';
 import { OptionProps, GroupBase, MenuListProps } from 'react-select';
 
@@ -61,14 +61,18 @@ const CreateRecipe = () => {
     const [selectedRow,         setSelectedRow] =       useState<NutritionItem | null>(null);
     const [selectedRows,        setSelectedRows] =      useState<NutritionItem[]>([]);
     const [options,             setOptions] =           useState<Option[]>([]);
+
     const [data,                setData] =              useState<NutritionItem[]>([]);
     const [portionSize,         setPortionSize] =       useState<number>(0);
     const [checkedRows,         setCheckedRows] =       useState<Set<number>>(new Set());
+    
     const [nomen,               setNomen] =             useState<string>('');
-    const [datex,               setDatex] =             useState<Date>(new Date());
-    const [data2,               setData2] =             useState<{ name: string; date: string; items: string[] }>({ name: '', date: '', items: [] });
+    const [per100g,             setper100g] =           useState<number>(0);
+    const [totals,              settotals] =            useState<number>(0);
+
     const [message,             setMessage] =           useState<string>('');
-    const recipe = {
+
+    const CreateRecipe = {
         name: nomen,
         totals: totals,
         per100g: per100g

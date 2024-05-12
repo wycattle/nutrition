@@ -13,7 +13,7 @@ interface Option {
   label: string;
   value: string;   }
 
-  interface NutritionItem {
+interface NutritionItem {
     desc_1: string;
     desc_2: string;
     portion: number | undefined;
@@ -36,7 +36,6 @@ interface TotalsRow {
   fiberTotal: number;
 }
 
-
 const customStyles = {
   menuList: (provided: CSSObject, state: MenuListProps<unknown, boolean, GroupBase<unknown>>) => ({
     ...provided,
@@ -44,6 +43,7 @@ const customStyles = {
     color: '#f3f74d', //  color for the font
   })
 }
+
 const CreateMeal = () => {
   const [selectedValue, setSelectedValue] = useState<Option | null>(null);
   const [selectedRowOption, setSelectedRowOption] = useState<Option | null>(null);
@@ -54,13 +54,35 @@ const CreateMeal = () => {
   const [data, setData] = useState<NutritionItem[]>([]);
   const [portionSize, setPortionSize] = useState<number>(0);
   const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
+
   const [nomen, setNomen] = useState<string>('');
   const [datex, setDatex] = useState<Date>(new Date());
-  // const [data2, setData2] = useState<{ name: string; date: string; items: string[] }>({ name: '', date: '', items: [] });
+  
   const [message, setMessage] = useState<string>('');
-  // const [startDate, setStartDate] = useState<Date>(new Date());
-  // const [endDate, setEndDate] = useState<Date>(new Date()); 
 
+  const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
+    return rows.reduce((totals, row) => {
+      return {
+        portionTotal: totals.portionTotal + (row.portion || 0),
+        caloriesTotal: totals.caloriesTotal + (row.calories || 0),
+        carbTotal: totals.carbTotal + (row.carb || 0),
+        fatTotal: totals.fatTotal + (row.fat || 0),
+        proteinTotal: totals.proteinTotal + (row.protein || 0),
+        fiberTotal: totals.fiberTotal + (row.fiber || 0),
+      };
+    }, 
+    {
+      portionTotal: 0,
+      caloriesTotal: 0,
+      carbTotal: 0,
+      fatTotal: 0,
+      proteinTotal: 0,
+      fiberTotal: 0,
+    }
+  );
+  };
+
+  const totals = calculateTotals(selectedRows);
 
   useEffect(() => {
     fetch('/api/nutrition')   //don't erase - this is just the nutrition json
@@ -87,12 +109,10 @@ const CreateMeal = () => {
     if (selectedValue) {
       const selectedRow = data.find(item => item.desc_1 === selectedValue.value);
       setSelectedRow(selectedRow || null);
-
-
-      console.log('3 selectedValue state:', selectedValue);
-
     }
   }, [selectedValue, data]);
+
+
 
   useEffect(() => {
     if (selectedRowOption) {
@@ -105,6 +125,8 @@ const CreateMeal = () => {
   const handleRowSelect = (row: NutritionItem) => {
     setSelectedRow(row);
   };
+
+
 
   const handleApplyPortion = () => {
     if (selectedRow) {
@@ -123,11 +145,17 @@ const CreateMeal = () => {
     }
   };
 
+
+
+
   const handleDeleteRow = (index: number) => {
     const newSelectedRows = [...selectedRows];
     newSelectedRows.splice(index, 1);
     setSelectedRows(newSelectedRows);
   };
+
+
+
 
   const handleSaveAsMeal = async () => {
     const newMeal = {
@@ -136,10 +164,8 @@ const CreateMeal = () => {
       items: selectedRows,
     };
   
-    console.log('Saving new meal:', newMeal);
-  
     try {
-      const response = await fetch('/api/saveMeal', {
+      const response = await fetch('/api/meal_related/saveMeal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -164,6 +190,8 @@ const CreateMeal = () => {
       }
     }
   }
+
+
 
 
   return ( 
@@ -328,6 +356,7 @@ const CreateMeal = () => {
             <th className='text-right'>Fat</th>
             <th className='text-right'>Protein</th>
             <th className='text-right'>Fiber</th>
+            <th className='text-right'>Datex</th>
           </tr>
         </thead>
         <tbody>
@@ -355,6 +384,16 @@ const CreateMeal = () => {
             <td>{selectedRows.reduce((total, row) => total + Number(row.protein || 0), 0)}</td>
             <td>{selectedRows.reduce((total, row) => total + Number(row.fiber || 0), 0)}</td>
             <td></td>
+          </tr>
+
+          <tr>
+            <td>Totals</td>
+            <td>{totals.portionTotal}</td>
+            <td>{totals.caloriesTotal}</td>
+            <td>{totals.carbTotal}</td>
+            <td>{totals.fatTotal}</td>
+            <td>{totals.proteinTotal}</td>
+            <td>{totals.fiberTotal}</td>
           </tr>
 
         </tbody>

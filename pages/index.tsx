@@ -1,10 +1,19 @@
 // pages/index.tsx
 import Link from 'next/link';
 import Image from 'next/image';
+import React, { useState } from 'react';
+// import CreateMealInRange from './CreateMealsInRange';
+import Head from 'next/head';
+
 
 export default function Home() {
   return (
-    
+  <div>
+    <Head>
+      <link rel="icon" href='\images\favicon.ico'/>
+    </Head>
+     
+
   <div className="outerbox">
         <style jsx>{`
           .outerbox {
@@ -58,24 +67,24 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* <div className='button-container'>
-          <Link href="/view_recipe_json">
+        <div className='button-container'>
+          <Link href="/CreateMealsInRange">
             <button className="button">
-              View / Modify a Recipe
+              Meal Nutrition Totals
             </button>
           </Link>
         </div>
 
         <div className='button-container'>
-          <Link href="/view_meal_json">
-            <button className="button">
-              View / Modify a Meal
-            </button>
-          </Link>
-        </div>  */}
-
-
+            <Link href="/DatePickerTest">
+              <button className="button">
+                Test DatePicker
+              </button>
+            </Link>
+          </div>
+        
       </div>
   </div>
+</div>
   );
 }
