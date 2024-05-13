@@ -48,3 +48,5 @@ tsconfig.json
 tailwind.config.js
 .vscode/settings.json
 .vscode/settings.json
+lib/querydb.sql
+.env

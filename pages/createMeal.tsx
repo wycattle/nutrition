@@ -28,12 +28,19 @@ interface NutritionItem {
   }
  
 interface TotalsRow {
-  portionTotal: number;
-  caloriesTotal: number;
-  carbTotal: number;
-  fatTotal: number;
-  proteinTotal: number;
-  fiberTotal: number;
+  portion_tot: number;
+  calories_tot: number;
+  carb_tot: number;
+  fat_tot: number;
+  protein_tot: number;
+  fiber_tot: number;
+}
+
+interface NewMeal {
+  name: string;
+  date: Date;
+  items: NutritionItem[];
+  totals: TotalsRow;
 }
 
 const customStyles = {
@@ -63,21 +70,21 @@ const CreateMeal = () => {
   const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
     return rows.reduce((totals, row) => {
       return {
-        portionTotal: totals.portionTotal + (row.portion || 0),
-        caloriesTotal: totals.caloriesTotal + (row.calories || 0),
-        carbTotal: totals.carbTotal + (row.carb || 0),
-        fatTotal: totals.fatTotal + (row.fat || 0),
-        proteinTotal: totals.proteinTotal + (row.protein || 0),
-        fiberTotal: totals.fiberTotal + (row.fiber || 0),
+        portion_tot:      totals.portion_tot + (row.portion || 0),
+        calories_tot:     totals.calories_tot + (row.calories || 0),
+        carb_tot:         totals.carb_tot + (row.carb || 0),
+        fat_tot:          totals.fat_tot + (row.fat || 0),
+        protein_tot:      totals.protein_tot + (row.protein || 0),
+        fiber_tot:        totals.fiber_tot + (row.fiber || 0),
       };
     }, 
     {
-      portionTotal: 0,
-      caloriesTotal: 0,
-      carbTotal: 0,
-      fatTotal: 0,
-      proteinTotal: 0,
-      fiberTotal: 0,
+      portion_tot: 0,
+      calories_tot: 0,
+      carb_tot: 0,
+      fat_tot: 0,
+      protein_tot: 0, // corrected here
+      fiber_tot: 0,
     }
   );
   };
@@ -158,10 +165,11 @@ const CreateMeal = () => {
 
 
   const handleSaveAsMeal = async () => {
-    const newMeal = {
+    const newMeal: NewMeal = {
       name: nomen,
       date: datex,
       items: selectedRows,
+      totals: totals,
     };
   
     try {
@@ -173,15 +181,17 @@ const CreateMeal = () => {
         body: JSON.stringify(newMeal),
       });
   
-      const data = await response.json();
-  
+
       if (!response.ok) {
-        console.error('Error saving meal:', data);
-        throw new Error(data.message || 'Failed to save meal');
+        throw new Error('Response is not OK');
       }
   
-      setMessage(data.message);
+      const result = await response.json();
+
+  
+      setMessage(result.message);
       setSelectedRows([]); // Clear the selected rows
+      
     } catch (error) {
       if (error instanceof Error) {
         setMessage(error.message);
@@ -343,61 +353,51 @@ const CreateMeal = () => {
 
       
       <h2>Selected Rows </h2>
-      <table
-        id="tableForSelectedRows"
-        className='w-screen m-9 bg-gray-800 border border-black'>
-        <thead className='m-9 bg-blue-900 border border-black' >
-          <tr>
-            <th className='text-left'>Desc 1</th>
-            <th className='text-left'>Desc 2</th>
-            <th className='text-right'>Portion </th>
-            <th className='text-right'>Calories</th>
-            <th className='text-right'>Carb</th>
-            <th className='text-right'>Fat</th>
-            <th className='text-right'>Protein</th>
-            <th className='text-right'>Fiber</th>
-            <th className='text-right'>Datex</th>
-          </tr>
-        </thead>
-        <tbody>
-          {selectedRows.map((item, index) => (
-            <tr key={index}>
-              <td className='text-left'>{item.desc_1}</td>
-              <td className='text-left'>{item.desc_2}</td>
-              <td className='text-right'>{item.portion}</td>
-              <td className='text-right'>{item.calories}</td>
-              <td className='text-right'>{item.carb}</td>
-              <td className='text-right'>{item.fat}</td>
-              <td className='text-right'>{item.protein}</td>
-              <td className='text-right'>{item.fiber}</td>
-              <td className='text-right'><button onClick={() => handleDeleteRow(index)}>Delete</button></td>
-            </tr>
-          ))}
+<table
+  id="tableForSelectedRows"
+  className='w-screen m-9 bg-gray-800 border border-black'>
+  <thead className='m-9 bg-blue-900 border border-black' >
+    <tr>
+      <th className='text-left'>Desc 1</th>
+      <th className='text-left'>Desc 2</th>
+      <th className='text-right'>Portion </th>
+      <th className='text-right'>Calories</th>
+      <th className='text-right'>Carb</th>
+      <th className='text-right'>Fat</th>
+      <th className='text-right'>Protein</th>
+      <th className='text-right'>Fiber</th>
+      <th className='text-right'>Datex</th>
+    </tr>
+  </thead>
+  <tbody>
+    {selectedRows.map((item, index) => (
+      <tr key={index}>
+        <td className='text-left'>{item.desc_1}</td>
+        <td className='text-left'>{item.desc_2}</td>
+        <td className='text-right'>{item.portion}</td>
+        <td className='text-right'>{item.calories}</td>
+        <td className='text-right'>{item.carb}</td>
+        <td className='text-right'>{item.fat}</td>
+        <td className='text-right'>{item.protein}</td>
+        <td className='text-right'>{item.fiber}</td>
+        <td className='text-right'><button onClick={() => handleDeleteRow(index)}>Delete</button></td>
+      </tr>
+    ))}
 
-          <tr>
-            <td>Total</td>
-            <td></td>
-            <td>{selectedRows.reduce((total, row) => total + Number(row.portion || 0), 0)}</td>
-            <td>{selectedRows.reduce((total, row) => total + Number(row.calories || 0), 0)}</td>
-            <td>{selectedRows.reduce((total, row) => total + Number(row.carb || 0), 0)}</td>
-            <td>{selectedRows.reduce((total, row) => total + Number(row.fat || 0), 0)}</td>
-            <td>{selectedRows.reduce((total, row) => total + Number(row.protein || 0), 0)}</td>
-            <td>{selectedRows.reduce((total, row) => total + Number(row.fiber || 0), 0)}</td>
-            <td></td>
-          </tr>
-
-          <tr>
-            <td>Totals</td>
-            <td>{totals.portionTotal}</td>
-            <td>{totals.caloriesTotal}</td>
-            <td>{totals.carbTotal}</td>
-            <td>{totals.fatTotal}</td>
-            <td>{totals.proteinTotal}</td>
-            <td>{totals.fiberTotal}</td>
-          </tr>
-
-        </tbody>
-      </table>
+    {/* Totals row */}
+    <tr>
+      <td>Totals</td>
+      <td></td>
+      <td className='text-right'>{totals.portionTotal}</td>
+      <td className='text-right'>{totals.caloriesTotal}</td>
+      <td className='text-right'>{totals.carbTotal}</td>
+      <td className='text-right'>{totals.fatTotal}</td>
+      <td className='text-right'>{totals.proteinTotal}</td>
+      <td className='text-right'>{totals.fiberTotal}</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
 
 
       <div>

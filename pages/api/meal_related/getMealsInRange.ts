@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const endDate = new Date(end as string);
       const mealsData = await mealDBInstance.getMealsInRange(startDate, endDate);
 
-      console.log(mealsData);
+      console.log('fffffmealsData',mealsData);
 
       res.status(200).json(mealsData);
     } catch (error) {

@@ -1,14 +1,7 @@
 // lib/db.ts
-import { open, Database } from 'sqlite';
-import sqlite3 from 'sqlite3';
+import { PrismaClient, Meal, Totalrow } from '@prisma/client';
 
-type Recipe = {
-  name: string;
-  items: any[];
-};
-
-type MealItem = {
-  mealName: string;
+type MealItemDetails = {
   desc_1: string;
   desc_2: string;
   portion: number;
@@ -19,109 +12,117 @@ type MealItem = {
   fiber: number;
   GI: number;
   note: string;
-  date: Date;
 };
 
-type Meal = {
+type MealItem = {
   name: string;
   date: Date;
-  items: MealItem[];
+  items: MealItemDetails[];
+  totals: MealTotal;
+};
+
+type MealTotal = {
+  portion_tot: number;
+  calories_tot: number;
+  carb_tot: number;
+  fat_tot: number;
+  protein_tot: number;
+  fiber_tot: number;
 };
 
 class MealDB {
-  private db: Database | null = null;
+  private prisma: PrismaClient;
 
-  async openDb() {
-    if (this.db === null) {
-      this.db = await open({
-        filename: './lib/mydb.sqlite',
-        driver: sqlite3.Database
-      });
-      await this.db.run('CREATE TABLE IF NOT EXISTS recipes (name TEXT, date DATE, items BLOB)');
-      await this.db.run('CREATE TABLE IF NOT EXISTS meals (name TEXT, date DATE, items TEXT)');
-      await this.db.run('CREATE TABLE IF NOT EXISTS mealItems (date DATE, mealName TEXT, desc_1 TEXT, desc_2 TEXT, portion REAL, calories REAL, carb REAL, fat REAL, protein REAL, fiber REAL, GI REAL, note TEXT)');
-    }
-    return this.db;
+  constructor(){
+    this.prisma = new PrismaClient();
   }
 
+  async createMeal(meal: MealItem, total: MealTotal) {
+  const createdMeal = await this.prisma.meal.create({
+  data: {
+    name: meal.name,
+    date: meal.date,
+    items: JSON.stringify(meal.items),
+    totals: {
+      create: {
+        portionTot: meal.totals.portion_tot,
+        caloriesTot: meal.totals.calories_tot,
+        carbTot: meal.totals.carb_tot,
+        fatTot: meal.totals.fat_tot,
+        proteinTot: meal.totals.protein_tot,
+        fiberTot: meal.totals.fiber_tot,
+      },
+    },
+  },
+  include: {
+    totals: true,
+  },
+});
 
-
-
-  async Meals(): Promise<Meal[]> {
-    const db = await this.openDb();
-    const rows = await db.all('SELECT * FROM meals');
-    return rows.map(row => ({ name: row.name, date: new Date(row.date), items: JSON.parse(row.items) }));
+    return createdMeal;
   }
 
-
-
-
-  async saveMeal(meal: Meal) {
-    const db = await this.openDb();
-    await db.run('INSERT INTO meals (name, date, items) VALUES (?,?, ?)', meal.name, meal.date.toISOString(),JSON.stringify(meal.items) );
-
-    for (const item of meal.items) {
-      await db.run('INSERT INTO mealItems (date, mealName, desc_1, desc_2, portion, calories, carb, fat, protein, fiber, GI, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', meal.date.toISOString(), meal.name, item.desc_1, item.desc_2, item.portion, item.calories, item.carb, item.fat, item.protein, item.fiber, item.GI, item.note);
-    }
-
-    const savedMeal = await db.get('SELECT * FROM meals WHERE name = ?', meal.name);
-    console.log('Saved meal:', savedMeal);
-  }
-
-
-
-
-  async updateMeal(meal: Meal) {
-    const db = await this.openDb();
-    await db.run('UPDATE meals SET date = ?, items = ? WHERE name = ?', meal.date.toISOString(), JSON.stringify(meal.items), meal.name);  }
-
-
-
-
-  async deleteMeal(mealName: string) {
-    const db = await this.openDb();
-    await db.run('DELETE FROM meals WHERE name = ?', mealName);
-  }
-
-
-
-
-  async getMealsInRange(startDate: Date, endDate: Date): Promise<{ date: string, meals: string }[]> {
-    const db = await this.openDb();
-    const rows = await db.all('SELECT * FROM mealItems WHERE date BETWEEN ? AND ?', startDate.toISOString(), endDate.toISOString());
-    
-    const mealsByDate = rows.reduce((acc, row) => {
-      acc[row.date] = (acc[row.date] || []).concat({
-        mealName: row.mealName,
-        calories: row.calories,
-        carb: row.carb,
-        fat: row.fat,
-        protein: row.protein,
-        fiber: row.fiber
-      });
-      return acc;
-    }, {});
-
-    const concatenatedMeals = Object.entries(mealsByDate).map(([date, meals]) => {
-      const mealItems = meals as { mealName: string; calories: number; carb: number; fat: number; protein: number; fiber: number }[];
-      return {
-        date,
-        meals:    mealItems.map(meal => meal.mealName).join(', '),
-        calories: mealItems.reduce((total: number, meal) => total + meal.calories, 0),
-        carb:     mealItems.reduce((total: number, meal) => total + meal.carb, 0),
-        fat:      mealItems.reduce((total: number, meal) => total + meal.fat, 0),
-        protein:  mealItems.reduce((total: number, meal) => total + meal.protein, 0),
-        fiber:    mealItems.reduce((total: number, meal) => total + meal.fiber, 0)
-      };
+  async getMeals() {
+    const meals = await this.prisma.meal.findMany({
+      include: {
+        totals: true,
+      },
     });
-      
-    return concatenatedMeals;
+
+    return meals.map(meal => ({
+      ...meal,
+      items: typeof meal.items === 'string' ? JSON.parse(meal.items) : meal.items,
+    }));
   }
 }
-
-
-
 
 const mealDBInstance = new MealDB();
 export default mealDBInstance;
 
+//   async updateMeal(meal: Meal) {
+//     const db = await this.openDb();
+//     await db.run('UPDATE meals SET date = ?, items = ? WHERE name = ?', meal.date.toISOString(), JSON.stringify(meal.items), meal.name);  }
+
+
+
+//   async deleteMeal(mealName: string) {
+//     const db = await this.openDb();
+//     await db.run('DELETE FROM meals WHERE name = ?', mealName);
+//   }
+
+// async getMealsInRange(startDate: Date, endDate: Date): Promise<{ date: string; meals: string; totals: { calories: number; carb: number; fat: number; protein: number; fiber: number } }[]> {
+//   const db = await this.openDb();
+//   const rows = await db.all('SELECT * FROM meals WHERE date BETWEEN ? AND ?', startDate.toISOString(), endDate.toISOString());
+
+//   const mealsByDate = rows.reduce((acc, row) => {
+//     const items = JSON.parse(row.items);
+//     const totals = JSON.parse(row.totals);
+//     acc[row.date] = (acc[row.date] || []).concat({
+//       mealName: row.name,
+//       calories: totals.calories_tot,
+//       carb: totals.carb_tot,
+//       fat: totals.fat_tot,
+//       protein: totals.protein_tot,
+//       fiber: totals.fiber_tot
+//     });
+//     return acc;
+//   }, {});
+
+//   const concatenatedMeals = Object.entries(mealsByDate).map(([date, meals]) => {
+//     const mealItems = meals as { mealName: string; calories: number; carb: number; fat: number; protein: number; fiber: number }[];
+
+//     return {
+//       date,
+//       meals: mealItems.map(meal => meal.mealName).join(', '),
+//       totals: {
+//         calories: mealItems.reduce((total: number, meal) => total + meal.calories, 0),
+//         carb:     mealItems.reduce((total: number, meal) => total + meal.carb, 0),
+//         fat:      mealItems.reduce((total: number, meal) => total + meal.fat, 0),
+//         protein:  mealItems.reduce((total: number, meal) => total + meal.protein, 0),
+//         fiber:    mealItems.reduce((total: number, meal) => total + meal.fiber, 0)
+//       }
+//     };
+//   });
+
+//   return concatenatedMeals;
+// }}

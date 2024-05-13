@@ -8,7 +8,7 @@
         "**/Thumbs.db": true,
         "**/node_modules": true,
         "node_modules": true,
-        "**/postcss.config.js": false,
+        "**/postcss.config.js": true,
         "**/next.config.mjs": true,
         "next.config.mjs": true,
         "**/README.md": true,
@@ -27,7 +27,23 @@
         "**/.gitignore": true,
         ".gitignore": true,
         "package.json": false,
-        "eslint.config.mjs": true
+        "eslint.config.mjs": true,
+        "**/*.code-workspace": true
     },
-    "explorerExclude.backup": {}
+    "explorerExclude.backup": {},
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "nutrition",
+            "database": "nutrition",
+            "username": "alanw"
+        }
+    ]
 }
