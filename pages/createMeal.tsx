@@ -9,6 +9,9 @@ import { OptionProps, GroupBase, MenuListProps } from 'react-select';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
+
+/*An interface in TypeScript is a way to define a contract for a certain structure of an object.
+*/
 interface Option {
   label: string;
   value: string;   }
@@ -43,56 +46,77 @@ interface NewMeal {
   totals: TotalsRow;
 }
 
+/* 
+Custom styles for the dropdown menu.
+ */
 const customStyles = {
   menuList: (provided: CSSObject, state: MenuListProps<unknown, boolean, GroupBase<unknown>>) => ({
     ...provided,
-    backgroundColor: '#59a184', // color for the dropdown list
-    color: '#f3f74d', //  color for the font
+    backgroundColor: '#59a184', 
+    color: '#f3f74d', 
   })
 }
 
 const CreateMeal = () => {
-  const [selectedValue, setSelectedValue] = useState<Option | null>(null);
+  const [selectedValue, setSelectedValue]         = useState<Option | null>(null);
   const [selectedRowOption, setSelectedRowOption] = useState<Option | null>(null);
-  const [selectedRow, setSelectedRow] = useState<NutritionItem | null>(null);
+  const [selectedRow, setSelectedRow]   = useState<NutritionItem | null>(null);
   const [selectedRows, setSelectedRows] = useState<NutritionItem[]>([]);
-  const [options, setOptions] = useState<Option[]>([]);
+  const [options, setOptions]           = useState<Option[]>([]);
 
-  const [data, setData] = useState<NutritionItem[]>([]);
+  const [data, setData]               = useState<NutritionItem[]>([]);
   const [portionSize, setPortionSize] = useState<number>(0);
   const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
 
-  const [nomen, setNomen] = useState<string>('');
-  const [datex, setDatex] = useState<Date>(new Date());
+  const [nomen, setNomen]             = useState<string>('');
+  const [datex, setDatex]             = useState<Date>(new Date());
   
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage]         = useState<string>('');
 
-  const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
-    return rows.reduce((totals, row) => {
-      return {
-        portion_tot:      totals.portion_tot + (row.portion || 0),
-        calories_tot:     totals.calories_tot + (row.calories || 0),
-        carb_tot:         totals.carb_tot + (row.carb || 0),
-        fat_tot:          totals.fat_tot + (row.fat || 0),
-        protein_tot:      totals.protein_tot + (row.protein || 0),
-        fiber_tot:        totals.fiber_tot + (row.fiber || 0),
-      };
-    }, 
-    {
-      portion_tot: 0,
-      calories_tot: 0,
-      carb_tot: 0,
-      fat_tot: 0,
-      protein_tot: 0, // corrected here
-      fiber_tot: 0,
-    }
-  );
+
+/**
+ *  calculateTotals is a function declaration.
+* It defines a function that takes an array of NutritionItem (see interface) objects 
+*  and returns a TotalsRow object. This function uses the reduce method 
+* to accumulate totals from the NutritionItem objects.
+*/
+
+const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
+    return rows.reduce(
+      (totals, row) => 
+        {
+          return {
+            portion_tot:      totals.portion_tot  + (row.portion || 0),
+            calories_tot:     totals.calories_tot + (row.calories || 0),
+            carb_tot:         totals.carb_tot     + (row.carb || 0),
+            fat_tot:          totals.fat_tot      + (row.fat || 0),
+            protein_tot:      totals.protein_tot  + (row.protein || 0),
+            fiber_tot:        totals.fiber_tot    + (row.fiber || 0),
+          };
+        }, 
+        {
+          portion_tot: 0,
+          calories_tot: 0,
+          carb_tot: 0,
+          fat_tot: 0,
+          protein_tot: 0, // corrected here
+          fiber_tot: 0,
+        }
+    );
   };
 
+
+
+  
+  /**
+   * The second const, totals, is a variable declaration. It calls the calculateTotals function
+ with selectedRows as the argument and assigns the result to the totals variable.
+   */
   const totals = calculateTotals(selectedRows);
 
+
   useEffect(() => {
-    fetch('/api/nutrition')   //don't erase - this is just the nutrition json
+    fetch('/api/nutrition')   //don't erase - this is the nutrition json
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -111,14 +135,13 @@ const CreateMeal = () => {
       });
   }, []);
 
+
   useEffect(() => {
-    
     if (selectedValue) {
       const selectedRow = data.find(item => item.desc_1 === selectedValue.value);
       setSelectedRow(selectedRow || null);
     }
   }, [selectedValue, data]);
-
 
 
   useEffect(() => {
@@ -129,12 +152,15 @@ const CreateMeal = () => {
     }
   }, [selectedRowOption, data]);
 
+
+
   const handleRowSelect = (row: NutritionItem) => {
     setSelectedRow(row);
   };
 
 
-
+  /*Updates the selected row with the specified portion size and recalculates the nutritional values.   
+  */
   const handleApplyPortion = () => {
     if (selectedRow) {
       const updatedRow = {
@@ -160,8 +186,6 @@ const CreateMeal = () => {
     newSelectedRows.splice(index, 1);
     setSelectedRows(newSelectedRows);
   };
-
-
 
 
   const handleSaveAsMeal = async () => {
@@ -194,7 +218,7 @@ const CreateMeal = () => {
       
     } catch (error) {
       if (error instanceof Error) {
-        setMessage(error.message);
+        setMessage(error.message);  //(property) Error.message: string
       } else {
         setMessage('An error occurred');
       }
