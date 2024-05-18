@@ -10,7 +10,8 @@ import { OptionProps, GroupBase, MenuListProps } from 'react-select';
 const Select = dynamic(() => import('react-select'), { ssr: false });
 
 
-/*An interface in TypeScript is a way to define a contract for a certain structure of an object.
+/*An interface in TypeScript is a way to define a contract for a certain
+ structure of an object.
 */
 interface Option {
   label: string;
@@ -39,7 +40,7 @@ interface TotalsRow {
   fiber_tot: number;
 }
 
-interface NewMeal {
+interface NewMeal {    
   name: string;
   date: Date;
   items: NutritionItem[];
@@ -180,7 +181,6 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
 
 
 
-
   const handleDeleteRow = (index: number) => {
     const newSelectedRows = [...selectedRows];
     newSelectedRows.splice(index, 1);
@@ -189,7 +189,7 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
 
 
   const handleSaveAsMeal = async () => {
-    const newMeal: NewMeal = {
+    const newMeal: NewMeal = {             /*NewMeal is an interface */
       name: nomen,
       date: datex,
       items: selectedRows,
@@ -199,19 +199,13 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
     try {
       const response = await fetch('/api/meal_related/saveMeal', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json',},
         body: JSON.stringify(newMeal),
       });
   
-
-      if (!response.ok) {
-        throw new Error('Response is not OK');
-      }
+      if (!response.ok) { throw new Error('Response is not OK'); }
   
       const result = await response.json();
-
   
       setMessage(result.message);
       setSelectedRows([]); // Clear the selected rows
@@ -280,67 +274,67 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
         />
       </div>
 
-      {selectedValue && (
-        <table
-          style={{
-            textAlign: 'right',
-            width: '75vw',
-            margin: "25px",
-            backgroundColor: "#301e1e",
-            border: "1px solid #000",
-          }}>
-          <thead
-            style={{
-              width: '75vw',
-              textAlign: 'right',
-              margin: "25px",
-              backgroundColor: "#f2f2f2",
-              border: "1px solid #000",
-            }}>
-            <tr>
-              <th> Select </th>
-              <th>Desc 1</th>
-              <th>Desc 2</th>
-              <th>Portion</th>
-              <th>Calories</th>
-              <th>Carb</th>
-              <th>Fat</th>
-              <th>Protein</th>
-              <th>Fiber</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.filter(item => item.desc_1 === selectedValue.value).map((item, index) => (
-              <tr key={index}>
-               <td style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <input
-                    type="checkbox"
-                    style={{ transform: "scale(2)" }}
-                    checked={checkedRows.has(index)}
-                    onChange={() => {
-                      handleRowSelect(item);
-                      if (checkedRows.has(index)) {
-                        checkedRows.delete(index);
-                      } else {
-                        checkedRows.add(index);
-                      }
-                      setCheckedRows(new Set(checkedRows));
-                    }}
-                  />
-                </td>
-                <td>{item.desc_1}</td>
-                <td>{item.desc_2}</td>
-                <td>{item.portion}</td>
-                <td>{item.calories}</td>
-                <td>{item.carb}</td>
-                <td>{item.fat}</td>
-                <td>{item.protein}</td>
-                <td>{item.fiber}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          {selectedValue && (
+            <table
+              style={{
+                textAlign: 'right',
+                width: '75vw',
+                margin: "25px",
+                backgroundColor: "#301e1e",
+                border: "1px solid #000",
+              }}>
+              <thead
+                style={{
+                  width: '75vw',
+                  textAlign: 'right',
+                  margin: "25px",
+                  backgroundColor: "#f2f2f2",
+                  border: "1px solid #000",
+                }}>
+                <tr>
+                  <th> Select </th>
+                  <th>Desc 1</th>
+                  <th>Desc 2</th>
+                  <th>Portion</th>
+                  <th>Calories</th>
+                  <th>Carb</th>
+                  <th>Fat</th>
+                  <th>Protein</th>
+                  <th>Fiber</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.filter(item => item.desc_1 === selectedValue.value).map((item, index) => (
+                  <tr key={index}>
+                  <td style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <input
+                        type="checkbox"
+                        style={{ transform: "scale(2)" }}
+                        checked={checkedRows.has(index)}
+                        onChange={() => {
+                          handleRowSelect(item);
+                          if (checkedRows.has(index)) {
+                            checkedRows.delete(index);
+                          } else {
+                            checkedRows.add(index);
+                          }
+                          setCheckedRows(new Set(checkedRows));
+                        }}
+                      />
+                    </td>
+                    <td>{item.desc_1}</td>
+                    <td>{item.desc_2}</td>
+                    <td>{item.portion}</td>
+                    <td>{item.calories}</td>
+                    <td>{item.carb}</td>
+                    <td>{item.fat}</td>
+                    <td>{item.protein}</td>
+                    <td>{item.fiber}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
 
       <div className="w-88 m-9 bg-purple-900 border-black">

@@ -40,8 +40,16 @@ export default function Home() {
           }
         `}</style>
 
-      <div id="homepage" style={{ width: '20vw', height: '25vh' }} >
-        <h1 className="header">  Welcome to my Nutrition App  </h1>
+
+      <h1 className="header">  Welcome to my Nutrition App  </h1>
+
+
+      <div id="homepage" style={{ 
+        width: 'auto', 
+        height: '40vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-around' }} >
 
         <div id="image1" >
           <Image
@@ -56,35 +64,39 @@ export default function Home() {
                 marginRight:'auto'
               }}
           />
+        </div>  
 
-        </div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'}}>
 
-        <div className='button-container'>
-          <Link href="/createMeal">
-            <button className="button">
-              Create a Meal
-            </button>
-          </Link>
-        </div>
-
-        <div className='button-container'>
-          <Link href="/CreateMealsInRange">
-            <button className="button">
-              Meal Nutrition Totals
-            </button>
-          </Link>
-        </div>
-
-        <div className='button-container'>
-            <Link href="/DatePickerTest">
+          <div className='button-container'>
+            <Link href="/createMeal">
               <button className="button">
-                Test DatePicker
+                Create a Meal
               </button>
             </Link>
           </div>
-        
+
+          <div className='button-container'>
+            <Link href="/CreateMealsInRange">
+              <button className="button">
+                Meal Nutrition Totals
+              </button>
+            </Link>
+          </div>
+
+          <div className='button-container'>
+              <Link href="/DatePickerTest">
+                <button className="button">
+                  Test DatePicker
+                </button>
+              </Link>
+          </div>
+        </div>
       </div>
+    </div>
   </div>
-</div>
   );
 }
