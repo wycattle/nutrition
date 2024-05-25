@@ -1,140 +1,53 @@
 // pages/createMeal.tsx
 import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
+import Select from 'react-dropdown-select';
 import * as R from 'ramda';
+import axios from 'axios';
+
+import { Option, MealItem, TotalsRow, NewMeal, NewRecipe } from './interfaces';
+import { Meal } from '../lib/types';
 
 import Link from 'next/link';
-import { CSSObject } from '@emotion/react';
-import { OptionProps, GroupBase, MenuListProps } from 'react-select';
-
-const Select = dynamic(() => import('react-select'), { ssr: false });
-
-
-/*An interface in TypeScript is a way to define a contract for a certain
- structure of an object.
-*/
-interface Option {
-  label: string;
-  value: string;   }
-
-interface NutritionItem {
-    desc_1: string;
-    desc_2: string;
-    portion: number | undefined;
-    calories: number | undefined;
-    carb: number | undefined;
-    fat: number | undefined;
-    protein: number | undefined;
-    fiber: number | undefined;
-    GI: number | undefined;
-    note: string;
-    date: Date;
-  }
- 
-interface TotalsRow {
-  portion_tot: number;
-  calories_tot: number;
-  carb_tot: number;
-  fat_tot: number;
-  protein_tot: number;
-  fiber_tot: number;
-}
-
-interface NewMeal {    
-  name: string;
-  date: Date;
-  items: NutritionItem[];
-  totals: TotalsRow;
-}
-
-/* 
-Custom styles for the dropdown menu.
- */
-const customStyles = {
-  menuList: (provided: CSSObject, state: MenuListProps<unknown, boolean, GroupBase<unknown>>) => ({
-    ...provided,
-    backgroundColor: '#59a184', 
-    color: '#f3f74d', 
-  })
-}
 
 const CreateMeal = () => {
   const [selectedValue, setSelectedValue]         = useState<Option | null>(null);
   const [selectedRowOption, setSelectedRowOption] = useState<Option | null>(null);
-  const [selectedRow, setSelectedRow]   = useState<NutritionItem | null>(null);
-  const [selectedRows, setSelectedRows] = useState<NutritionItem[]>([]);
+  const [selectedRow, setSelectedRow]   = useState<MealItem | null>(null);
+  const [selectedRows, setSelectedRows] = useState<MealItem[]>([]);
   const [options, setOptions]           = useState<Option[]>([]);
 
-  const [data, setData]               = useState<NutritionItem[]>([]);
+  const [data, setData]               = useState<MealItem[]>([]);
   const [portionSize, setPortionSize] = useState<number>(0);
   const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
-
-  const [nomen, setNomen]             = useState<string>('');
+  const [name, setName]               = useState<string>('');
   const [datex, setDatex]             = useState<Date>(new Date());
-  
+
+  const[totals, setTotals]            = useState(
+    {
+    portionTot: 0,
+    caloriesTot: 0,
+    carbTot: 0,
+    fatTot: 0,
+    proteinTot: 0,
+    fiberTot: 0,
+  });
   const [message, setMessage]         = useState<string>('');
 
 
-/**
- *  calculateTotals is a function declaration.
-* It defines a function that takes an array of NutritionItem (see interface) objects 
-*  and returns a TotalsRow object. This function uses the reduce method 
-* to accumulate totals from the NutritionItem objects.
-*/
-
-const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
-    return rows.reduce(
-      (totals, row) => 
-        {
-          return {
-            portion_tot:      totals.portion_tot  + (row.portion || 0),
-            calories_tot:     totals.calories_tot + (row.calories || 0),
-            carb_tot:         totals.carb_tot     + (row.carb || 0),
-            fat_tot:          totals.fat_tot      + (row.fat || 0),
-            protein_tot:      totals.protein_tot  + (row.protein || 0),
-            fiber_tot:        totals.fiber_tot    + (row.fiber || 0),
-          };
-        }, 
-        {
-          portion_tot: 0,
-          calories_tot: 0,
-          carb_tot: 0,
-          fat_tot: 0,
-          protein_tot: 0, // corrected here
-          fiber_tot: 0,
-        }
-    );
-  };
-
-
-
-  
-  /**
-   * The second const, totals, is a variable declaration. It calls the calculateTotals function
- with selectedRows as the argument and assigns the result to the totals variable.
-   */
-  const totals = calculateTotals(selectedRows);
-
-
+  // This useEffect is used to fetch data from the '/api/nutrition' endpoint
   useEffect(() => {
-    fetch('/api/nutrition')   //don't erase - this is the nutrition json
+    axios.get('/api/nutrition')
       .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(fetchedData => {
-        setData(fetchedData || []);          //the 'data' var holds the state value
+        setData(response.data || []);
   
-         // Use Ramda's uniq and map functions to create unique options
-      const uniqueValues = R.uniq(R.map((item: NutritionItem) => item.desc_1, fetchedData));
-      setOptions(R.map((value: string) => ({ label: value, value }), uniqueValues));
-    })
+        const uniqueValues = R.uniq(R.map((item: MealItem) => item.desc_1, response.data));
+        setOptions(R.map((value: string) => ({ label: value, value }), uniqueValues));
+      })
       .catch(error => {
         console.error('Stack:', error.stack);
       });
   }, []);
+  
 
 
   useEffect(() => {
@@ -155,7 +68,7 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
 
 
 
-  const handleRowSelect = (row: NutritionItem) => {
+  const handleRowSelect = (row: MealItem) => {
     setSelectedRow(row);
   };
 
@@ -167,59 +80,77 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
       const updatedRow = {
         ...selectedRow,
         portion: portionSize,
-        calories: (selectedRow.calories || NaN) * portionSize,
-        carb: (selectedRow.carb || NaN) * portionSize,
-        fat: (selectedRow.fat || NaN) * portionSize,
-        protein: (selectedRow.protein || NaN) * portionSize,
-        fiber: (selectedRow.fiber || NaN) * portionSize,
+        calories: (selectedRow.calories || 0) * portionSize,
+        carb: (selectedRow.carb || 0) * portionSize,
+        fat: (selectedRow.fat || 0) * portionSize,
+        protein: (selectedRow.protein || 0) * portionSize,
+        fiber: (selectedRow.fiber || 0) * portionSize,
       };
       setSelectedRow(updatedRow);
       setSelectedRows(prevRows => [...prevRows, updatedRow]);
       setCheckedRows(new Set());
-    }
-  };
-
+    }};
 
 
   const handleDeleteRow = (index: number) => {
     const newSelectedRows = [...selectedRows];
     newSelectedRows.splice(index, 1);
-    setSelectedRows(newSelectedRows);
-  };
+    setSelectedRows(newSelectedRows);        };
 
 
-  const handleSaveAsMeal = async () => {
-    const newMeal: NewMeal = {             /*NewMeal is an interface */
-      name: nomen,
-      date: datex,
-      items: selectedRows,
-      totals: totals,
+    const handleSaveAsMeal = () => {
+      const currentDate = new Date();
+      const newMeal: NewMeal = {
+        name: name,
+        datex: currentDate,
+        items: selectedRows,
+      };
+    
+      axios.post('/api/meal_related/create_meal', newMeal)
+        .then(response => {
+          setMessage(response.data.message);
+          const createdMeal = response.data;
+          setTotals(createdMeal.totals);
+
+          setMessage('Meal created successfully');
+        })
+        .catch(error => {
+          if (axios.isAxiosError(error)) {
+            setMessage(error.message);
+          } else {
+            setMessage('An error occurred');
+          }
+        })
     };
-  
-    try {
-      const response = await fetch('/api/meal_related/saveMeal', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json',},
-        body: JSON.stringify(newMeal),
-      });
-  
-      if (!response.ok) { throw new Error('Response is not OK'); }
-  
-      const result = await response.json();
-  
-      setMessage(result.message);
-      setSelectedRows([]); // Clear the selected rows
-      
-    } catch (error) {
-      if (error instanceof Error) {
-        setMessage(error.message);  //(property) Error.message: string
-      } else {
-        setMessage('An error occurred');
-      }
-    }
-  }
 
 
+
+    const handleSaveAsRecipe = () => 
+      {
+      const currentDate = new Date();
+      const newRecipe: NewRecipe = {
+        name: name,
+        datex: currentDate,
+        items: selectedRows,
+      };
+
+      axios.post('/api/recipe_related/create_recipe', newRecipe)
+        .then(response => {
+          setMessage(response.data.message);
+          setSelectedRows([]);
+          setMessage('Recipe created successfully');
+        }
+      )
+        .catch(error => 
+          {
+          if (axios.isAxiosError(error)) {
+            setMessage(error.message);
+          } else {
+            setMessage('An error occurred');
+          }
+        }
+      );
+    };
 
 
   return ( 
@@ -230,7 +161,7 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
         </Link>
       </div>
 
-      <div id='select food-group container'
+      <div id='select-food-group-container'
           style={{
             width: '25%', 
             margin: 'auto', 
@@ -240,7 +171,7 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
             padding: '0.25rem', 
           }}
       >
-        <label htmlFor=" Select a food group " 
+        <label htmlFor="select-food-group-item"   //The htmlFor attribute in HTML is used to associate a <label> with a form control like an <input>, <textarea>, or <select>//
           style={{
             display: 'block',
             marginBottom: '10px',
@@ -250,28 +181,17 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
              Select a food group
         </label>
 
-        <Select id="select food-group item"
+      <div id="select-food-group-item">
+        <Select 
           options={options}
-          onChange={(newValue: unknown | null, _actionMeta) => {
-
-            setSelectedValue(newValue as Option | null);
+          onChange={(newValue) => {
+            setSelectedValue(newValue[0]);
           }}
-          theme={(theme) => ({
-            ...theme,
-            colors: {
-              ...theme.colors, // ... is the unpack operator
-              neutral0: "#6b555e", //border around small box with down caret next to it
-            },
-          })}
-          styles={{
-            ...customStyles, 
-            option: (provided: CSSObject, state: OptionProps<unknown, boolean, GroupBase<unknown>>) => ({
-              ...provided,
-              color: state.isSelected ? '#dbbecc' : '#292426',  // light pink if selected, blackish if not selected
-            })
-          }}
-       
+          values={selectedValue ? [selectedValue] : []}
         />
+      </div>
+
+
       </div>
 
           {selectedValue && (
@@ -371,51 +291,52 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
 
       
       <h2>Selected Rows </h2>
-<table
-  id="tableForSelectedRows"
-  className='w-screen m-9 bg-gray-800 border border-black'>
-  <thead className='m-9 bg-blue-900 border border-black' >
-    <tr>
-      <th className='text-left'>Desc 1</th>
-      <th className='text-left'>Desc 2</th>
-      <th className='text-right'>Portion </th>
-      <th className='text-right'>Calories</th>
-      <th className='text-right'>Carb</th>
-      <th className='text-right'>Fat</th>
-      <th className='text-right'>Protein</th>
-      <th className='text-right'>Fiber</th>
-      <th className='text-right'>Datex</th>
-    </tr>
-  </thead>
-  <tbody>
-    {selectedRows.map((item, index) => (
-      <tr key={index}>
-        <td className='text-left'>{item.desc_1}</td>
-        <td className='text-left'>{item.desc_2}</td>
-        <td className='text-right'>{item.portion}</td>
-        <td className='text-right'>{item.calories}</td>
-        <td className='text-right'>{item.carb}</td>
-        <td className='text-right'>{item.fat}</td>
-        <td className='text-right'>{item.protein}</td>
-        <td className='text-right'>{item.fiber}</td>
-        <td className='text-right'><button onClick={() => handleDeleteRow(index)}>Delete</button></td>
-      </tr>
-    ))}
+        
+      <table
+        id="tableForSelectedRows"
+        className='w-screen m-9 bg-gray-800 border border-black'>
+        <thead className='m-9 bg-blue-900 border border-black' >
+          <tr>
+            <th className='text-left'>Desc 1</th>
+            <th className='text-left'>Desc 2</th>
+            <th className='text-right'>Portion </th>
+            <th className='text-right'>Calories</th>
+            <th className='text-right'>Carb</th>
+            <th className='text-right'>Fat</th>
+            <th className='text-right'>Protein</th>
+            <th className='text-right'>Fiber</th>
+            <th className='text-right'>Datex</th>
+          </tr>
+        </thead>
+        <tbody>
+          {selectedRows.map((item, index) => (
+            <tr key={index}>
+              <td className='text-left'>{item.desc_1}</td>
+              <td className='text-left'>{item.desc_2}</td>
+              <td className='text-right'>{item.portion}</td>
+              <td className='text-right'>{item.calories}</td>
+              <td className='text-right'>{item.carb}</td>
+              <td className='text-right'>{item.fat}</td>
+              <td className='text-right'>{item.protein}</td>
+              <td className='text-right'>{item.fiber}</td>
+              <td className='text-right'><button onClick={() => handleDeleteRow(index)}>Delete</button></td>
+            </tr>
+          ))}
 
-    {/* Totals row */}
-    <tr>
-      <td>Totals</td>
-      <td></td>
-      <td className='text-right'>{totals.portionTotal}</td>
-      <td className='text-right'>{totals.caloriesTotal}</td>
-      <td className='text-right'>{totals.carbTotal}</td>
-      <td className='text-right'>{totals.fatTotal}</td>
-      <td className='text-right'>{totals.proteinTotal}</td>
-      <td className='text-right'>{totals.fiberTotal}</td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
+          {/* Totals row */}
+          <tr>
+            <td>Totals</td>
+            <td></td>
+            <td className='text-right'>{totals?.portionTot}</td>
+            <td className='text-right'>{totals?.caloriesTot}</td>
+            <td className='text-right'>{totals?.carbTot}</td>
+            <td className='text-right'>{totals?.fatTot}</td>
+            <td className='text-right'>{totals?.proteinTot}</td>
+            <td className='text-right'>{totals?.fiberTot}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
 
 
       <div>
@@ -424,12 +345,12 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
             id='nameItBox'
             className='input'
             type="text" 
-            value={nomen} 
-            onChange={e => setNomen(e.target.value)} 
+            value={name} 
+            onChange={e => setName(e.target.value)} 
             placeholder="fill me in" 
           />
 
-          <style jsx>{`
+          <style >{`
             .label {
               margin-right: 10px;
             }
@@ -448,7 +369,7 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
             style={{
               width: '15vw',
               margin: '25px ',
-              textAlign: 'center',
+              textAlign: 'left',
               fontSize: '16px',
               border: '2px solid #efc6ec',
               backgroundColor: "#694242",
@@ -460,12 +381,30 @@ const calculateTotals = (rows: NutritionItem[]): TotalsRow => {
           </button>
       </div>
 
+      <div>
+          <button
+            id='saveAsRecipeButton'
+            style={{
+              width: '15vw',
+              margin: '25px ',
+              textAlign: 'center',
+              fontSize: '16px',
+              border: '2px solid #efc6ec',
+              backgroundColor: "#694242",
+              padding: '5px',
+            }}
+            onClick={handleSaveAsRecipe} 
+            >
+            Save as Recipe
+          </button>
+      </div>
+
 
       {message && <p>{message}</p>}
 
 
       </div>
       
-  );
-}
+)};
+
  export default CreateMeal;
