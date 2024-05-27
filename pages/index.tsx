@@ -1,12 +1,14 @@
 // pages/index.tsx
 import Link from 'next/link';
 import Image from 'next/image';
-import React, { useState } from 'react';
-// import CreateMealInRange from './CreateMealsInRange';
+import React from 'react';
 import Head from 'next/head';
 
 
-export default function Home() {
+export default function Home({ currentDate}) {
+
+
+
   return (
   <div>
     <Head>
@@ -15,7 +17,7 @@ export default function Home() {
      
 
   <div className="outerbox">
-        <style jsx>{`
+        <style >{`
           .outerbox {
             width: 80vw;
             height: 100vh;
@@ -42,6 +44,7 @@ export default function Home() {
 
 
       <h1 className="header">  Welcome to my Nutrition App  </h1>
+
 
 
       <div id="homepage" style={{ 
@@ -76,6 +79,17 @@ export default function Home() {
           margin: '5px'
           }}>
 
+
+                
+          <h2 id='timedisplay' style={{paddingBottom: '30px', paddingLeft:'10px'}}>today is:&nbsp;&nbsp;    
+            {new Intl.DateTimeFormat('en-US', { 
+            dateStyle: 'medium', 
+            // timeStyle: 'short', 
+            timeZone: 'Asia/Bangkok'  
+          }).format(new Date(currentDate))
+            } 
+          </h2>
+
           <div className='button-container' style={{ margin: '10px', backgroundColor: '#3a3140', padding: '10px', borderRadius: '5px' }}>
             <Link href="/createMeal">
               <button className="button">
@@ -107,4 +121,10 @@ export default function Home() {
     </div>
   </div>
   );
+}
+
+export async function getServerSideProps() 
+{
+  const currentDate = new Date().toString();
+  return { props: { currentDate } };
 }
