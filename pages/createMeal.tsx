@@ -4,8 +4,8 @@ import Select from 'react-dropdown-select';
 import * as R from 'ramda';
 import axios from 'axios';
 
-import { Option, MealItem, TotalsRow, NewMeal, NewRecipe } from './interfaces';
-import { Meal } from '../lib/types';
+import { Option, MealItem, NewMeal, NewRecipe } from './interfaces';
+// import { MealType } from '../lib/meal.types';
 
 import Link from 'next/link';
 
@@ -34,7 +34,7 @@ const CreateMeal = () => {
   const [message, setMessage]         = useState<string>('');
 
 
-  // This useEffect is used to fetch data from the '/api/nutrition' endpoint
+  // This useEffect is used to fetch nutritionData from the '/api/nutrition' endpoint
   useEffect(() => {
     axios.get('/api/nutrition')
       .then(response => {
@@ -55,7 +55,8 @@ const CreateMeal = () => {
       const selectedRow = data.find(item => item.desc_1 === selectedValue.value);
       setSelectedRow(selectedRow || null);
     }
-  }, [selectedValue, data]);
+  }, [selectedValue, data]
+);
 
 
   useEffect(() => {
@@ -98,33 +99,39 @@ const CreateMeal = () => {
     setSelectedRows(newSelectedRows);        };
 
 
-    const handleSaveAsMeal = () => {
-      const currentDate = new Date();
-      const newMeal: NewMeal = {
-        name: name,
-        datex: currentDate,
-        items: selectedRows,
-      };
+  const handleSaveAsMeal = () => 
+    {
+    const currentDate = new Date();
     
-      axios.post('/api/meal_related/create_meal', newMeal)
-        .then(response => {
-          setMessage(response.data.message);
-          const createdMeal = response.data;
-          setTotals(createdMeal.totals);
+    //create an instance of NewMeal (defined in interface)
+    const newMeal: NewMeal = 
+    {
+      name: name,
+      datex: currentDate,
+      items: selectedRows,
+    };
+  
+    axios.post('/api/meal_related/create_meal', newMeal)
+      .then(response => 
+        {
+        setMessage(response.data.message);
+        const createdMeal = response.data;
+        setTotals(createdMeal.totals);
 
-          setMessage('Meal created successfully');
-        })
-        .catch(error => {
-          if (axios.isAxiosError(error)) {
-            setMessage(error.message);
-          } else {
-            setMessage('An error occurred');
-          }
-        })
+        setMessage('Meal created successfully');
+      })
+      .catch(error => 
+        {
+        if (axios.isAxiosError(error)) {
+          setMessage(error.message);
+        } else {
+          setMessage('An error occurred');
+        }
+      })
     };
 
 
-
+// need this here since the save Recipe button is on this page
     const handleSaveAsRecipe = () => 
       {
       const currentDate = new Date();

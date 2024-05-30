@@ -17,7 +17,7 @@
     "sourceMap": true,
     "plugins": [{ "name": "next"  } ],
   },
-  "files": ["lib/mealDB.ts"],
+  "files": ["pages/service/meal.service.ts"],
   "include": [],
   "exclude": ["node_modules", "pages/_app.js"]
 }

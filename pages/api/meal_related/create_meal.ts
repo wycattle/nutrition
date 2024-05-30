@@ -1,18 +1,18 @@
 //pages/api/meal_related/create_meal.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { Meal } from '../../../lib/types';
-import mealDB_instance from '../../../lib/mealDB';
+import { MealType } from '../../../lib/meal.types';
+import meal_instance from '../../service/meal.service';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const mealDB = await mealDB_instance;
+  const mealDB = await meal_instance;
 
 
   try {
     if (req.method === 'POST') {
       const { name, datex, items } = req.body;
 
-      const mealx: Meal = {    //meal is an object, which you're creating from the data sent in the request body (req.body). Meal is a 'type'
+      const meal: MealType = {    //meal is an object, which you're creating from the data sent in the request body (req.body). Meal is a 'type'
         name,
         datex,
         items,
@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
 
       try {
-        const newMeal = await mealDB.createMeal(mealx);
+        const newMeal = await mealDB.createMeal(meal);
         res.status(200).json({ meal: newMeal }); 
       } catch (error) {
         console.error('Error in createMeal:', error);
