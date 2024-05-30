@@ -55,3 +55,11 @@ sqlite.session.sql
 prisma/migrations/migration_lock.toml
 prisma/migrations/20240513012427_init/migration.sql
 prisma/migrations/20240513075325_add_portion_tot/migration.sql
+pages/interfaces.ts
+pages/react-dropdown-select.d.ts
+pages/DatePickerTest.tsx
+pages/createRecipe.tsx
+lib/mealDB.js.map
+lib/mealDB.js
+.vscode/settings.json
+npm
