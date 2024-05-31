@@ -13,15 +13,14 @@ export type RecipeItem = {
     note: string;
     };
 
-export type Recipe = {
+export type RecipeType = {
     name: string;
-    datex: Date;
+    recipeId: number;
     items: RecipeItem[];
     totals: RecipeTotal[];
     };
 
 export type RecipeTotal = {
-    datex: Date;
     portionTot: number;
     caloriesTot: number;
     carbTot: number;
@@ -33,7 +32,6 @@ export type RecipeTotal = {
 export type TotalRow = {
     id: number;
     // RecipeId: number;
-    datex: Date;
     portionTot: number;
     caloriesTot: number;
     carbTot: number;
@@ -45,7 +43,6 @@ export type TotalRow = {
 export type Per100 = {
     id: number;
     // RecipeId: number;
-    datex: Date;
     portionTot: number;
     caloriesTot: number;
     carbTot: number;

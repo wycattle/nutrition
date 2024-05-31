@@ -1,7 +1,7 @@
 //pages/api/meal_related/create_meal.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { MealType } from '../../../lib/meal.types';
+import { MealType } from '../../../lib/types/meal.types';
 import meal_instance from '../../service/meal.service';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
       const { name, datex, items } = req.body;
 
-      const meal: MealType = {    //meal is an object, which you're creating from the data sent in the request body (req.body). Meal is a 'type'
+      const meal: MealType = {    
         name,
         datex,
         items,

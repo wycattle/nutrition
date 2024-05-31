@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import axios from 'axios';
-import { DailyTotals, TotalsSum } from '../lib/meal.types';
+import { DailyTotals, TotalsSum } from '../lib/types/meal.types';
 import Link from 'next/link';
 
 const TotalMeals = () => {

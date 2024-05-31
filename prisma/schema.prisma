@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,23 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model Meal {
-  id     Int     @id @default(autoincrement())
+model mealTable {
+  id     Int             @id @default(autoincrement())
   name   String
-  date   DateTime
   items  Json
-  totals Totalrow[] // one-to-many relation
+  datex  DateTime
+  totals totalRowTable[]
+  @@map("meal")
 }
 
-model Totalrow {
-  id          Int     @id @default(autoincrement())
+model totalRowTable {
+  id          Int       @id @default(autoincrement())
   mealId      Int
-  portionTot  Float   @default(0)
   caloriesTot Float
   carbTot     Float
   fatTot      Float
   proteinTot  Float
   fiberTot    Float
-  meal        Meal    @relation(fields: [mealId], references: [id])
+  portionTot  Float     @default(0)
+  datex       DateTime
+  meal        mealTable @relation(fields: [mealId], references: [id])
+
+  @@index([mealId], map: "totalrow_mealId_fkey")
+  @@map("totalrow")
+}
+
+
+model recipeTable {
+  id     Int             @id @default(autoincrement())
+  name   String
+  items  Json
+  totals totalRowTableRecipe[]
+  @@map("recipe")
+}
+
+model totalRowTableRecipe {
+  id          Int       @id @default(autoincrement())
+  recipeId      Int
+  caloriesTot Float
+  carbTot     Float
+  fatTot      Float
+  proteinTot  Float
+  fiberTot    Float
+  portionTot  Float     @default(0)
+  recipe        recipeTable @relation(fields: [recipeId], references: [id])
+
+  @@index([recipeId], map: "totalRowTableRecipeId_fkey")
+  @@map("totalrowRecipe")
 }

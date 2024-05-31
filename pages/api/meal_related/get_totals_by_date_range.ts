@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const meals = await meal.getTotalsByDateRange(new Date(startDate), new Date(endDate));
-    console.log ('api-  data........', meals)
+    console.log ('api-data for meal.getTotalsByDateRange:', meals)
     res.status(200).json(meals);
   } catch (error) {
     console.error('Error in getTotalsByDateRange:', error);

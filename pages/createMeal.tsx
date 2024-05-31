@@ -5,7 +5,7 @@ import * as R from 'ramda';
 import axios from 'axios';
 
 import { Option, MealItem, NewMeal, NewRecipe } from './interfaces';
-// import { MealType } from '../lib/meal.types';
+// import { MealType } from '../lib/types/meal.types';
 
 import Link from 'next/link';
 
@@ -81,11 +81,11 @@ const CreateMeal = () => {
       const updatedRow = {
         ...selectedRow,
         portion: portionSize,
-        calories: (selectedRow.calories || 0) * portionSize,
-        carb: (selectedRow.carb || 0) * portionSize,
-        fat: (selectedRow.fat || 0) * portionSize,
-        protein: (selectedRow.protein || 0) * portionSize,
-        fiber: (selectedRow.fiber || 0) * portionSize,
+        calories: (selectedRow.calories   || 0) * portionSize,
+        carb: (selectedRow.carb           || 0) * portionSize,
+        fat: (selectedRow.fat             || 0) * portionSize,
+        protein: (selectedRow.protein     || 0) * portionSize,
+        fiber: (selectedRow.fiber         || 0) * portionSize,
       };
       setSelectedRow(updatedRow);
       setSelectedRows(prevRows => [...prevRows, updatedRow]);
@@ -137,7 +137,6 @@ const CreateMeal = () => {
       const currentDate = new Date();
       const newRecipe: NewRecipe = {
         name: name,
-        datex: currentDate,
         items: selectedRows,
       };
 

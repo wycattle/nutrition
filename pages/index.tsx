@@ -103,9 +103,9 @@ export default function Home(props: HomeProps) {
             </div>
 
             <div className='button-container' style={{ margin: '10px', backgroundColor: '#3a3140', padding: '10px', borderRadius: '5px' }}>
-              <Link href="/TotalMeals">
+              <Link href="/RecipeViewModify">
                 <button className="button">
-                  Meal Aggregation
+                  View/Modify Recipes
                 </button>
               </Link>
             </div>
