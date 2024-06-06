@@ -4,7 +4,7 @@ import Select from 'react-dropdown-select';
 import * as R from 'ramda';
 import axios from 'axios';
 
-import { Option, MealItem, NewMeal, NewRecipe } from './interfaces';
+import { Option, IMeal, INewMeal, INewRecipe } from './interfaces';
 // import { MealType } from '../lib/types/meal.types';
 
 import Link from 'next/link';
@@ -12,11 +12,11 @@ import Link from 'next/link';
 const CreateMeal = () => {
   const [selectedValue, setSelectedValue]         = useState<Option | null>(null);
   const [selectedRowOption, setSelectedRowOption] = useState<Option | null>(null);
-  const [selectedRow, setSelectedRow]   = useState<MealItem | null>(null);
-  const [selectedRows, setSelectedRows] = useState<MealItem[]>([]);
+  const [selectedRow, setSelectedRow]   = useState<IMeal | null>(null);
+  const [selectedRows, setSelectedRows] = useState<IMeal[]>([]);
   const [options, setOptions]           = useState<Option[]>([]);
 
-  const [data, setData]               = useState<MealItem[]>([]);
+  const [data, setData]               = useState<IMeal[]>([]);
   const [portionSize, setPortionSize] = useState<number>(0);
   const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
   const [name, setName]               = useState<string>('');
@@ -40,7 +40,7 @@ const CreateMeal = () => {
       .then(response => {
         setData(response.data || []);
   
-        const uniqueValues = R.uniq(R.map((item: MealItem) => item.desc_1, response.data));
+        const uniqueValues = R.uniq(R.map((item: IMeal) => item.desc1, response.data));
         setOptions(R.map((value: string) => ({ label: value, value }), uniqueValues));
       })
       .catch(error => {
@@ -52,7 +52,7 @@ const CreateMeal = () => {
 
   useEffect(() => {
     if (selectedValue) {
-      const selectedRow = data.find(item => item.desc_1 === selectedValue.value);
+      const selectedRow = data.find(item => item.desc1 === selectedValue.value);
       setSelectedRow(selectedRow || null);
     }
   }, [selectedValue, data]
@@ -69,7 +69,7 @@ const CreateMeal = () => {
 
 
 
-  const handleRowSelect = (row: MealItem) => {
+  const handleRowSelect = (row: IMeal) => {
     setSelectedRow(row);
   };
 
@@ -104,7 +104,7 @@ const CreateMeal = () => {
     const currentDate = new Date();
     
     //create an instance of NewMeal (defined in interface)
-    const newMeal: NewMeal = 
+    const newMeal: INewMeal = 
     {
       name: name,
       datex: currentDate,
@@ -135,7 +135,7 @@ const CreateMeal = () => {
     const handleSaveAsRecipe = () => 
       {
       const currentDate = new Date();
-      const newRecipe: NewRecipe = {
+      const newRecipe: INewRecipe = {
         name: name,
         items: selectedRows,
       };
@@ -230,7 +230,7 @@ const CreateMeal = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.filter(item => item.desc_1 === selectedValue.value).map((item, index) => (
+                {data.filter(item => item.desc1 === selectedValue.value).map((item, index) => (
                   <tr key={index}>
                   <td style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <input
@@ -248,8 +248,8 @@ const CreateMeal = () => {
                         }}
                       />
                     </td>
-                    <td>{item.desc_1}</td>
-                    <td>{item.desc_2}</td>
+                    <td>{item.desc1}</td>
+                    <td>{item.desc2}</td>
                     <td>{item.portion}</td>
                     <td>{item.calories}</td>
                     <td>{item.carb}</td>
@@ -317,8 +317,8 @@ const CreateMeal = () => {
         <tbody>
           {selectedRows.map((item, index) => (
             <tr key={index}>
-              <td className='text-left'>{item.desc_1}</td>
-              <td className='text-left'>{item.desc_2}</td>
+              <td className='text-left'>{item.desc1}</td>
+              <td className='text-left'>{item.desc2}</td>
               <td className='text-right'>{item.portion}</td>
               <td className='text-right'>{item.calories}</td>
               <td className='text-right'>{item.carb}</td>
