@@ -19,7 +19,7 @@
         ".eslintrc.json": false,
         "**/.next": true,
         ".next": false,
-        ".vscode": true,
+        ".vscode": false,
         "tsconfig.json": false,
         "**/package-lock.json": true,
         "package-lock.json": true,
@@ -27,7 +27,7 @@
         "**/.gitignore": true,
         ".gitignore": true,
         "package.json": false,
-        "eslint.config.mjs": true,
+        "eslint.config.mjs": false,
         "**/*.code-workspace": true
     },
     "explorerExclude.backup": {},

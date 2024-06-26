@@ -1,22 +1,33 @@
 //pages/api/meal_related/create_meal.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { MealType } from '../../../lib/types/meal.types';
-import meal_instance from '../../service/meal.service';
+import { IMealAllData } from '../../interfaces.ts';
+import meal_instance from '../../service/meal_service.ts';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mealDB = await meal_instance;
+
+console.log('response: ', res)
 
 
   try {
     if (req.method === 'POST') {
       const { name, datex, items } = req.body;
 
-      const meal: MealType = {    
+      const meal: IMealAllData = {    
         name,
         datex,
-        items,
-        totals: [],
+        desc1,
+        desc2,
+        portion,
+        calories,
+        carb,
+        fat,
+        protein,
+        fiber,
+        GI
+        
+      ,
       };
 
       try {

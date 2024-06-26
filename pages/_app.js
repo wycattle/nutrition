@@ -1,11 +1,13 @@
-// pages/_app.tsx
-import '../styles/styles.css'
+import '../styles/styles.css';
 import 'react-datepicker/dist/react-datepicker.css';
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
-export default MyApp;
 
+function MyApp({ Component, pageProps }) {
+  return (
+    <Component {...pageProps} />
+  );
+}
+
+export default MyApp;
 
 // class MyApp extends App is a way of creating a custom App 
 // component by extending the default App component provided 

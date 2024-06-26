@@ -7,41 +7,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model mealTable {
-  id     Int             @id @default(autoincrement())
-  name   String
-  items  Json
-  datex  DateTime
-  totals totalRowTable[]
+model meal_table {
+  id       Int   @id @default(autoincrement())
+  name     String
+  datex    DateTime
+  desc1    String
+  desc2    String
+  portion  Float
+  calories Float
+  carb     Float
+  fat      Float
+  protein  Float
+  GI       Float
+  totalRows_link totalRow_table[]
   @@map("meal")
 }
 
-model totalRowTable {
+model totalRow_table {
   id          Int       @id @default(autoincrement())
-  mealId      Int
+  totalRowId      Int
+  portionTot  Float     @default(0)
   caloriesTot Float
   carbTot     Float
   fatTot      Float
   proteinTot  Float
   fiberTot    Float
-  portionTot  Float     @default(0)
-  datex       DateTime
-  meal        mealTable @relation(fields: [mealId], references: [id])
+ 
+  meal        meal_table @relation(fields: [totalRowId], references: [id])
 
-  @@index([mealId], map: "totalrow_mealId_fkey")
-  @@map("totalrow")
+  @@index([totalRowId], map: "totalrowmealId_fkey")
+  @@map("totalrowmeal")
 }
 
 
-model recipeTable {
-  id     Int             @id @default(autoincrement())
-  name   String
-  items  Json
-  totals totalRowTableRecipe[]
+model recipe_table {
+  id       Int   @id @default(autoincrement())
+  name     String
+  desc1    String
+  desc2    String
+  portion  Float
+  calories Float
+  carb     Float
+  fat      Float
+  protein  Float
+  GI       Float
+  totalrow_link recipeTotalRow_table[]
   @@map("recipe")
 }
 
-model totalRowTableRecipe {
+model recipeTotalRow_table {
   id          Int       @id @default(autoincrement())
   recipeId      Int
   caloriesTot Float
@@ -50,8 +64,8 @@ model totalRowTableRecipe {
   proteinTot  Float
   fiberTot    Float
   portionTot  Float     @default(0)
-  recipe        recipeTable @relation(fields: [recipeId], references: [id])
+  recipe        recipe_table @relation(fields: [recipeId], references: [id])
 
-  @@index([recipeId], map: "totalRowTableRecipeId_fkey")
-  @@map("totalrowRecipe")
+  @@index([recipeId], map: "recipeTotalRow_tableId_fkey")
+  @@map("totalrowrecipe")
 }
