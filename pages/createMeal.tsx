@@ -12,18 +12,20 @@ import Link from 'next/link';
 const CreateMeal = () => {
   const [selectedValue, setSelectedValue]         = useState< IOption | null>(null);
   const [selectedRowOption, setSelectedRowOption] = useState< IOption | null>(null);
-  const [selectedRow, setSelectedRow]   = useState<IMealAllData | null>(null);
-  const [selectedRows, setSelectedRows] = useState<IMealAllData[]>([]);
+  const [selectedRow, setSelectedRow]             = useState< IMealAllData | null>(null);
+  const [selectedRows, setSelectedRows]           = useState< IMealAllData[]>([]);
 
-  const [dropdownOptions, setDropdownOptions] = useState< IOption[]>([]);
-  const [options, setOptions]           = useState< IOption[] >([]);
-  const [data, setData]               = useState<IMealAllData[]>([]);
-  const [portionSize, setPortionSize] = useState<number>(0);
+  const [dropdownOptions, setDropdownOptions]     = useState< IOption[] >([]);
+  const [options, setOptions]                     = useState< IOption[] >([]);
+  const [data, setData]                           = useState< IMealAllData[]>([]);
+  const [portionSize, setPortionSize]             = useState< number>(0);
   
-  const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
-  const [name, setName]               = useState<string>('');
-  const [datex, setDatex]             = useState<Date>(new Date());
-  const[totals, setTotals]            = useState(
+  const [checkedRows, setCheckedRows]             = useState< Set<number>>(new Set());
+  const [name, setName]                           = useState< string>('');
+  const [datex, setDatex]                         = useState< Date>(new Date());
+  const [message, setMessage]                     = useState< string>('');
+
+  const[totals, setTotals]                        = useState(
     {
     portionTot: 0,
     caloriesTot: 0,
@@ -32,17 +34,6 @@ const CreateMeal = () => {
     proteinTot: 0,
     fiberTot: 0,
   });
-  const [message, setMessage]         = useState<string>('');
-
-
-  useEffect(() => {
-    console.log('dropdownOptions updated:', dropdownOptions);
-  }, [dropdownOptions]);
-
-  const debugSetDropdownOptions = (options) => {
-    console.log('Setting dropdown options:', options);
-    setDropdownOptions(options);
-  };
 
 
   // This useEffect is used to fetch nutritionData from the '/api/nutrition' endpoint
@@ -50,21 +41,18 @@ const CreateMeal = () => {
     axios.get('/api/nutrition')
       .then(response => {
         setData(response.data || []);
-  
-        const uniqueValues = R.uniq(R.map((item: IMealAllData) => item.desc1, response.data));
-        const transformedOptions = R.map((value: string) => ({ label: value, value }), uniqueValues);
-  console.log('xxxxxxxxxx',transformedOptions);
-        debugSetDropdownOptions(transformedOptions);
 
+  // creates the dropdown for foodgroups
+        const uniqueValues = R.uniq(R.map((item: IMealAllData) => item.desc1, response.data));
+        const dropdownOptions = R.map((value: string) => ({ label: value, value }), uniqueValues);
+        setDropdownOptions(dropdownOptions);
       })
       .catch(error => {
         console.error('Stack:', error.stack);
       });
   }, []);
   
-
-
-
+// choose a foodgroup from the dropdown
   useEffect(() => {
     if (selectedValue) {
       const selectedRow = data.find(item => item.desc1 === selectedValue.value);
@@ -73,7 +61,7 @@ const CreateMeal = () => {
   }, [selectedValue, data]
 );
 
-
+// adds the selected row to the menu
   useEffect(() => {
     if (selectedRowOption) {
       const selectedRowIndex = parseInt(selectedRowOption.value);
@@ -84,7 +72,7 @@ const CreateMeal = () => {
 
 
 
-  const handleRowSelect = (row: IMealData) => {
+  const handleRowSelect = (row: IMealAllData) => {
     setSelectedRow(row);
   };
 
