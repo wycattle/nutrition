@@ -10,7 +10,7 @@ import { IOption , IMealAllData  } from './interfaces';
 import Link from 'next/link';
 
 const CreateMeal = () => {
-  const [selectedValue, setSelectedValue]         = useState< IOption | null>(null);
+  const [dropdownSelectedValue, setDropdownSelectedValue]         = useState< IOption | null>(null);
   const [selectedRowOption, setSelectedRowOption] = useState< IOption | null>(null);
   const [selectedRow, setSelectedRow]             = useState< IMealAllData | null>(null);
   const [selectedRows, setSelectedRows]           = useState< IMealAllData[]>([]);
@@ -20,7 +20,7 @@ const CreateMeal = () => {
   const [data, setData]                           = useState< IMealAllData[]>([]);
   const [portionSize, setPortionSize]             = useState< number>(0);
   
-  const [checkedRows, setCheckedRows]             = useState< Set<number>>(new Set());
+  const [dropdownCheckedRows, setDropdownCheckedRows]         = useState< Set<number>>(new Set());
   const [name, setName]                           = useState< string>('');
   const [datex, setDatex]                         = useState< Date>(new Date());
   const [message, setMessage]                     = useState< string>('');
@@ -54,11 +54,11 @@ const CreateMeal = () => {
   
 // choose a foodgroup from the dropdown
   useEffect(() => {
-    if (selectedValue) {
-      const selectedRow = data.find(item => item.desc1 === selectedValue.value);
+    if (dropdownSelectedValue) {
+      const selectedRow = data.find(item => item.desc1 === dropdownSelectedValue.value);
       setSelectedRow(selectedRow || null);
     }
-  }, [selectedValue, data]
+  }, [dropdownSelectedValue, data]
 );
 
 // adds the selected row to the menu
@@ -92,27 +92,27 @@ const CreateMeal = () => {
       };
       setSelectedRow(updatedRow);
       setSelectedRows(prevRows => [...prevRows, updatedRow]);
-      setCheckedRows(new Set());
+      setDropdownCheckedRows(new Set());
     }};
 
 
-  const handleDeleteRow = (index: number) => {
-    const newSelectedRows = [...selectedRows];
-    newSelectedRows.splice(index, 1);
-    setSelectedRows(newSelectedRows);        };
-
+    const handleCheckboxChange = (index: number) => {
+      setSelectedRows((prevRows: IMealAllData[]) => 
+        prevRows.filter((_, rowIndex) => 
+          rowIndex !== index));
+    };
 
   const handleSaveAsMeal = () => 
     {
     const currentDate = new Date();
     
     //create an instance of NewMeal (defined in interface)
-    const newMeal: INewMeal = 
-    {
-      name: name,
-      datex: currentDate,
-      items: selectedRows,
-    };
+    // const newMeal: IMealAllData = 
+    // {
+    //   name: name,
+    //   datex: currentDate,
+    //   items: selectedRows,
+    // };
   
     axios.post('/api/meal_related/create_meal', newMeal)
       .then(response => 
@@ -209,16 +209,16 @@ const CreateMeal = () => {
         <Select 
           options={dropdownOptions}
           onChange={(newValue) => {
-            setSelectedValue(newValue[0]);
+            setDropdownSelectedValue(newValue[0]);
           }}
-          values={selectedValue ? [selectedValue] : []}
+          values={dropdownSelectedValue ? [dropdownSelectedValue] : []}
         />
       </div>
 
 
       </div>
 
-          {selectedValue && (
+          {dropdownSelectedValue && (
             <table
               style={{
                 textAlign: 'right',
@@ -248,21 +248,21 @@ const CreateMeal = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.filter(item => item.desc1 === selectedValue.value).map((item, index) => (
+                {data.filter(item => item.desc1 === dropdownSelectedValue.value).map((item, index) => (
                   <tr key={index}>
                   <td style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <input
                         type="checkbox"
                         style={{ transform: "scale(2)" }}
-                        checked={checkedRows.has(index)}
+                        checked={dropdownCheckedRows.has(index)}
                         onChange={() => {
                           handleRowSelect(item);
-                          if (checkedRows.has(index)) {
-                            checkedRows.delete(index);
+                          if (dropdownCheckedRows.has(index)) {
+                            dropdownCheckedRows.delete(index);
                           } else {
-                            checkedRows.add(index);
+                            dropdownCheckedRows.add(index);
                           }
-                          setCheckedRows(new Set(checkedRows));
+                          setDropdownCheckedRows(new Set(dropdownCheckedRows));
                         }}
                       />
                     </td>
@@ -335,6 +335,10 @@ const CreateMeal = () => {
         <tbody>
           {selectedRows.map((item, index) => (
             <tr key={index}>
+              <td> <input 
+                type="checkbox"
+                onChange={() => handleCheckboxChange(index)}/>
+              </td>
               <td className='text-left'>{item.desc1}</td>
               <td className='text-left'>{item.desc2}</td>
               <td className='text-right'>{item.portion}</td>
@@ -343,7 +347,6 @@ const CreateMeal = () => {
               <td className='text-right'>{item.fat}</td>
               <td className='text-right'>{item.protein}</td>
               <td className='text-right'>{item.fiber}</td>
-              <td className='text-right'><button onClick={() => handleDeleteRow(index)}>Delete</button></td>
             </tr>
           ))}
 

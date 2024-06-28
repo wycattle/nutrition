@@ -12,26 +12,36 @@ console.log('response: ', res)
 
   try {
     if (req.method === 'POST') {
-      const { name, datex, items } = req.body;
-
-      const meal: IMealAllData = {    
-        name,
-        datex,
-        desc1,
-        desc2,
-        portion,
+      const { 
+        name, 
+        datex, 
+        desc1, 
+        desc2, 
+        portion,       
         calories,
         carb,
         fat,
         protein,
         fiber,
         GI
-        
-      ,
-      };
+      } = req.body; 
+   
 
+     
       try {
-        const newMeal = await mealDB.createMeal(meal);
+        const newMeal = await mealDB.createMeal({
+          name, 
+          datex, 
+          desc1, 
+          desc2, 
+          portion,       
+          calories,
+          carb,
+          fat,
+          protein,
+          fiber,
+          GI
+        });
         res.status(200).json({ meal: newMeal }); 
       } catch (error) {
         console.error('Error in createMeal:', error);
