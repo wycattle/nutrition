@@ -7,21 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model meal_table {
+model mealx {
   id       Int   @id @default(autoincrement())
   name     String
   datex    DateTime
-  desc1    String
-  desc2    String
-  portion  Float
-  calories Float
-  carb     Float
-  fat      Float
-  protein  Float
-  GI       Float
+  details  Json
   totalRows_link totalRow_table[]
   @@map("meal")
 }
+
 
 model totalRow_table {
   id          Int       @id @default(autoincrement())
@@ -33,7 +27,7 @@ model totalRow_table {
   proteinTot  Float
   fiberTot    Float
  
-  meal        meal_table @relation(fields: [totalRowId], references: [id])
+  meal        mealx @relation(fields: [totalRowId], references: [id])
 
   @@index([totalRowId], map: "totalrowmealId_fkey")
   @@map("totalrowmeal")

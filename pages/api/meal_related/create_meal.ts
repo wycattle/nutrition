@@ -1,48 +1,21 @@
 //pages/api/meal_related/create_meal.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { IMealAllData } from '../../interfaces.ts';
-import meal_instance from '../../service/meal_service.ts';
+import { IMealx } from '../../interfaces.ts';
+import mealInstance from '../../service/meal_service.ts';
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const mealDB = await meal_instance;
-
-console.log('response: ', res)
-
-
   try {
     if (req.method === 'POST') {
-      const { 
-        name, 
-        datex, 
-        desc1, 
-        desc2, 
-        portion,       
-        calories,
-        carb,
-        fat,
-        protein,
-        fiber,
-        GI
-      } = req.body; 
-   
+      // Destructure the request body directly into the expected structure of IMealx
+      const mealData: IMealx = req.body;
 
-     
+      // Validate or transform mealData here if necessary
+
       try {
-        const newMeal = await mealDB.createMeal({
-          name, 
-          datex, 
-          desc1, 
-          desc2, 
-          portion,       
-          calories,
-          carb,
-          fat,
-          protein,
-          fiber,
-          GI
-        });
-        res.status(200).json({ meal: newMeal }); 
+        const newMeal = await mealInstance.createMeal(mealData);
+        res.status(200).json({ meal: newMeal });
       } catch (error) {
         console.error('Error in createMeal:', error);
         res.status(500).json({ message: 'Internal Server Error' });

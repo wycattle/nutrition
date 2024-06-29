@@ -4,7 +4,7 @@ import Select from 'react-dropdown-select';
 import * as R from 'ramda';
 import axios from 'axios';
 
-import { IOption , IMealAllData  } from './interfaces';
+import { IOption , IMealAllData, IMealDetail, IMealx  } from './interfaces';
 // import { MealType } from '../lib/types/meal.types';
 
 import Link from 'next/link';
@@ -90,12 +90,28 @@ const CreateMeal = () => {
           rowIndex !== index));
     };
 
-  const handleSaveAsMeal = () => 
-    {
-    const currentDate = new Date();
+    const handleSaveAsMeal = () => {
+      const mealDetails: IMealDetail[] = selectedRows.map(row => ({
+        desc1: row.desc1,
+        desc2: row.desc2,
+        portion: row.portion,
+        calories: row.calories,
+        carb: row.carb,
+        fat: row.fat,
+        protein: row.protein,
+        fiber: row.fiber,
+        GI: row.GI,
+        note: row.note,
+      }));
+    
+      const mealx: IMealx = {
+        name,
+        datex,
+        details: mealDetails,
+      };
   
   
-    axios.post('/api/meal_related/create_meal', IMealDetail)
+    axios.post('/api/meal_related/create_meal', mealx)
       .then(response => 
         {
         setMessage(response.data.message);
