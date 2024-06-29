@@ -11,16 +11,15 @@ import Link from 'next/link';
 
 const CreateMeal = () => {
   const [dropdownSelectedValue, setDropdownSelectedValue]         = useState< IOption | null>(null);
-  const [selectedRowOption, setSelectedRowOption] = useState< IOption | null>(null);
   const [selectedRow, setSelectedRow]             = useState< IMealAllData | null>(null);
   const [selectedRows, setSelectedRows]           = useState< IMealAllData[]>([]);
-
   const [dropdownOptions, setDropdownOptions]     = useState< IOption[] >([]);
+  
   const [options, setOptions]                     = useState< IOption[] >([]);
   const [data, setData]                           = useState< IMealAllData[]>([]);
   const [portionSize, setPortionSize]             = useState< number>(0);
-  
   const [dropdownCheckedRows, setDropdownCheckedRows]         = useState< Set<number>>(new Set());
+  
   const [name, setName]                           = useState< string>('');
   const [datex, setDatex]                         = useState< Date>(new Date());
   const [message, setMessage]                     = useState< string>('');
@@ -36,13 +35,13 @@ const CreateMeal = () => {
   });
 
 
-  // This useEffect is used to fetch nutritionData from the '/api/nutrition' endpoint
+  // fetch nutritionData from the '/api/nutrition' endpoint
   useEffect(() => {
     axios.get('/api/nutrition')
       .then(response => {
         setData(response.data || []);
 
-  // creates the dropdown for foodgroups
+  // create the dropdown for foodgroups
         const uniqueValues = R.uniq(R.map((item: IMealAllData) => item.desc1, response.data));
         const dropdownOptions = R.map((value: string) => ({ label: value, value }), uniqueValues);
         setDropdownOptions(dropdownOptions);
@@ -60,17 +59,6 @@ const CreateMeal = () => {
     }
   }, [dropdownSelectedValue, data]
 );
-
-// adds the selected row to the menu
-  useEffect(() => {
-    if (selectedRowOption) {
-      const selectedRowIndex = parseInt(selectedRowOption.value);
-      const selectedRow = data.find((item, index) => index === selectedRowIndex);
-      setSelectedRow(selectedRow || null);
-    }
-  }, [selectedRowOption, data]);
-
-
 
   const handleRowSelect = (row: IMealAllData) => {
     setSelectedRow(row);
@@ -105,16 +93,9 @@ const CreateMeal = () => {
   const handleSaveAsMeal = () => 
     {
     const currentDate = new Date();
-    
-    //create an instance of NewMeal (defined in interface)
-    // const newMeal: IMealAllData = 
-    // {
-    //   name: name,
-    //   datex: currentDate,
-    //   items: selectedRows,
-    // };
   
-    axios.post('/api/meal_related/create_meal', newMeal)
+  
+    axios.post('/api/meal_related/create_meal', IMealDetail)
       .then(response => 
         {
         setMessage(response.data.message);
