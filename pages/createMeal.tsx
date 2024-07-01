@@ -4,26 +4,25 @@ import Select from 'react-dropdown-select';
 import * as R from 'ramda';
 import axios from 'axios';
 
-import { IOption , IMealAllData, IMealDetail, IMealx  } from './interfaces';
+import { IOption , IRecipeDetail, IRecipex, IMealDetail, IMealx  } from './interfaces';
 // import { MealType } from '../lib/types/meal.types';
 
 import Link from 'next/link';
 
 const CreateMeal = () => {
   const [dropdownSelectedValue, setDropdownSelectedValue]         = useState< IOption | null>(null);
-  const [selectedRow, setSelectedRow]             = useState< IMealAllData | null>(null);
-  const [selectedRows, setSelectedRows]           = useState< IMealAllData[]>([]);
+  const [selectedRow, setSelectedRow]             = useState< IMealDetail | null>(null);
+  const [selectedRows, setSelectedRows]           = useState< IMealDetail[]>([]);
   const [dropdownOptions, setDropdownOptions]     = useState< IOption[] >([]);
   
   const [options, setOptions]                     = useState< IOption[] >([]);
-  const [data, setData]                           = useState< IMealAllData[]>([]);
+  const [data, setData]                           = useState< IMealDetail[]>([]);
   const [portionSize, setPortionSize]             = useState< number>(0);
   const [dropdownCheckedRows, setDropdownCheckedRows]         = useState< Set<number>>(new Set());
   
   const [name, setName]                           = useState< string>('');
   const [datex, setDatex]                         = useState< Date>(new Date());
   const [message, setMessage]                     = useState< string>('');
-
   const[totals, setTotals]                        = useState(
     {
     portionTot: 0,
@@ -42,7 +41,7 @@ const CreateMeal = () => {
         setData(response.data || []);
 
   // create the dropdown for foodgroups
-        const uniqueValues = R.uniq(R.map((item: IMealAllData) => item.desc1, response.data));
+        const uniqueValues = R.uniq(R.map((item: IMealDetail) => item.desc1, response.data));
         const dropdownOptions = R.map((value: string) => ({ label: value, value }), uniqueValues);
         setDropdownOptions(dropdownOptions);
       })
@@ -60,7 +59,13 @@ const CreateMeal = () => {
   }, [dropdownSelectedValue, data]
 );
 
-  const handleRowSelect = (row: IMealAllData) => {
+  useEffect(() => {
+    if (selectedRows.length > 0) {
+      handleCreateTotals({ details: selectedRows }); // Adjust according to the expected structure
+    }
+  }, [selectedRows]);
+
+  const handleRowSelect = (row: IMealDetail) => {
     setSelectedRow(row);
   };
 
@@ -84,42 +89,90 @@ const CreateMeal = () => {
     }};
 
 
-    const handleCheckboxChange = (index: number) => {
-      setSelectedRows((prevRows: IMealAllData[]) => 
-        prevRows.filter((_, rowIndex) => 
-          rowIndex !== index));
+
+  const handleCreateTotals = (mealData) => {
+    const newTotals = mealData.details.reduce((acc, curr) => ({
+      portionTot: acc.portionTot + (curr.portion ?? 0),
+      caloriesTot: acc.caloriesTot + (curr.calories ?? 0),
+      carbTot: acc.carbTot + (curr.carb ?? 0),
+      fatTot: acc.fatTot + (curr.fat ?? 0),
+      proteinTot: acc.proteinTot + (curr.protein ?? 0),
+      fiberTot: acc.fiberTot + (curr.fiber ?? 0),
+    }), {
+      portionTot: 0,
+      caloriesTot: 0,
+      carbTot: 0,
+      fatTot: 0,
+      proteinTot: 0,
+      fiberTot: 0,
+    });
+    setTotals(newTotals);
+  };
+
+
+  const handleCheckboxChange = (index: number) => {
+    setSelectedRows((prevRows: IMealDetail[]) => 
+      prevRows.filter((_, rowIndex) => 
+        rowIndex !== index));
+  };
+
+  const handleSaveAsMeal = () => {
+    const mealDetails: IMealDetail[] = selectedRows.map(row => ({
+      desc1: row.desc1,
+      desc2: row.desc2,
+      portion: row.portion,
+      calories: row.calories,
+      carb: row.carb,
+      fat: row.fat,
+      protein: row.protein,
+      fiber: row.fiber,
+      GI: row.GI,
+      note: row.note,
+    }));
+  
+    const mealx: IMealx = {
+      namex: '',
+      datex: new Date,
+      details: mealDetails,
     };
 
-    const handleSaveAsMeal = () => {
-      const mealDetails: IMealDetail[] = selectedRows.map(row => ({
-        desc1: row.desc1,
-        desc2: row.desc2,
-        portion: row.portion,
-        calories: row.calories,
-        carb: row.carb,
-        fat: row.fat,
-        protein: row.protein,
-        fiber: row.fiber,
-        GI: row.GI,
-        note: row.note,
-      }));
-    
-      const mealx: IMealx = {
-        name,
-        datex,
-        details: mealDetails,
-      };
-  
-  
-    axios.post('/api/meal_related/create_meal', mealx)
-      .then(response => 
-        {
-        setMessage(response.data.message);
-        const createdMeal = response.data;
-        setTotals(createdMeal.totals);
 
-        setMessage('Meal created successfully');
-      })
+  axios.post('/api/meal_related/create_meal', mealx)
+    .then(response => 
+      {
+      setMessage(response.data.message);
+      const createdMeal = response.data;
+      setTotals(createdMeal.totals);
+
+      setMessage('Meal created successfully');
+    })
+    .catch(error => 
+      {
+      if (axios.isAxiosError(error)) {
+        setMessage(error.message);
+      } else {
+        setMessage('An error occurred');
+      }
+    })
+  };
+
+
+// need this here since the save Recipe button is on this page
+  const handleSaveAsRecipe = () => 
+    {
+    const currentDate = new Date();
+    const newRecipe: IRecipex = {
+      namex: name,
+      details: selectedRows,
+    };
+
+    axios.post('/api/recipe_related/create_recipe', newRecipe)
+      .then(response => {
+        setMessage(response.data.message);
+        setSelectedRows([]);
+        setMessage('Recipe created successfully');
+      }
+    )
       .catch(error => 
         {
         if (axios.isAxiosError(error)) {
@@ -127,39 +180,12 @@ const CreateMeal = () => {
         } else {
           setMessage('An error occurred');
         }
-      })
-    };
-
-
-// need this here since the save Recipe button is on this page
-    const handleSaveAsRecipe = () => 
-      {
-      const currentDate = new Date();
-      const newRecipe: INewRecipe = {
-        name: name,
-        items: selectedRows,
-      };
-
-      axios.post('/api/recipe_related/create_recipe', newRecipe)
-        .then(response => {
-          setMessage(response.data.message);
-          setSelectedRows([]);
-          setMessage('Recipe created successfully');
-        }
-      )
-        .catch(error => 
-          {
-          if (axios.isAxiosError(error)) {
-            setMessage(error.message);
-          } else {
-            setMessage('An error occurred');
-          }
-        }
-      );
+      }
+    );
 
 
 
-      
+    
 
 
   function DropdownComponent() {

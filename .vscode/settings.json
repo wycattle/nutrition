@@ -24,8 +24,8 @@
         "**/package-lock.json": true,
         "package-lock.json": true,
         "next-env.d.ts": false,
-        "**/.gitignore": true,
-        ".gitignore": true,
+        "**/.gitignore": false,
+        ".gitignore": false,
         "package.json": false,
         "eslint.config.mjs": false,
         "**/*.code-workspace": true

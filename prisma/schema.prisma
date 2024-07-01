@@ -8,58 +8,50 @@ datasource db {
 }
 
 model mealx {
-  id       Int   @id @default(autoincrement())
-  name     String
-  datex    DateTime
-  details  Json
-  totalRows_link totalRow_table[]
+  id           Int             @id @default(autoincrement())
+  datex        DateTime
+  details      Json
+  totalRowId   Int?            @unique
+  namex        String
+  totalrowmeal totalRow_table?
+
   @@map("meal")
 }
 
-
 model totalRow_table {
-  id          Int       @id @default(autoincrement())
-  totalRowId      Int
-  portionTot  Float     @default(0)
+  id          Int   @id @default(autoincrement())
   caloriesTot Float
   carbTot     Float
   fatTot      Float
-  proteinTot  Float
   fiberTot    Float
- 
-  meal        mealx @relation(fields: [totalRowId], references: [id])
+  portionTot  Float @default(0)
+  proteinTot  Float
+  mealId      Int   @unique
+  meal        mealx @relation(fields: [mealId], references: [id])
 
-  @@index([totalRowId], map: "totalrowmealId_fkey")
   @@map("totalrowmeal")
 }
 
-
 model recipe_table {
-  id       Int   @id @default(autoincrement())
-  name     String
-  desc1    String
-  desc2    String
-  portion  Float
-  calories Float
-  carb     Float
-  fat      Float
-  protein  Float
-  GI       Float
-  totalrow_link recipeTotalRow_table[]
+  id             Int                   @id @default(autoincrement())
+  details        Json
+  totalRowId     Int?                  @unique
+  namex          String
+  totalrowrecipe recipeTotalRow_table?
+
   @@map("recipe")
 }
 
 model recipeTotalRow_table {
-  id          Int       @id @default(autoincrement())
-  recipeId      Int
+  id          Int          @id @default(autoincrement())
   caloriesTot Float
   carbTot     Float
   fatTot      Float
-  proteinTot  Float
   fiberTot    Float
-  portionTot  Float     @default(0)
-  recipe        recipe_table @relation(fields: [recipeId], references: [id])
+  portionTot  Float        @default(0)
+  proteinTot  Float
+  recipexId   Int          @unique
+  recipe      recipe_table @relation(fields: [recipexId], references: [id])
 
-  @@index([recipeId], map: "recipeTotalRow_tableId_fkey")
   @@map("totalrowrecipe")
 }
