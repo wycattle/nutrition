@@ -5,7 +5,7 @@ import * as R from 'ramda';
 import axios from 'axios';
 
 import { IOption , IRecipeDetail, IRecipex, IMealDetail, IMealx  } from './interfaces';
-// import { MealType } from '../lib/types/meal.types';
+
 
 import Link from 'next/link';
 
@@ -19,6 +19,8 @@ const CreateMeal = () => {
   const [data, setData]                           = useState< IMealDetail[]>([]);
   const [portionSize, setPortionSize]             = useState< number>(0);
   const [dropdownCheckedRows, setDropdownCheckedRows]         = useState< Set<number>>(new Set());
+
+  const [isBlinking, setIsBlinking] = useState(false);
   
   const [name, setName]                           = useState< string>('');
   const [datex, setDatex]                         = useState< Date>(new Date());
@@ -65,6 +67,17 @@ const CreateMeal = () => {
     }
   }, [selectedRows]);
 
+
+  useEffect(() => {
+    if (dropdownCheckedRows.size > 0) {
+      setIsBlinking(true);
+    }
+  }, [dropdownCheckedRows]);
+
+
+
+
+
   const handleRowSelect = (row: IMealDetail) => {
     setSelectedRow(row);
   };
@@ -86,6 +99,7 @@ const CreateMeal = () => {
       setSelectedRow(updatedRow);
       setSelectedRows(prevRows => [...prevRows, updatedRow]);
       setDropdownCheckedRows(new Set());
+      setIsBlinking(false);
     }};
 
 
@@ -202,19 +216,19 @@ const CreateMeal = () => {
 
   return ( 
     <div>
-      <div id='back to home page'>
+      <div>
         <Link href="/"> {}
-          <a> Back to Home Page </a>
+          <a  className='back-to-home-page'> Back to Home Page </a>
         </Link>
       </div>
 
-      <div id='select-food-group-container'
+      <div className='select-food-group-container'
           style={{
             width: '25%', 
             margin: 'auto', 
             textAlign: 'center',
             fontSize: '1.125rem', 
-            border: '2px solid #ed64a6', 
+            border: '2px solid #0fcd45', 
             padding: '0.25rem', 
           }}
       >
@@ -242,22 +256,10 @@ const CreateMeal = () => {
       </div>
 
           {dropdownSelectedValue && (
-            <table
-              style={{
-                textAlign: 'right',
-                width: '75vw',
-                margin: "25px",
-                backgroundColor: "#301e1e",
-                border: "1px solid #000",
-              }}>
-              <thead
-                style={{
-                  width: '75vw',
-                  textAlign: 'right',
-                  margin: "25px",
-                  backgroundColor: "#f2f2f2",
-                  border: "1px solid #000",
-                }}>
+            <table className='table-style' style={{ backgroundColor: "#301e1e",}}>
+
+              <thead className = 'table-style' style={{backgroundColor: "#f2f2f2", }}>
+
                 <tr>
                   <th> Select </th>
                   <th>Desc 1</th>
@@ -315,6 +317,7 @@ const CreateMeal = () => {
           }}> enter a portion size number and click Enter </label>
         <input
           id="portionSize"
+          className={`portion-size-inputbox ${isBlinking ? ' blink' : ''}`}
           type="number"
           placeholder='1'
           style={{
@@ -339,10 +342,10 @@ const CreateMeal = () => {
       
       <h2>Selected Rows </h2>
         
-      <table
-        id="tableForSelectedRows"
-        className='w-screen m-9 bg-gray-800 border border-black'>
-        <thead className='m-9 bg-blue-900 border border-black' >
+      <table    className = 'table-style' style={{ backgroundColor: "#301e1e",}}>
+              
+        <thead  className = 'table-style' style={{backgroundColor: "#f2f2f2", }}>
+
           <tr>
             <th className='text-left'>Desc 1</th>
             <th className='text-left'>Desc 2</th>
@@ -390,10 +393,10 @@ const CreateMeal = () => {
 
 
       <div>
-          <label htmlFor='nameItBox' className='label'> Give it a name:</label>
+          <label htmlFor='nameItBox' > Give it a name:</label>
           <input
             id='nameItBox'
-            className='input'
+            className='text-box'
             type="text" 
             value={name} 
             onChange={e => setName(e.target.value)} 

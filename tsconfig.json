@@ -1,5 +1,12 @@
+//tsconfig.json
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/styles/*": ["styles/*"],
+      "@/types/*": ["types/*"],
+      // Add other path aliases as needed
+    },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -17,7 +24,10 @@
     "sourceMap": true,
     "plugins": [{ "name": "next"  } ],
   },
-  "files": ["pages/service/meal.service.ts"],
-  "include": [],
-  "exclude": ["node_modules", "pages/_app.js"]
+  
+  "include": [
+    "src/**/*",
+    "types/**/*"],
+
+  "exclude": ["node_modules", "**/*.js"]
 }

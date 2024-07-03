@@ -1,5 +1,7 @@
-import '../styles/styles.css';
+//_app.js
+
 import 'react-datepicker/dist/react-datepicker.css';
+import '../styles/global.scss'
 
 function MyApp({ Component, pageProps }) {
   return (
