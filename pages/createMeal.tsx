@@ -5,8 +5,6 @@ import * as R from 'ramda';
 import axios from 'axios';
 
 import { IOption , IRecipeDetail, IRecipex, IMealDetail, IMealx  } from './interfaces';
-
-
 import Link from 'next/link';
 
 const CreateMeal = () => {

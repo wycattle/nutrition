@@ -10,34 +10,34 @@ export function adjDate() {
 }
 
 
-import { RecipeDataType } from '../lib/types/recipe.types';
-export function calculateTotalsRecipe(recipe: RecipeDataType):
-{ 
-    portion:   number,  
-    calories:  number, 
-    carb:      number, 
-    fat:       number, 
-    protein:   number, 
-    fiber:     number,
-  } 
+// import { RecipeDataType } from '../lib/types/recipe.types';
+// export function calculateTotalsRecipe(recipe: RecipeDataType):
+// { 
+//     portion:   number,  
+//     calories:  number, 
+//     carb:      number, 
+//     fat:       number, 
+//     protein:   number, 
+//     fiber:     number,
+//   } 
   
-  {
-    return {
-      portion : recipe.portion || 0,
-      calories : recipe.calories || 0,
-      carb    : recipe.carb || 0,
-      fat     : recipe.fat || 0,
-      protein : recipe.protein || 0,
-      fiber   : recipe.fiber || 0,
-    }}
+//   {
+//     return {
+//       portion : recipe.portion || 0,
+//       calories : recipe.calories || 0,
+//       carb    : recipe.carb || 0,
+//       fat     : recipe.fat || 0,
+//       protein : recipe.protein || 0,
+//       fiber   : recipe.fiber || 0,
+//     }}
 
 
 
 
-    import { IMealData } from '../pages/interfaces';
+    import { IMealDetail } from '../pages/interfaces';
 
     // Adjust the function to accept an array of IMealData objects and include additional fields in the return type
-    export function calculateMealTotals(meals: IMealData[]): IMealData {
+    export function calculateMealTotals(meals: IMealDetail[]): IMealDetail {
       const totals = meals.reduce((totals, meal) => ({
         ...totals,
         portion:  (totals.portion || 0) +   (meal.portion || 0),
@@ -47,8 +47,8 @@ export function calculateTotalsRecipe(recipe: RecipeDataType):
         protein:  (totals.protein || 0) +   (meal.protein || 0),
         fiber:    (totals.fiber || 0) +     (meal.fiber || 0),
       }), {
-        name: 'Totals', // Placeholder name for the totals row
-        datex: new Date(),
+        // namex: 'Totals', // Placeholder name for the totals row
+        // datex: new Date(),
         desc1: '', // Placeholder desc1
         desc2: '', // Placeholder desc2
         portion: 0,
@@ -58,6 +58,7 @@ export function calculateTotalsRecipe(recipe: RecipeDataType):
         protein: 0,
         fiber: 0,
         GI: 0,
+        note: '',
         // Include default values for any other required fields in IMealData
       });
     

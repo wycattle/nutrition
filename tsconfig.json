@@ -3,11 +3,19 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@/styles/*": ["styles/*"],
-      "@/types/*": ["types/*"],
+      "@/styles/*": [
+        "styles/*"
+      ],
+      "@/types/*": [
+        "types/*"
+      ]
       // Add other path aliases as needed
     },
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -22,12 +30,18 @@
     "incremental": true,
     "target": "ES6",
     "sourceMap": true,
-    "plugins": [{ "name": "next"  } ],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  
   "include": [
     "src/**/*",
-    "types/**/*"],
-
-  "exclude": ["node_modules", "**/*.js"]
+    "types/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.js"
+  ]
 }

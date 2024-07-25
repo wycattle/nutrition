@@ -55,3 +55,16 @@ model recipeTotalRow_table {
 
   @@map("totalrowrecipe")
 }
+
+model dailyTotalsByDateRange {
+  id          Int   @id @default(autoincrement())
+  day         DateTime
+  calories    Float
+  carbs       Float
+  fat         Float
+  fiber       Float
+  portion_weight  Float @default(0)
+  protein         Float
+
+  @@map("daily_totals")
+}
