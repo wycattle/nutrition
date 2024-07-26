@@ -8,6 +8,7 @@
     "dev": "prisma generate && next dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "next build"
+    
   },
   "keywords": [],
   "author": "",
