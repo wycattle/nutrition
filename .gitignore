@@ -31,7 +31,7 @@ yarn-error.log*
 next-env.d.ts
 package-lock.json
 README.md
-package.json
+# package.json
 postcss.config.js
 tree.txt
 *.mjs
