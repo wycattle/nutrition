@@ -41,8 +41,8 @@ tree.txt
 public/images/IMG_0748.JPG
 app/layout.tsx
 lib/mydb.sqlite
-tsconfig.json
-tsconfig.json
+# tsconfig.json
+
 .vscode/settings.json
 .vscode/settings.json
 tailwind.config.js
@@ -55,7 +55,7 @@ sqlite.session.sql
 prisma/migrations/migration_lock.toml
 prisma/migrations/20240513012427_init/migration.sql
 prisma/migrations/20240513075325_add_portion_tot/migration.sql
-pages/interfaces.ts
+
 pages/react-dropdown-select.d.ts
 pages/DatePickerTest.tsx
 pages/createRecipe.tsx
