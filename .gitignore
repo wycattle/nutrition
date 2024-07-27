@@ -31,7 +31,7 @@ yarn-error.log*
 next-env.d.ts
 package-lock.json
 README.md
-# package.json
+
 postcss.config.js
 tree.txt
 *.mjs
@@ -41,7 +41,6 @@ tree.txt
 public/images/IMG_0748.JPG
 app/layout.tsx
 lib/mydb.sqlite
-# tsconfig.json
 
 .vscode/settings.json
 .vscode/settings.json
@@ -49,6 +48,7 @@ tailwind.config.js
 .vscode/settings.json
 .vscode/settings.json
 lib/querydb.sql
+
 .env
 react_next_nutrition.code-workspace
 sqlite.session.sql
