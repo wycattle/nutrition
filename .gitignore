@@ -1,4 +1,4 @@
-
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
@@ -6,12 +6,10 @@
 
 
 /coverage
-
+# Production builds
 /.next/
 /out/
 *.md
-
-
 /build
 
 
@@ -24,42 +22,31 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-
+# Env vars
+.env
 .env*.local
+
+
 .vercel
 *.tsbuildinfo
 next-env.d.ts
 package-lock.json
 README.md
 
-postcss.config.js
 tree.txt
 *.mjs
 *.ico
 
-.eslintrc.json
-public/images/IMG_0748.JPG
-app/layout.tsx
+
+# Local database
 lib/mydb.sqlite
 
+# IDE settings
 .vscode/settings.json
-.vscode/settings.json
-tailwind.config.js
-.vscode/settings.json
-.vscode/settings.json
-lib/querydb.sql
+*.code-workspace
 
-.env
+
 react_next_nutrition.code-workspace
 sqlite.session.sql
-prisma/migrations/migration_lock.toml
-prisma/migrations/20240513012427_init/migration.sql
-prisma/migrations/20240513075325_add_portion_tot/migration.sql
 
-pages/react-dropdown-select.d.ts
-pages/DatePickerTest.tsx
-pages/createRecipe.tsx
-lib/mealDB.js.map
-lib/mealDB.js
-.vscode/settings.json
-npm
+

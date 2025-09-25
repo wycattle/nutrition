@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\lib\\types",
+    "\\pages",
+    "\\pages\\api",
+    "\\pages\\api\\meal_related"
+  ],
+  "SelectedNode": "\\pages\\createMeal.tsx",
+  "PreviewInSolutionExplorer": false
+}
