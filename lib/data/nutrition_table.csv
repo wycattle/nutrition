@@ -112,5 +112,6 @@ veg,tomato sauce,1,35,8,,2,2,3,
 veg,"tomato, raw",1,18,4,0,1,1,,
 veg,vegetable soup,1,60,9,1,4,2,10,
 veg,"vermicelli, kanomjiin",1,77,18,,1,,,
-veg,"vermicelli, wunsen",1,352,86,0,0,3,,
+veg,"vermicelli, wunsen",1,351
+,86,0,0,3,,
 water,water,1,0,0,0,0,0,,
