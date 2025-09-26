@@ -1,3 +1,7 @@
+
+//this file is designed to recursively generate and print 
+// a visual representation of a directory structure (a "tree") to the console.
+
 const fs = require('fs');
 const path = require('path');
 

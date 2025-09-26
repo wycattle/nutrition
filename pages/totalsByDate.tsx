@@ -29,7 +29,7 @@ const Home = () => {
     <div>
             <div>
         <Link href="/"> {}
-          <a  className='back-to-home-page'> Back to Home Page </a>
+          <span  className='back-to-home-page'> Back to Home Page </span>
         </Link>
       </div>
 

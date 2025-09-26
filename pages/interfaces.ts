@@ -13,8 +13,8 @@ export interface IOption {
 
 
 export interface IMealx {
-    namex: string;
-    datex: Date;
+    name: string;
+    date: Date;
     details: IMealDetail[];     }
 
 
@@ -34,7 +34,7 @@ export interface IMealDetail {
 
 
 export interface IRecipex {
-    namex: string;
+    name: string;
     details: IMealDetail[];     }    
 
 export interface IRecipeDetail {

@@ -20,7 +20,7 @@ const CreateMeal = () => {
 
   const [isBlinking, setIsBlinking] = useState(false);
   
-  const [name, setName]                           = useState< string>('');
+  const [namex, setName]                           = useState< string>('');
   const [datex, setDatex]                         = useState< Date>(new Date());
   const [message, setMessage]                     = useState< string>('');
   const[totals, setTotals]                        = useState(
@@ -49,7 +49,11 @@ const CreateMeal = () => {
         setDropdownOptions(dropdownOptions);
       })
       .catch(error => {
-        console.error('Stack:', error.stack);
+        console.error('Error fetching data:', error.message || error);
+        if (error.response) {
+          console.error('Response data:', error.response.data);
+          console.error('Response status:', error.response.status);
+        }
       });
   }, []);
   
@@ -146,8 +150,8 @@ const CreateMeal = () => {
     }));
   
     const mealx: IMealx = {
-      namex: '',
-      datex: new Date,
+      name: '',
+      date: new Date,
       details: mealDetails,
     };
 
@@ -177,7 +181,7 @@ const CreateMeal = () => {
     {
     const currentDate = new Date();
     const newRecipe: IRecipex = {
-      namex: name,
+      name: namex,
       details: selectedRows,
     };
 
@@ -219,7 +223,7 @@ const CreateMeal = () => {
     <div>
       <div>
         <Link href="/"> {}
-          <a  className='back-to-home-page'> Back to Home Page </a>
+          <span  className='back-to-home-page'> Back to Home Page </span>
         </Link>
       </div>
 
@@ -399,7 +403,7 @@ const CreateMeal = () => {
             id='nameItBox'
             className='text-box'
             type="text" 
-            value={name} 
+            value={namex} 
             onChange={e => setName(e.target.value)} 
             placeholder="fill me in" 
           />

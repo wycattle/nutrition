@@ -38,7 +38,7 @@ function RecipeViewModify() {
     <div>
       <div id='back to home page'>
         <Link href="/"> {}
-          <a> Back to Home Page </a>
+          <span> Back to Home Page </span>
         </Link>
       </div>
 
