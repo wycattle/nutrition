@@ -4,14 +4,13 @@ import Image from 'next/image';
 import React from 'react';
 import Head from 'next/head';
 
-import  styles from '../styles/global.scss';
-import { HomeProps } from '../lib/types/homeprops';
+import { HomeProps } from '../lib/types/homeprops'; //imports the TypeScript props type used by the component for type-checking, defined in HomeProps.
 
+//The page component. It renders JSX and receives its props.
+export default function Home(props: HomeProps) {     //Defines and default-exports the Next.js page component: export default function Home(props: HomeProps). The props parameter is type-checked against HomeProps.
+  const { currentDate } = props; //Destructures currentDate from props so it can be used directly inside the component.
 
-export default function Home(props: HomeProps) {
-  const { currentDate } = props;
-
-  return (
+  return (    // JSX/TSX (React markup),
     <div>
       <Head>
         <link rel="icon" href="/images/favicon.ico" />
@@ -64,7 +63,9 @@ export default function Home(props: HomeProps) {
   );
 }
 
-export async function getServerSideProps() {
+//Special named exports that Next.js calls on the server to fetch data. They return { props } 
+// which are passed into the page component. Order in the file doesn’t matter.
+export async function getServerSideProps() {   //Pages must default-export a React component (the page)
   const currentDate = new Date().toString();
   return { props: { currentDate } };
 }

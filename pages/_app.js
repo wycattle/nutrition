@@ -5,7 +5,7 @@ import '../styles/global.scss'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Component {...pageProps} />
+    <Component {...pageProps} />  //add global CSS
   );
 }
 
