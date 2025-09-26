@@ -1,10 +1,14 @@
 // pages/api/nutrition.js
-import csvToJson from '../../utils/csvToJson';
+import fs from 'fs';
+import path from 'path';
+import { parse } from 'csv-parse/sync';
 
-const nutritionData = async (req, res) => {
-  const csvFilePath = 'E:\\old_F_drive\\human_nutrition\\nutrition_table.csv';
-  const data = await csvToJson(csvFilePath);
-  res.status(200).json(data);
-};
+const csvFilePath = path.join(process.cwd(), 'lib', 'data', 'nutrition_table.csv');
+
+// Read and parse the CSV file...Synchronously reads the entire contents of a file.
+const nutritionData = parse(fs.readFileSync(csvFilePath, 'utf8'),{
+  columns: true,  // Parse the CSV into objects with column headers as keys
+  skip_empty_lines: true, 
+});
 
 export default nutritionData;

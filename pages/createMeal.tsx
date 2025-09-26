@@ -33,14 +33,17 @@ const CreateMeal = () => {
     fiberTot: 0,
   });
 
-
+  //useEffect is a React Hook that lets you synchronize a component with an external system
   // fetch nutritionData from the '/api/nutrition' endpoint
+  // the axios.get('/api/nutrition') call works because Next.js automatically maps API routes under the api directory to endpoints accessible via /api/<filename>.
   useEffect(() => {
-    axios.get('/api/nutrition')
+    const url = '/api/nutrition';
+    console.log('Fetching data from:', url);
+    axios.get(url)
       .then(response => {
         setData(response.data || []);
 
-  // create the dropdown for foodgroups
+        // create the dropdown for foodgroups
         const uniqueValues = R.uniq(R.map((item: IMealDetail) => item.desc1, response.data));
         const dropdownOptions = R.map((value: string) => ({ label: value, value }), uniqueValues);
         setDropdownOptions(dropdownOptions);
