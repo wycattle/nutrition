@@ -1,0 +1,117 @@
+desc1,desc2,portion,calories,carb,fat,protein,fiber,GI,note
+dairy,cheese - mozzerella,1,300,2,22,22,0,,1 slice ~30g
+dairy,cream,1,50,3,37,2,0,,"yes, one tbsp=only 5.6g "
+dairy,cream cheese,1,350,3,35,8,0,,"one cup=230g=800cal, 100g=340"
+dairy,"cream, sour",1,31,4,21,3,0,,100g=214
+dairy,"milk, skim",1,56,8,0,6,0,5,1cup=245g
+dairy,"milk, whole",1,60,5,3,3,0,,1 cup=150c
+dairy,my choc milk,1,74,16,4,4,1,,
+dairy,yogurt,1,61,5,3,4,0,3,
+dairy,"yogurt, non-fat",1,56,8,0,6,,,
+egg,egg,1,50,0,4,5,0,,one egg=55g
+fish,"boneless, cooked",1,100,0,2,20,0,,tilapia
+fish,"fish, tuna, canned in brine",1,130,0,3,24,0,,1 can = 220cal
+fish,salmon,1,146,0,6,22,0,,
+fruit,apple,1,52,14,0,0,2,3,
+fruit,banana,1,90,23,0,1,3,,
+fruit,blueberry,1,0,0,0,0,0,0,
+fruit,dragon fruit,1,50,12,0,0,1,,1 large=~300g
+fruit,grapes,1,69,18,0,1,1,6,
+fruit,juice,1,55,26,0,0,5,,
+fruit,mango,1,65,17,0,0,2,,one large mango=200g
+fruit,papaya,1,39,10,0,1,2,2,
+fruit,persimmon,1,70,19,0,1,4,,
+fruit,pineapple,1,50,13,0,1,1,,
+fruit,raisins,1,300,80,1,3,4,,dates are ~same = 277/100g
+fruit,starfruit,1,31,7,0,1,3,,
+fruit,watermelon,1,30,8,0,1,0,2,
+grain,bread Tesco WW,1,260,46,5,12,4,22,
+grain,"bread, cement",1,327,34,9,8,5,,
+grain,corn flakes,1,373,85,2,6,3,60,
+grain,flour - all purpose,1,364,75,2,12,3,53,1 cup=460cal=125g
+grain,flour - whole wheat,1,400,71,0,15,11,,1 cup=120g
+grain,"granola, tesco",1,380,67,6,10,6,,one cup=450
+grain,"oatmeal, dry",1,380,70,6,13,10,39,0.5cup dry=40g
+grain,rice bran,1,316,50,21,13,21,8,
+grain,"rice, brown, cooked",1,112,24,1,2,2,,1cup=200g
+grain,"rice, white, cooked",1,97,21,0,1,2,,1cup=174g
+grain,"soba, dry",1,356,66,1,17,0,48,1 serving=90g
+grain,spaghetti,1,157,31,1,6,2,16,
+legume,"beans, black or red, COOKED",1,50,15,1,10,2,,
+legume,"beans, black or red, DRY",1,125,37,1,26,4,12,one cup=230cal
+legume,miso,1,200,27,6,12,5,,
+legume,"mung beans peeled, dry",1,340,63,0,23.3,17.5,,
+legume,"mung beans peeled, cooked",1,106,20,0,7.25,5.5,,cooked is 3.2x dry
+legume,peanut butter,1,94,3,8,4,1,,exactly the same as peanuts
+legume,peanuts,1,567,16,49,26,9,,
+legume,"soy milk isolate, natural flavor",1,357,0,0,86,0,,
+legume,"soy milk isolate, chocolate",1,386,8,0,75,0,,
+legume,soya milk powder,1,667,27,20,40,13,,
+legume,tofu,1,76,2,5,8,0,,
+legume,white beans,1,50,8,0,2,2,7,
+legume,yellow beans,1,144,25,1,9,10,8,half cup=90g
+meat,beef stew,1,65,8,2,4,1,,
+meat,"chicken leg meat fried, no skin",1,208,0,9,28,0,0,
+meat,chicken leg meat roasted- no skin,1,191,0,8,27,0,0,
+meat,"chicken leg meat, fried, w/skin",1,254,3,14,27,0,4,
+meat,chicken liver,1,172,1,6,26,0,0,
+meat,chicken white -no skin,1,110,0,1,23,0,0, 
+meat,ham,1,160,4,9,17,1,0,1slice=
+meat,"lamb, braised",1,223,0,9,34,0,,
+meat,"liver, pork",1,165,4,4,26,,,
+meat,pork loin,1,136,0,5,21,0,0,
+meat,pork shoulder,1,240,0,18,17,0,0,
+meat,"pork, ground",1,300,0,21,0,0,0,
+meat,soup stock - chicken,1,85,8,3,6,0,,
+nuts & seeds,almond,1,600,19,53,22,12,,
+nuts & seeds,chia seed,1,490,44,31,16,38,2,
+nuts & seeds,flaxseed,1,500,35,35,20,28,0,1 cup (ground)=118g
+nuts & seeds,"nuts, walnuts",1,654,14,65,15,7,0,
+nuts & seeds,peanut butter,1,588,20,50,25,6,,
+nuts & seeds,seeds sunflower ,1,584,20,52,21,9,,.25cup=33g
+nuts & seeds,sesame seed,1,565,26,48,17,14,0,
+oil,kewpie roasted sesame dressing,1,140,4,14,1,,,
+oil,mayonnaise,1,680,1,75,1,0,,1tbsp=14g
+oil,sunflower oil,1,884,0,100,0,0,0,1tbsp=14g
+recipe,beans/kale/auber,1,72,10,2,5,2,2,
+recipe,ham-cheese-egg sand,1,330,27,15,21,3,,
+recipe,mapodofu,1,213,2,18,11,1,,
+recipe,my oatmeal,1,280,33,12,9,7,,
+recipe,PBJ bread 50g+raisin,1,316,44,10,9,4,,one slice
+recipe,pumpkin bread,1,303,63,13,1,1,,
+recipe,rice_gati,1,300,44,6,2,0,,
+recipe,rice+gati+sugar,1,234,18,17,2,1,,100g
+recipe,veg soup,1,27,5,0,2,1,,
+sweet,baking chocolate,1,500,30,52,13,17,0,
+sweet,chocolate dark cmpd,1,500,65,28,0,0,,
+sweet,"chocolate, my blend",1,420,67,16,5,2,,
+sweet,"chocolate, white cmpd",1,500,49,38,9,0,, 
+sweet,coca cola,1,38,9,,,,,
+sweet,jam,1,250,65,0,0,0,,1tbsp~20g
+sweet,jams and preserves,1,56,14,0,0,0,,
+sweet,nescafe 3 in 1,1,72,16,2,1,,,unit is one sleeve
+sweet,soft drinks,1,41,11,0,0,0,,140 per  12 oz can
+sweet,"sugar, white gran",1,400,100,0,0,0,,"one tsp=16cal, 2 lumps=19g"
+veg,"cabbage, kale, cooked",1,24,6,0,1,2,,
+veg,carrot/onion,1,40,10,0,1,3,,100g=~1cup
+veg,cocoa,1,228,58,14,20,33,5,1tbsp=5g
+veg,coconut cream,1,175,0,20,1,0,,
+veg,coconut meat,1,354,15,34,3,9,,
+veg,coconut water,1,19,4,0,1,1,,1C=240g
+veg,"eggplant, cooked",1,35,9,0,1,3,1,
+veg,juice,1,55,26,0,0,5,,
+veg,melon,1,34,9,0,1,1,,
+veg,"peppers, sweet",1,31,6,0,1,2,2,
+veg,potatoes - no skin,1,77,17,0,2,1,,one cup = 166cal
+veg,samosa,1,222,24,10,4,1,,
+veg,"seaweed, dried",1,200,30,0,30,20,,
+veg,shiitake,1,296,75,0,9,11,,
+veg,squash pumpkin ,1,46,8,2,1,3,,one cup=114cal
+veg,squash w/ sour cream,1,5000,,,,,,
+veg,tomato sauce,1,35,8,,2,2,3,
+veg,"tomato, raw",1,18,4,0,1,1,,
+veg,vegetable soup,1,60,9,1,4,2,10,
+veg,"vermicelli, kanomjiin",1,77,18,,1,,,
+veg,"vermicelli, wunsen",1,351
+,86,0,0,3,,
+water,water,1,0,0,0,0,0,,
