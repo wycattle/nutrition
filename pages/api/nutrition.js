@@ -6,6 +6,8 @@ import { parse } from 'csv-parse/sync';
 const csvFilePath = path.join(process.cwd(), 'lib', 'data', 'nutrition_table.csv');
 
 // Read and parse the CSV file
+//nutritionData is defined at module scope
+//Top level = directly inside the module, not nested inside any function, class, or block.
 const nutritionData = parse(fs.readFileSync(csvFilePath, 'utf8'), {
   columns: true, // Parse the CSV into objects with column headers as keys
   skip_empty_lines: true,

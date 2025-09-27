@@ -6,6 +6,8 @@ import axios from 'axios';
 
 import { IOption , IRecipeDetail, IRecipex, IMealDetail, IMealx  } from './interfaces';
 import Link from 'next/link';
+import styles from '../styles/createMeal_styles.module.scss';
+
 
 const CreateMeal = () => {
   const [dropdownSelectedValue, setDropdownSelectedValue]         = useState< IOption | null>(null);
@@ -13,7 +15,6 @@ const CreateMeal = () => {
   const [selectedRows, setSelectedRows]           = useState< IMealDetail[]>([]);
   const [dropdownOptions, setDropdownOptions]     = useState< IOption[] >([]);
   
-  const [options, setOptions]                     = useState< IOption[] >([]);
   const [data, setData]                           = useState< IMealDetail[]>([]);
   const [portionSize, setPortionSize]             = useState< number>(0);
   const [dropdownCheckedRows, setDropdownCheckedRows]         = useState< Set<number>>(new Set());
@@ -21,7 +22,6 @@ const CreateMeal = () => {
   const [isBlinking, setIsBlinking] = useState(false);
   
   const [namex, setName]                           = useState< string>('');
-  const [datex, setDatex]                         = useState< Date>(new Date());
   const [message, setMessage]                     = useState< string>('');
   const[totals, setTotals]                        = useState(
     {
@@ -109,7 +109,7 @@ const CreateMeal = () => {
 
 
 
-  const handleCreateTotals = (mealData) => {
+  const handleCreateTotals = (mealData: { details: IMealDetail[]}) => {
     const newTotals = mealData.details.reduce((acc, curr) => ({
       portionTot: acc.portionTot + (curr.portion ?? 0),
       caloriesTot: acc.caloriesTot + (curr.calories ?? 0),
@@ -150,21 +150,19 @@ const CreateMeal = () => {
     }));
   
     const mealx: IMealx = {
-      name: '',
+      name: namex,
       date: new Date,
       details: mealDetails,
     };
 
 
   axios.post('/api/meal_related/create_meal', mealx)
-    .then(response => 
-      {
-      setMessage(response.data.message);
-      const createdMeal = response.data;
-      setTotals(createdMeal.totals);
-
-      setMessage('Meal created successfully');
-    })
+    .then(response =>{
+      if (response.data?.totals) {
+        setTotals(response.data.totals);
+    }
+    setMessage('Meal created successfully');
+  })
     .catch(error => 
       {
       if (axios.isAxiosError(error)) {
@@ -172,14 +170,14 @@ const CreateMeal = () => {
       } else {
         setMessage('An error occurred');
       }
-    })
+    });
   };
+
 
 
 // need this here since the save Recipe button is on this page
   const handleSaveAsRecipe = () => 
     {
-    const currentDate = new Date();
     const newRecipe: IRecipex = {
       name: namex,
       details: selectedRows,
@@ -199,52 +197,26 @@ const CreateMeal = () => {
         } else {
           setMessage('An error occurred');
         }
-      }
-    );
-
-
-
-    
-
-
-  function DropdownComponent() {
-    useEffect(() => {
-      console.log('dropdownOptions changed:', dropdownOptions);
-    }, [dropdownOptions]);
-    return null;
-  }
-  
-  
-  
+      });
     };
+
+  
+  
+
 
 
   return ( 
     <div>
       <div>
         <Link href="/"> {}
-          <span  className='back-to-home-page'> Back to Home Page </span>
+          <span  className={styles['back-to-home-page']}> Back to Home Page </span>
         </Link>
       </div>
 
-      <div className='select-food-group-container'
-          style={{
-            width: '25%', 
-            margin: 'auto', 
-            textAlign: 'center',
-            fontSize: '1.125rem', 
-            border: '2px solid #0fcd45', 
-            padding: '0.25rem', 
-          }}
-      >
-        <label htmlFor="select-food-group-item"   //The htmlFor attribute in HTML is used to associate a <label> with a form control like an <input>, <textarea>, or <select>//
-          style={{
-            display: 'block',
-            marginBottom: '10px',
-            backgroundColor: '#473a3f',
-            border: "10px",
-          }}>
-             Select a food group
+      <div className={styles['select-food-group-container']}>
+        <label htmlFor="select-food-group-item" 
+          className={styles['select-food-group-item-labelStyle']}>
+            Select a food group
         </label>
 
       <div id="select-food-group-item">
@@ -261,9 +233,8 @@ const CreateMeal = () => {
       </div>
 
           {dropdownSelectedValue && (
-            <table className='table-style' style={{ backgroundColor: "#301e1e",}}>
-
-              <thead className = 'table-style' style={{backgroundColor: "#f2f2f2", }}>
+            <table className={styles['table-style']}>
+              <thead className={styles['table-style']}>
 
                 <tr>
                   <th> Select </th>
@@ -311,28 +282,15 @@ const CreateMeal = () => {
           )}
 
 
-      <div className="w-88 m-9 bg-purple-900 border-black">
-        <label htmlFor="portionSize"
-          style={{
-            width: '15px',
-            fontSize: '20px',
-            color: 'rgb(219 190 204)',
-            padding: '10px',
-            margin: '5px',
-          }}> enter a portion size number and click Enter </label>
+      + <div className={styles['portion-container']}>
+        <label htmlFor="portionSize">
+          enter a portion size number and click Enter 
+        </label>
         <input
           id="portionSize"
-          className={`portion-size-inputbox ${isBlinking ? ' blink' : ''}`}
-          type="number"
+          className={`${styles['portion-size-inputbox']} ${isBlinking ? styles['blink'] : ''}`}
+              type="number"
           placeholder='1'
-          style={{
-            width: "75px",
-            backgroundColor: "rgb(66 33 49)",
-            fontSize: '15px',
-            color: 'rgb(219 190 204)',
-            padding: '10px',
-            margin: '5px',
-          }}
           onFocus={(e) => e.target.value = ""}
           value={portionSize}
           onChange={(e) => setPortionSize(Number(e.target.value))}
@@ -347,13 +305,12 @@ const CreateMeal = () => {
       
       <h2>Selected Rows </h2>
         
-      <table    className = 'table-style' style={{ backgroundColor: "#301e1e",}}>
-              
-        <thead  className = 'table-style' style={{backgroundColor: "#f2f2f2", }}>
-
+      <table className={styles['table-style']}>
+        <thead className={styles['table-style']}>
           <tr>
-            <th className='text-left'>Desc 1</th>
-            <th className='text-left'>Desc 2</th>
+            <th className='text-left' >Remove</th>
+            <th className='text-left' >Desc 1</th>
+            <th className='text-left' >Desc 2</th>
             <th className='text-right'>Portion </th>
             <th className='text-right'>Calories</th>
             <th className='text-right'>Carb</th>
@@ -397,42 +354,22 @@ const CreateMeal = () => {
       </table>
 
 
-      <div>
-          <label htmlFor='nameItBox' > Give it a name:</label>
-          <input
+      <div className={styles['name-it-box']}>
+        <label htmlFor='nameItBox'>Give it a name:</label>
+        <input
             id='nameItBox'
-            className='text-box'
+            className={styles['name-it-box-inputStyle']}
             type="text" 
             value={namex} 
             onChange={e => setName(e.target.value)} 
             placeholder="fill me in" 
           />
-
-          <style >{`
-            .label {
-              margin-right: 10px;
-            }
-            .input {
-              width: 16.6666666667%; 
-              margin-left: 1.5rem;
-              margin-bottom: 1.5rem; 
-              font-size: 0.875rem; 
-              border: 1px solid #ed64a6; 
-            }
-          `}</style>
       </div>
+
       <div>
           <button
             id='saveAsMealButton'
-            style={{
-              width: '15vw',
-              margin: '25px ',
-              textAlign: 'left',
-              fontSize: '16px',
-              border: '2px solid #efc6ec',
-              backgroundColor: "#694242",
-              padding: '5px',
-            }}
+            className={styles['saveAsMealButtonStyle']}
             onClick={handleSaveAsMeal}
           >
             Save as Meal
@@ -442,15 +379,7 @@ const CreateMeal = () => {
       <div>
           <button
             id='saveAsRecipeButton'
-            style={{
-              width: '15vw',
-              margin: '25px ',
-              textAlign: 'center',
-              fontSize: '16px',
-              border: '2px solid #efc6ec',
-              backgroundColor: "#694242",
-              padding: '5px',
-            }}
+            className={styles['saveAsRecipeButtonStyle']}
             onClick={handleSaveAsRecipe} 
             >
             Save as Recipe
@@ -458,7 +387,7 @@ const CreateMeal = () => {
       </div>
 
 
-      {message && <p>{message}</p>}
+      {message && <div className={styles['alert-popup2']}>{message}</div>}
 
 
       </div>

@@ -25,7 +25,7 @@
             "cwd": "${workspaceFolder}"
         },
 
-            {
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Next.js",
@@ -34,9 +34,9 @@
             "console": "integratedTerminal",
             "skipFiles": ["<node_internals>/**"],
             "cwd": "${workspaceFolder}"
-            },
+        },
 
-            {
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Next.js with Chromium",
@@ -45,12 +45,6 @@
             "runtimeExecutable": "/usr/bin/chromium-browser", // Path to Chromium
             "sourceMaps": true,
             "trace": true
-            }
-        ]
         }
-
-
-
-
     ]
 }

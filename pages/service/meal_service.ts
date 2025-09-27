@@ -7,8 +7,8 @@ export class MealService {
   async   createMeal(mealData: IMealx) {
     const createdMeal = await prisma.mealx.create({
       data: {
-        namex:  mealData.namex,
-        datex:  mealData.datex,
+        namex:  mealData.name,
+        datex:  mealData.date,
         details:mealData.details as any, // Use 'any' or a more specific type if known
       },
     });;

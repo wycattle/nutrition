@@ -51,6 +51,17 @@
     box-shadow: 0 2px 4px rgba(44, 68, 66, 0.5);
 }
 
+ .portion-container {
+   display: flex;
+   align-items: center;
+   padding: 10px;
+   margin: 20px auto;
+   width: fit-content;
+   background-color: #150c0c;
+   border: 2px solid #0fcd45;
+   border-radius: 15px;
+ }
+
 .portion-size-inputboxStyle.blink {
     animation: blink-portion 1s infinite;
 }
