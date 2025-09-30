@@ -1,8 +1,9 @@
 /* styles/homepage.module.scss*/
-;
-@import "./global.scss";
+
+@import './variables';
 
 .outerbox {
+  position: relative; //makes absolutely positioned children (backToHomeTopLeft) relative to it)
   width: 75vw;
   height: 100vh;
   margin: auto;
@@ -10,10 +11,28 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid  #025d4e ;
+  border: $default-border ;
   border-radius: 450px;
-  background: radial-gradient(circle  at center, #000000,  #01343e );
+  background: radial-gradient(circle  at center, #886e6e,  #01343e );
 }
+
+.backToHomeTopLeft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 10px;
+  z-index: 10;
+}
+
+.centerFeature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+
 
 .header {
   display: flex;
@@ -21,8 +40,8 @@
   align-items: center;
   font-weight: 100;
   font-size: 24px;
-  background-color: #231e21;
-  border: 1px solid;
+  background-color: #4e464b;
+  border: $default-border;
   border-radius: 10px;
   padding: 20px;
   margin: 30px;
@@ -44,21 +63,21 @@
     padding: 10px;
     border-radius: 10px;
     margin: 20px;
-    background-color: #231e21;
+    background-color: #40383d;
     font-size: 20px;
     
       }
 
-.button .buttonLink {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  border-radius: 10px;
-  margin: 20px;
-  background-color: #231e21;
-  font-size: 20px;
+// .button .buttonLink {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 10px;
+//   border-radius: 10px;
+//   margin: 20px;
+//   background-color: #40383d;
+//   font-size: 20px;
 
-}  
+// }  
 
 

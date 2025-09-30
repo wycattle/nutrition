@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
 import Head from 'next/head';
-
+import styles from '../styles/homepage.module.scss';
 import { HomeProps } from '../lib/types/homeprops'; //imports the TypeScript props type used by the component for type-checking, defined in HomeProps.
 
 //The page component. It renders JSX and receives its props.
@@ -16,11 +16,11 @@ export default function Home(props: HomeProps) {     //Defines and default-expor
         <link rel="icon" href="/images/favicon.ico" />
       </Head>
 
-      <div className={'outerbox'}>
-        <h1 className={'header'}>Welcome to my Nutrition App</h1>
+      <div className={styles['outerbox']}>
+        <h1 className={styles['header']}>Welcome to my Nutrition App</h1>
 
-        <div className={'centerFeature'}>
-          <div className={'image1'}>
+        <div className={styles['centerFeature']}>
+          <div className={styles['image1']}>
             <Image
               src="/images/IMG_0748.JPG"
               alt="Splash Image"
@@ -31,7 +31,7 @@ export default function Home(props: HomeProps) {     //Defines and default-expor
           </div>
 
           <div>
-            <div className={'timeDisplay'}>
+            <div className={styles['timeDisplay']}>
               today is:&nbsp;&nbsp;
               {new Intl.DateTimeFormat('en-US', {
                 dateStyle: 'medium',
@@ -39,21 +39,21 @@ export default function Home(props: HomeProps) {     //Defines and default-expor
               }).format(new Date(currentDate))}
             </div>
 
-            <div className={'button'}>
-              <Link href="/createMeal">
-                <span className={'buttonLink'}>Create a Meal</span>
+            <div className={styles['button']}>
+              <Link href="/CreateMeal">
+                <span className="global-button">Create a Meal</span>
               </Link>
             </div>
 
-            <div className={'button'}>
-              <Link href="/totalsByDate">
-                <span className={'buttonLink'}>Totals by date range</span>
+            <div className={styles['button']}>
+              <Link href="/TotalsByDate">
+                <span className="global-button">Totals by date range</span>
               </Link>
             </div>
 
-            <div className={'button'}>
+            <div className={styles['button']}>
               <Link href="/RecipeViewModify">
-                <span className={'buttonLink'}>View/Modify Recipes</span>
+                <span className="global-button">View/Modify Recipes</span>
               </Link>
             </div>
           </div>

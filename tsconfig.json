@@ -1,9 +1,13 @@
 //tsconfig.json
+
+
+//These settings are optimized for a Next.js React project:
+
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {
-      "@/styles/*": [
+    "paths": {       
+      "@/styles/*": [ //Path aliases under "paths" let you use @/styles/* instead of ../styles/*
         "styles/*"
       ],
       "@/types/*": [
@@ -26,11 +30,12 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "preserve",    //Keeps JSX as-is for Next.js to handle
     "incremental": true,
-    "target": "ES6",
+    "target": "ES6",    //Compiles to ES6 instead of older ES3/ES5 default
     "sourceMap": true,
-    "plugins": [
+
+    "plugins": [    // integrates Next.js TypeScript plugin
       {
         "name": "next"
       }

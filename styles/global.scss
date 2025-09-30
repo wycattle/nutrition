@@ -1,9 +1,13 @@
 /* styles/global.scss */
+
+
+@import './variables';
+
 body {
-    background-color: #100b0b; 
+    background-color: #231b1b !important; 
     color:  #c6a3dd;
     border-color:  #049980;
-    border: 1px solid  #03846e ;
+    border: $default-border ;
     font-family: 'Lucida Sans';
     border-radius: 50px;
   }
@@ -14,23 +18,20 @@ body {
     text-decoration: none;  //this eliminates the underscore
   }
 
-//   .table-style {
-//     width: '75vw';
-//     text-align: 'right';
-//     margin: "25px";
-//     border: "1px solid #000";
-// }
+  /* ensure html element doesn't override */
+html {
+    background-color: #231b1b !important;
+  }
 
-
-// .outerbox {
-//   width: 75vw;
-//   height: 100vh;
-//   margin: auto;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-//   border: 1px solid  #025d4e ;
-//   border-radius: 450px;
-//   background: radial-gradient(circle  at center, #000000,  #01343e );
-// }
+/* Global button styles */
+.global-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 20px;
+    background-color: #40383d;
+    font-size: 20px;
+    color: #c6a3dd;
+}  

@@ -1,13 +1,16 @@
 /* styles/createMeal_styles.module.scss    */
 
+@import './variables';
+
 .back-to-home-page {
     width: 75vw; 
     margin: auto; 
     text-align: center;
     font-size: 1.125rem; 
-    border: 2px solid #0fcd45; 
+    border: $default-border;
+    border-radius: 25px; 
     padding: 5px;
-    color:#0fcd45
+    color:#d18cf3
 
 }
 
@@ -17,7 +20,7 @@
     margin: auto; 
     text-align: center;
     font-size: 1.125rem; 
-    border: 2px solid #0fcd45; 
+    border: $default-border; 
     padding: 0.25rem;
 }
 
@@ -44,7 +47,7 @@
     text-align: center;
     background-color:  #1a3e40;
     font-size: 20px;
-    // color: rgb(6, 126, 132);
+    border: $default-border;
     padding: 5px ;
     margin: 5px auto;
     border-radius: 25px; 
@@ -58,7 +61,7 @@
    margin: 20px auto;
    width: fit-content;
    background-color: #150c0c;
-   border: 2px solid #0fcd45;
+   border: $default-border;
    border-radius: 15px;
  }
 
@@ -94,7 +97,7 @@
     margin: 15px auto;
     margin-top: 15px;
     background-color: #150c0c;
-    border: 2px solid #efc6ec;
+    border: $default-border;
     border-radius: 25px; 
   }
 
@@ -107,7 +110,7 @@
     padding: 5px;
     text-align: left;
     font-size: 20px;
-    border: 2px solid #efc6ec;
+    border: $default-border;
     background-color: #694242;
     border-radius: 25px; 
     box-shadow: 0 2px 4px rgba(44, 68, 66, 0.5);
@@ -116,49 +119,6 @@
   .name-it-box-inputStyle.blink:focus {
     animation: blink-portion 1s infinite;
 }
-
-
-
-// .meal-table-labelStyle {
-//     padding: 10px;
-//     width: 75vw;
-//     margin: 15px auto;
-//     margin-top: 15px;
-//     background-color: #150c0c;
-//     border: 2px solid #efc6ec;
-//     border-radius: 25px; 
-// }
-
-// .meal-tableStyle {
-//     // text-align: right;
-//     width: 75vw;
-//     margin: 25px auto;
-//     background-color: #10e875;
-//     border: 1px solid #000;
-
-//         thead {
-//             align-items: baseline;
-//             margin: 25px; 
-//             background-color: #f2f2f2;
-//             border: 1px solid #000;}
-// }  
-
-   
-
-// .totals-rowStyle {
-//     // text-align: right;
-//     width: 75vw;
-//     margin: 25px auto;
-//     background-color: #301e1e;
-//     border: 1px solid #000;
-
-//     thead {
-//         align-items: baseline;
-//         margin: 25px; /* Adjust if necessary, considering the table's margin */
-//         background-color: #f2f2f2;
-//         border: 1px solid #000;}
-// }  
-
 
 
 .saveAsMealButtonStyle {
