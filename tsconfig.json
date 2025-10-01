@@ -42,11 +42,14 @@
     ]
   },
   "include": [
-    "src/**/*",
-    "types/**/*"
+    "**/*.ts",
+    "**/*.tsx",
+    "types/**/*",
+    "next-env.d.ts"
   ],
   "exclude": [
     "node_modules",
-    "**/*.js"
+    ".next",
+    "out"
   ]
 }

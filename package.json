@@ -2,12 +2,11 @@
   "name": "react_next_nutrition",
   "version": "1.0.0",
   "description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
-  "main": "tailwind.config.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "dev": "prisma generate && next dev",
+    "dev": "next dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "next build"
   },
@@ -15,7 +14,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^6.16.2",
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",
     "csv-parse": "^6.1.0",
@@ -44,14 +42,12 @@
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",
     "jest": "^30.1.3",
-    "prisma": "^6.16.2",
     "sass": "^1.93.2",
     "sass-loader": "^16.0.5",
     "typescript": "5.9.2"
   },
-
   "engines": {
     "node": ">=20.0.0 <21.0.0",
     "npm": ">=10.0.0"
-  } 
+  }
 }
