@@ -15,6 +15,7 @@ export interface IOption {
 export interface IMealx {
     name: string;
     date: Date;
+    timestamp: string;
     details: IMealDetail[];     }
 
 

@@ -1,7 +1,7 @@
 //pages/api/meal_related/CreateMeal.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { IMealx } from '../../interfaces.ts';
+import { IMealx }   from '../../interfaces.ts';
 import mealInstance from '../../service/MealService.ts';
 
 
