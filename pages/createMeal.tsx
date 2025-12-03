@@ -364,6 +364,11 @@ const CreateMeal = () => {
         </tbody>
       </table>
 
+
+
+
+  {selectedRows.length > 0 && (
+    <>
       {showNameInput && (
         <div className={styles['name-it-box']}>
           <label htmlFor="nameItBox">Give it a name:</label>
@@ -397,6 +402,10 @@ const CreateMeal = () => {
           Save as Recipe
         </button>
       </div>
+    </>
+  )}
+
+
 
       {message && <div className={styles['alert-popup2']}>{message}</div>}
     </div>

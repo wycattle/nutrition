@@ -1,47 +1,34 @@
 /* styles/global.scss */
 
 
-@import './variables';
-
 body {
-<<<<<<< HEAD
-    background-color: #1a1718; 
-    color:  #f0a5d6;
-    border-color:  #049980;
-    border: 1px solid  #418b7e ;
-=======
-    background-color: #231b1b !important; 
-    color:  #c6a3dd;
-    border-color:  #049980;
-    border: $default-border ;
->>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
-    font-family: 'Lucida Sans';
-    border-radius: 50px;
-  }
+  background-color: #231b1b !important;
+  color: #c6a3dd;
+  border-color: #049980;
+  border: 2px solid #418b7e;
+  font-family: 'Lucida Sans';
+  border-radius: 50px;
+}
 
-  a:-webkit-any-link {
-    color:  #c6a3dd;
-    cursor: pointer;
-    text-decoration: none;  //this eliminates the underscore
-  }
-<<<<<<< HEAD
-=======
+a:-webkit-any-link {
+  color: #c6a3dd;
+  cursor: pointer;
+  text-decoration: none; // eliminates the underscore
+}
 
-  /* ensure html element doesn't override */
 html {
-    background-color: #231b1b !important;
-  }
+  background-color: #231b1b !important;
+}
 
 /* Global button styles */
 .global-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border-radius: 10px;
-    margin: 20px;
-    background-color: #40383d;
-    font-size: 20px;
-    color: #c6a3dd;
-}  
->>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 20px;
+  background-color: #40383d;
+  font-size: 20px;
+  color: #c6a3dd;
+}
