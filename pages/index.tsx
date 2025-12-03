@@ -3,7 +3,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
 import Head from 'next/head';
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
 import styles from '../styles/homepage.module.scss';
 import { HomeProps } from '../lib/types/homeprops'; //imports the TypeScript props type used by the component for type-checking, defined in HomeProps.
 
@@ -17,10 +20,18 @@ export default function Home(props: HomeProps) {     //Defines and default-expor
         <link rel="icon" href="/images/favicon.ico" />
       </Head>
 
+<<<<<<< HEAD
       <div className={styles.outerbox}>
         <h1 className={styles.header}>Welcome to my Nutrition App</h1>
         <div className={styles.centerFeature}>
           <div className={styles.image1}>
+=======
+      <div className={styles['outerbox']}>
+        <h1 className={styles['header']}>Welcome to my Nutrition App</h1>
+
+        <div className={styles['centerFeature']}>
+          <div className={styles['image1']}>
+>>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
             <Image
               src="/images/IMG_0748.JPG"
               alt="Splash Image"
@@ -30,7 +41,12 @@ export default function Home(props: HomeProps) {     //Defines and default-expor
             />
           </div>
 
+<<<<<<< HEAD
             <div className={styles.timeDisplay}>
+=======
+          <div>
+            <div className={styles['timeDisplay']}>
+>>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
               today is:&nbsp;&nbsp;
               {new Intl.DateTimeFormat('en-US', {
                 dateStyle: 'medium',
@@ -38,6 +54,7 @@ export default function Home(props: HomeProps) {     //Defines and default-expor
               }).format(new Date(currentDate))}
             </div>
 
+<<<<<<< HEAD
             <div className={styles.button}>
               <Link href="/createMeal">
                 <span className={styles.buttonLink}>Create a Meal</span>
@@ -53,6 +70,23 @@ export default function Home(props: HomeProps) {     //Defines and default-expor
             <div className={styles.button}>
               <Link href="/RecipeViewModify">
                 <span className={styles.buttonLink}>View/Modify Recipes</span>
+=======
+            <div className={styles['button']}>
+              <Link href="/CreateMeal">
+                <span className="global-button">Create a Meal</span>
+              </Link>
+            </div>
+
+            <div className={styles['button']}>
+              <Link href="/TotalsByDate">
+                <span className="global-button">Totals by date range</span>
+              </Link>
+            </div>
+
+            <div className={styles['button']}>
+              <Link href="/RecipeViewModify">
+                <span className="global-button">View/Modify Recipes</span>
+>>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
               </Link>
             </div>
 

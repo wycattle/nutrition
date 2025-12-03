@@ -1,7 +1,7 @@
 // pages/api/meal_related/dailyTotals.ts
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DailyTotals } from '../../service/totals_by_date_range';
+import { DailyTotals } from '../../service/DailyTotals';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {

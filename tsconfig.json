@@ -1,10 +1,14 @@
 //tsconfig.json
+
+
+//These settings are optimized for a Next.js React project:
+
 {
 
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {
-      "@/styles/*": [
+    "paths": {       
+      "@/styles/*": [ //Path aliases under "paths" let you use @/styles/* instead of ../styles/*
         "styles/*"
       ],
       "@/types/*": [
@@ -13,7 +17,7 @@
       // Add other path aliases as needed
     },
 
-    "allowImportingTsExtensions": true,
+
     
     "lib": [
       "dom",
@@ -23,18 +27,20 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": false,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "commonJS",
     "outDir": "out",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "incremental": true,
-    "target": "ES6",
+    "target": "ES6",    //Compiles to ES6 instead of older ES3/ES5 default
     "sourceMap": true,
-    "plugins": [
+
+    "plugins": [    // integrates Next.js TypeScript plugin
       {
         "name": "next"
       }
@@ -42,14 +48,12 @@
   },
   "include": [
     "src/**/*",
-    "types/**/*",
-    "types/styles.d.ts",
-    "styles/**/*.scss",
-    "pages/**/*" 
+    "types/**/*"
   ],
   "exclude": [
     "node_modules",
-    "**/*.js"
+    ".next",
+    "out"
   ]
 
 }

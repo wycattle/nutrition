@@ -1,8 +1,8 @@
-//pages/api/meal_related/create_meal.ts
+//pages/api/meal_related/CreateMeal.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { IMealx } from '../../interfaces.ts';
-import mealInstance from '../../service/meal_service.ts';
+import { IMealx }   from '../../interfaces.ts';
+import mealInstance from '../../service/MealService.ts';
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(405).json({ message: 'Method Not Allowed' });
     }
   } catch (error) {
-    console.error('Error in /api/meal_related/create_meal:', error);
+    console.error('Error in /api/meal_related/CreateMeal:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 }
