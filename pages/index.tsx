@@ -1,104 +1,280 @@
-// pages/index.tsx
+import React, { useState, useEffect } from 'react';
+import Select from 'react-dropdown-select';
+import axios from 'axios';
 import Link from 'next/link';
-import Image from 'next/image';
-import React from 'react';
-import Head from 'next/head';
-<<<<<<< HEAD
+import styles from '../styles/createMeal_styles.module.scss';
+import { IOption, IMealDetail, IMealx, IRecipex } from './interfaces';
+import IndexView from './index_view';
 
-=======
->>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
-import styles from '../styles/homepage.module.scss';
-import { HomeProps } from '../lib/types/homeprops'; //imports the TypeScript props type used by the component for type-checking, defined in HomeProps.
+//state initialization of hooks
+const CreateMeal = () => {
+  const [dropdownOptions,       setDropdownOptions]       = useState<IOption[]>([]);
+  const [dropdownSelectedValue, setDropdownSelectedValue] = useState<IOption | null>(null);
+  const [data,                  setData]                  = useState<IMealDetail[]>([]);
+  const [portionSize,           setPortionSize]           = useState<number>(1);
+  const [selectedRows,          setSelectedRows]          = useState<IMealDetail[]>([]);
+  const [totals,                setTotals]                = useState({
+    portionTot: 0,
+    caloriesTot: 0,
+    carbTot: 0,
+    fatTot: 0,
+    proteinTot: 0,
+    fiberTot: 0,
+  });
+  const [namex,                 setName]                  = useState<string>('');
+  const [message,               setMessage]               = useState<string>('');
+  const [showNameInput,         setShowNameInput]         = useState(false);
 
-//The page component. It renders JSX and receives its props.
-export default function Home(props: HomeProps) {     //Defines and default-exports the Next.js page component: export default function Home(props: HomeProps). The props parameter is type-checked against HomeProps.
-  const { currentDate } = props; //Destructures currentDate from props so it can be used directly inside the component.
 
-  return (    // JSX/TSX (React markup),
-    <div>
-      <Head>
-        <link rel="icon" href="/images/favicon.ico" />
-      </Head>
+  // component function body
+  useEffect(() => {
+    axios.get('/api/nutrition')
+      .then(response => {
+        setData(response.data || []);
+        const uniqueValues = Array.from(new Set((response.data || []).map((item: IMealDetail) => item.desc1)));
+        setDropdownOptions(uniqueValues.map((value: string) => ({ label: value, value })));
+      })
+      .catch(error => {
+        setMessage('Error fetching data');
+      });
+  }, []);
 
-<<<<<<< HEAD
-      <div className={styles.outerbox}>
-        <h1 className={styles.header}>Welcome to my Nutrition App</h1>
-        <div className={styles.centerFeature}>
-          <div className={styles.image1}>
-=======
-      <div className={styles['outerbox']}>
-        <h1 className={styles['header']}>Welcome to my Nutrition App</h1>
+  useEffect(() => {
+    if (selectedRows.length > 0) {
+      const newTotals = selectedRows.reduce((acc, curr) => ({
+        portionTot: acc.portionTot + (curr.portion ?? 0),
+        caloriesTot: acc.caloriesTot + (curr.calories ?? 0),
+        carbTot: acc.carbTot + (curr.carb ?? 0),
+        fatTot: acc.fatTot + (curr.fat ?? 0),
+        proteinTot: acc.proteinTot + (curr.protein ?? 0),
+        fiberTot: acc.fiberTot + (curr.fiber ?? 0),
+      }), {
+        portionTot: 0,
+        caloriesTot: 0,
+        carbTot: 0,
+        fatTot: 0,
+        proteinTot: 0,
+        fiberTot: 0,
+      });
+      setTotals(newTotals);
+    } else {
+      setTotals({
+        portionTot: 0,
+        caloriesTot: 0,
+        carbTot: 0,
+        fatTot: 0,
+        proteinTot: 0,
+        fiberTot: 0,
+      });
+    }
+  }, [selectedRows]);
 
-        <div className={styles['centerFeature']}>
-          <div className={styles['image1']}>
->>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
-            <Image
-              src="/images/IMG_0748.JPG"
-              alt="Splash Image"
-              width={300}
-              height={300}
-              priority
-            />
-          </div>
 
-<<<<<<< HEAD
-            <div className={styles.timeDisplay}>
-=======
-          <div>
-            <div className={styles['timeDisplay']}>
->>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
-              today is:&nbsp;&nbsp;
-              {new Intl.DateTimeFormat('en-US', {
-                dateStyle: 'medium',
-                timeZone: 'Asia/Bangkok'
-              }).format(new Date(currentDate))}
-            </div>
 
-<<<<<<< HEAD
-            <div className={styles.button}>
-              <Link href="/createMeal">
-                <span className={styles.buttonLink}>Create a Meal</span>
-              </Link>
-            </div>
+  const handleRowSelect = (item: IMealDetail) => {
+    const updatedRow = {
+      ...item,
+      portion: portionSize,
+      calories: (item.calories || 0) * portionSize,
+      carb: (item.carb || 0) * portionSize,
+      fat: (item.fat || 0) * portionSize,
+      protein: (item.protein || 0) * portionSize,
+      fiber: (item.fiber || 0) * portionSize,
+    };
+    setSelectedRows(prev => [...prev, updatedRow]);
+  };
 
-            <div className={styles.button}>
-              <Link href="/totalsByDate">
-                <span className={styles.buttonLink}>Totals by date range</span>
-              </Link>
-            </div>
+  const handleRemoveRow = (index: number) => {
+    setSelectedRows(prev => prev.filter((_, i) => i !== index));
+  };
 
-            <div className={styles.button}>
-              <Link href="/RecipeViewModify">
-                <span className={styles.buttonLink}>View/Modify Recipes</span>
-=======
-            <div className={styles['button']}>
-              <Link href="/CreateMeal">
-                <span className="global-button">Create a Meal</span>
-              </Link>
-            </div>
+  const handleSaveAsMeal = () => {
+    setShowNameInput(true);
+    if (!namex.trim()) {
+      setMessage('Please enter a name for the meal.');
+      return;
+    }
+    const mealx: IMealx = {
+      name: namex,
+      date: new Date(),
+      details: selectedRows,
+    };
+    axios.post('/api/meal_related/create_meal', mealx)
+      .then(response => {
+        setMessage('Meal created successfully');
+        setSelectedRows([]);
+        setName('');
+      })
+      .catch(() => setMessage('Error creating meal'));
+  };
 
-            <div className={styles['button']}>
-              <Link href="/TotalsByDate">
-                <span className="global-button">Totals by date range</span>
-              </Link>
-            </div>
+  const handleSaveAsRecipe = () => {
+    setShowNameInput(true);
+    if (!namex.trim()) {
+      setMessage('Please enter a name for the recipe.');
+      return;
+    }
+    const newRecipe: IRecipex = {
+      name: namex,
+      details: selectedRows,
+    };
+    axios.post('/api/recipe_related/create_recipe', newRecipe)
+      .then(() => {
+        setMessage('Recipe created successfully');
+        setSelectedRows([]);
+        setName('');
+      })
+      .catch(() => setMessage('Error creating recipe'));
+  };
 
-            <div className={styles['button']}>
-              <Link href="/RecipeViewModify">
-                <span className="global-button">View/Modify Recipes</span>
->>>>>>> 0ee1dbe591b138557ade905ef0a46e276719f596
-              </Link>
-            </div>
+  return (
+    <div className={styles['page-root']}>
+      <Link href="/">
+        <span className={styles['back-to-home-page']}>Back to Home Page</span>
+      </Link>
 
-        </div>
+      <div className={styles['select-food-group-container']}>
+        <label htmlFor="select-food-group-item" className={styles['select-food-group-item-labelStyle']}>
+          Select a food group
+        </label>
+        <Select
+          options={dropdownOptions}
+          onChange={values => setDropdownSelectedValue(values[0])}
+          values={dropdownSelectedValue ? [dropdownSelectedValue] : []}
+        />
       </div>
+
+      {dropdownSelectedValue && (
+        <table className={styles['table-style']}>
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Desc 1</th>
+              <th>Desc 2</th>
+              <th>Portion</th>
+              <th>Calories</th>
+              <th>Carb</th>
+              <th>Fat</th>
+              <th>Protein</th>
+              <th>Fiber</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.filter(item => item.desc1 === dropdownSelectedValue.value).map((item, idx) => (
+              <tr key={idx}>
+                <td>
+                  <button onClick={() => handleRowSelect(item)}>Add</button>
+                </td>
+                <td>{item.desc1}</td>
+                <td>{item.desc2}</td>
+                <td>{item.portion}</td>
+                <td>{item.calories}</td>
+                <td>{item.carb}</td>
+                <td>{item.fat}</td>
+                <td>{item.protein}</td>
+                <td>{item.fiber}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      <div className={styles['portion-container']}>
+        <label htmlFor="portionSize">Enter portion size:</label>
+        <input
+          id="portionSize"
+          className={styles['portion-size-inputbox']}
+          type="number"
+          min={1}
+          value={portionSize}
+          onChange={e => setPortionSize(Number(e.target.value))}
+        />
+      </div>
+
+      <h2 className={styles.h2}>Selected Rows</h2>
+      <table className={styles['table-style']}>
+        <thead>
+          <tr>
+            <th>Remove</th>
+            <th>Desc 1</th>
+            <th>Desc 2</th>
+            <th>Portion</th>
+            <th>Calories</th>
+            <th>Carb</th>
+            <th>Fat</th>
+            <th>Protein</th>
+            <th>Fiber</th>
+          </tr>
+        </thead>
+        <tbody>
+          {selectedRows.map((item, idx) => (
+            <tr key={idx}>
+              <td>
+                <button onClick={() => handleRemoveRow(idx)}>Remove</button>
+              </td>
+              <td>{item.desc1}</td>
+              <td>{item.desc2}</td>
+              <td>{item.portion}</td>
+              <td>{item.calories}</td>
+              <td>{item.carb}</td>
+              <td>{item.fat}</td>
+              <td>{item.protein}</td>
+              <td>{item.fiber}</td>
+            </tr>
+          ))}
+          <tr>
+            <td>Totals</td>
+            <td></td>
+            <td></td>
+            <td>{totals.portionTot}</td>
+            <td>{totals.caloriesTot}</td>
+            <td>{totals.carbTot}</td>
+            <td>{totals.fatTot}</td>
+            <td>{totals.proteinTot}</td>
+            <td>{totals.fiberTot}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      {selectedRows.length > 0 && (
+        <>
+          {showNameInput && (
+            <div className={styles['name-it-box']}>
+              <label htmlFor="nameItBox">Give it a name:</label>
+              <input
+                id="nameItBox"
+                className={styles['name-it-box-inputStyle']}
+                type="text"
+                value={namex}
+                onChange={e => setName(e.target.value)}
+                placeholder="fill me in"
+              />
+            </div>
+          )}
+          <div>
+            <button
+              id="saveAsMealButton"
+              className={styles['saveAsMealButtonStyle']}
+              onClick={handleSaveAsMeal}
+            >
+              Save as Meal
+            </button>
+          </div>
+          <div>
+            <button
+              id="saveAsRecipeButton"
+              className={styles['saveAsRecipeButtonStyle']}
+              onClick={handleSaveAsRecipe}
+            >
+              Save as Recipe
+            </button>
+          </div>
+        </>
+      )}
+
+      {message && <div className={styles['alert-popup2']}>{message}</div>}
     </div>
   );
-}
+};
 
-//Special named exports that Next.js calls on the server to fetch data. They return { props } 
-// which are passed into the page component. Order in the file doesn’t matter.
-export async function getServerSideProps() {   //Pages must default-export a React component (the page)
-  const currentDate = new Date().toString();
-  return { props: { currentDate } };
-}
+export default CreateMeal;
