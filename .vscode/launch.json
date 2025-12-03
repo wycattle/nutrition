@@ -25,16 +25,6 @@
             "cwd": "${workspaceFolder}"
         },
 
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Next.js",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": ["run", "dev", "--no-warnings"],
-            "console": "integratedTerminal",
-            "skipFiles": ["<node_internals>/**"],
-            "cwd": "${workspaceFolder}"
-        },
 
         {
             "type": "chrome",

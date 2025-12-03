@@ -1,13 +1,33 @@
 /* styles/createMeal_styles.module.scss    */
 
+// The * in .page-root * is the universal selector in CSS. It matches all elements that are descendants of .page-root, applying the style to every child, grandchild, etc.
+.page-root * {
+  color: #dda3a3 !important;
+  background-color: #100b0b;
+}
+
+// remove the browser defaults
+.page-root a,   // 'a'  = 'anchor'
+.page-root a:visited,
+.page-root a:active,
+.page-root a:hover {
+  text-decoration: none !important;
+}
+
+.h2 {
+  font-size: 1.5rem;
+}
+
 .back-to-home-page {
     width: 75vw; 
     margin: auto; 
     text-align: center;
-    font-size: 1.125rem; 
-    border: 2px solid #0fcd45; 
+    font-size: 1.0rem;
+    color: inherit; 
+    border: 2px solid;
+     border-radius: 10px; 
     padding: 5px;
-    color:#0fcd45
+
 
 }
 
@@ -17,14 +37,14 @@
     margin: auto; 
     text-align: center;
     font-size: 1.125rem; 
-    border: 2px solid #0fcd45; 
+    border: 2px solid ; 
     padding: 0.25rem;
+    border-radius: 10px;
 }
 
 .select-food-group-item-labelStyle {
     display: block;
     margin-bottom: 10px;
-    background-color: #150c0c;
     border: 10px;
   }
 
@@ -42,9 +62,7 @@
 .portion-size-inputbox {
     width: 50px;
     text-align: center;
-    background-color:  #1a3e40;
     font-size: 20px;
-    // color: rgb(6, 126, 132);
     padding: 5px ;
     margin: 5px auto;
     border-radius: 25px; 
@@ -57,8 +75,7 @@
    padding: 10px;
    margin: 20px auto;
    width: fit-content;
-   background-color: #150c0c;
-   border: 2px solid #0fcd45;
+  //  border: 2px solid;
    border-radius: 15px;
  }
 
@@ -93,8 +110,8 @@
     width: 75vw;
     margin: 15px auto;
     margin-top: 15px;
-    background-color: #150c0c;
-    border: 2px solid #efc6ec;
+    // background-color: #150c0c;
+    // border: .5px solid;
     border-radius: 25px; 
   }
 
@@ -107,8 +124,8 @@
     padding: 5px;
     text-align: left;
     font-size: 20px;
-    border: 2px solid #efc6ec;
-    background-color: #694242;
+    // border: 1px solid #efc6ec;
+    // background-color: #372a2a;
     border-radius: 25px; 
     box-shadow: 0 2px 4px rgba(44, 68, 66, 0.5);
   }
@@ -166,8 +183,7 @@
     margin: 25px;
     text-align: left;
     font-size: 16px;
-    border: 2px solid #efc6ec;
-    background-color: #694242;
+    // border: 2px solid #efc6ec;
     padding: 5px;
 }
 
@@ -177,8 +193,7 @@
     margin: 25px;
     text-align: left;
     font-size: 16px;
-    border: 2px solid #efc6ec;
-    background-color: #694242;
+    // border: 2px solid #efc6ec;
     padding: 5px;
 }
 

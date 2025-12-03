@@ -1,5 +1,6 @@
 //tsconfig.json
 {
+
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
@@ -11,6 +12,9 @@
       ]
       // Add other path aliases as needed
     },
+
+    "allowImportingTsExtensions": true,
+    
     "lib": [
       "dom",
       "dom.iterable",
@@ -26,7 +30,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "target": "ES6",
     "sourceMap": true,
@@ -38,10 +42,14 @@
   },
   "include": [
     "src/**/*",
-    "types/**/*"
+    "types/**/*",
+    "types/styles.d.ts",
+    "styles/**/*.scss",
+    "pages/**/*" 
   ],
   "exclude": [
     "node_modules",
     "**/*.js"
   ]
+
 }
