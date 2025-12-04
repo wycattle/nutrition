@@ -38,10 +38,14 @@
       }
     ]
   },
+
   "include": [
-    "src/**/*",
-    "types/**/*"
+    "types/**/*",
+    "pages/**/*",
+    "utils/**/*",
+    "styles/**/*"
   ],
+
   "exclude": [
     "node_modules",
     ".next",
