@@ -1,4 +1,4 @@
-export type HomeProps = {
+export type HomepageType = {
     title:string;
     description:string;
     currentDate: Date;

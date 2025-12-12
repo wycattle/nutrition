@@ -1,34 +1,86 @@
 /* styles/global.scss */
 
+/* Reset browser defaults */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;   // bkgrd behind the buttons
+  
+}
+a, a:visited, a:active {
+  color: #f7c1c1 !important;
+  border-color: #f7c1c1 !important;
+  text-decoration: none; // optional: removes underline
+}
 
 body {
-  background-color: #231b1b !important;
-  color: #c6a3dd;
-  border-color: #049980;
+  height: 100%;
+  min-height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  background-attachment: fixed;
+  color: #f7c1c1 !important; //fontcolor of meal table
+  background-color: #3b4144 !important;
+  border-color: #049980 !important;
   border: 2px solid #418b7e;
   font-family: 'Lucida Sans';
   border-radius: 50px;
-}
 
-a:-webkit-any-link {
-  color: #c6a3dd;
-  cursor: pointer;
-  text-decoration: none; // eliminates the underscore
 }
 
 html {
-  background-color: #231b1b !important;
+  background-color: #db2e2e !important;
+}
+
+label {
+  color: inherit;
+}
+
+
+// a:-webkit-any-link {
+//   color: #dda3a3;
+//   cursor: pointer;
+//   text-decoration: none; // eliminates the underscore
+// }
+
+label {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background-color: #32232c !important; // matches .globalButton
+  color: #c6a3dd !important;            // matches .globalButton
+  border: 1px solid #725e5e;
+  font-size: 16px;
+  margin-bottom: 6px;
 }
 
 /* Global button styles */
-.global-button {
+.globalButton {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
   border-radius: 10px;
   margin: 20px;
-  background-color: #40383d;
+  background-color: #32232c !important;
   font-size: 20px;
-  color: #c6a3dd;
+  color: #c6a3dd !important;
+  border: 2px solid #725e5e;
+  // text-decoration: none;
+  // transition: background 0.2s;
+}
+
+.react-dropdown-select-dropdown {
+  background: #32232c !important; 
+  color: #c6a3dd !important;      
+}
+
+.react-dropdown-select-item {
+  background: #32232c !important;
+  color: #c6a3dd !important;
+
 }

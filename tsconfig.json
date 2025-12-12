@@ -23,7 +23,7 @@
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "esModuleInterop": true,
-    "module": "commonJS",
+    "module": "esnext",
     "outDir": "out",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,

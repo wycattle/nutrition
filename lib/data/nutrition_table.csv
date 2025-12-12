@@ -41,7 +41,7 @@ legume,"beans, black or red, COOKED",1,50,15,1,10,2,,
 legume,"beans, black or red, DRY",1,125,37,1,26,4,12,one cup=230cal
 legume,miso,1,200,27,6,12,5,,
 legume,"mung beans peeled, dry",1,340,63,0,23.3,17.5,,
-legume,"mung beans peeled, cooked",1,106,20,0,7.25,5.5,,cooked is 3.2x dry
+legume,"mung beans peeled, cooked",1,106,20,0,7.3,5.5,,cooked is 3.2x dry
 legume,peanut butter,1,94,3,8,4,1,,exactly the same as peanuts
 legume,peanuts,1,567,16,49,26,9,,
 legume,"soy milk isolate, natural flavor",1,357,0,0,86,0,,
@@ -73,14 +73,15 @@ nuts & seeds,sesame seed,1,565,26,48,17,14,0,
 oil,kewpie roasted sesame dressing,1,140,4,14,1,,,
 oil,mayonnaise,1,680,1,75,1,0,,1tbsp=14g
 oil,sunflower oil,1,884,0,100,0,0,0,1tbsp=14g
-recipe,beans/kale/auber,1,72,10,2,5,2,2,
+recipe,beans_kale_auber,1,72,10,2,5,2,2,
+recipe,black bean brownie,1,248,37.6,11,8.4,3.8,,
 recipe,ham-cheese-egg sand,1,330,27,15,21,3,,
 recipe,mapodofu,1,213,2,18,11,1,,
 recipe,my oatmeal,1,280,33,12,9,7,,
 recipe,PBJ bread 50g+raisin,1,316,44,10,9,4,,one slice
 recipe,pumpkin bread,1,303,63,13,1,1,,
 recipe,rice_gati,1,300,44,6,2,0,,
-recipe,rice+gati+sugar,1,234,18,17,2,1,,100g
+recipe,rice_gati_sugar,1,234,18,17,2,1,,100g
 recipe,veg soup,1,27,5,0,2,1,,
 sweet,baking chocolate,1,500,30,52,13,17,0,
 sweet,chocolate dark cmpd,1,500,65,28,0,0,,

@@ -1,6 +1,8 @@
-// pages/service/methods.ts
+// utils/methods.ts
 
 import { formatInTimeZone } from 'date-fns-tz';
+import { IMealx, IMealDetail, IRecipex } from '../types/interfaces';
+
 
 export function adjDate() {
   const currentDate = new Date();
@@ -32,7 +34,6 @@ export function adjDate() {
 
 
     //used in frontend
-    import { IMealDetail } from '../pages/interfaces';
 
     export const calculateTotals = (details: IMealDetail[]) => {
       return details.reduce((acc, curr) => ({
@@ -55,27 +56,27 @@ export function adjDate() {
 
 
 
-    export const createMealObject = (name: string, selectedRows: IMealDetail[]): IMealx => {
-  const mealDetails: IMealDetail[] = selectedRows.map(row => ({
-    desc1: row.desc1,
-    desc2: row.desc2,
-    portion: row.portion,
-    calories: row.calories,
-    carb: row.carb,
-    fat: row.fat,
-    protein: row.protein,
-    fiber: row.fiber,
-    GI: row.GI,
-    note: row.note,
-  }));
+  export const createMealObject = (name: string, selectedRows: IMealDetail[]): IMealx => {
+    const mealDetails: IMealDetail[] = selectedRows.map(row => ({
+      desc1: row.desc1,
+      desc2: row.desc2,
+      portion: row.portion,
+      calories: row.calories,
+      carb: row.carb,
+      fat: row.fat,
+      protein: row.protein,
+      fiber: row.fiber,
+      GI: row.GI,
+      note: row.note,
+    }));
 
-  return {
-    name,
-    date: new Date(),
-    timestamp: new Date().toISOString(),
-    details: mealDetails,
+    return {
+      name,
+      date: new Date(),
+      timestamp: new Date().toISOString(),
+      details: mealDetails,
+    };
   };
-};
 
 
 

@@ -1,4 +1,4 @@
-// /lib/Recipe.types.ts
+// /types/recipe-types.ts
 
 export type RecipeItem = {
     desc_1: string;

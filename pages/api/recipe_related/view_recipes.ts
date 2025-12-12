@@ -1,19 +1,28 @@
-// pages/api/view_recipes.ts
-import { PrismaClient } from '@prisma/client';
+// pages/api/recipe_related/view_recipes.ts
+
+import fs from 'fs';
+import path from 'path';
+import { parse } from 'csv-parse/sync';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const prisma = new PrismaClient();
+const csvFilePath = path.join(process.cwd(), 'lib', 'data', 'nutrition_table.csv');
 
-export default async function handle(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method === 'GET') {
-      const recipes = await prisma.recipeTable.findMany();
-      const parsedRecipes = recipes.map(recipe => ({
-        ...recipe,
-        items: typeof recipe.items === 'string' ? JSON.parse(recipe.items) : recipe.items,
-      }));
-      res.json(parsedRecipes); // Send parsedRecipes in the response
-    } else {
-      // Handle any other HTTP method
-      res.status(405).json({ message: 'Method not allowed' });
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'GET') {
+    try {
+      const csvData = fs.readFileSync(csvFilePath, 'utf8');
+      const recipes = parse(csvData, {
+        columns: true,
+        skip_empty_lines: true,
+        relax_column_count: true,
+      });
+      res.status(200).json(recipes);
+    } catch (error) {
+      console.error('Error reading recipes:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
+  } else {
+    res.setHeader('Allow', ['GET']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
+}

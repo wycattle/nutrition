@@ -5,7 +5,7 @@ select a.datex, b.*
 FROM meal a
 join totalrowmeal as b on a.id = b.id;
 
-CREATE or replace VIEW daily_totals AS
+CREATE or replace VIEW meal-totals AS
 SELECT 
     row_number() over (order by date(datex)) as id,
     DATE(datex) AS day,

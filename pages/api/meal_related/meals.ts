@@ -1,8 +1,8 @@
 //pages/api/meal_related/Meal.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { IMealx }   from '../../interfaces.ts';
-import mealInstance from '../../service/MealService.ts';
+import { IMealx }   from '../../../types/interfaces';
+import mealInstance from '../../../services/MealService';
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
