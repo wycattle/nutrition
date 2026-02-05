@@ -1,21 +1,58 @@
-//pages/api/meal_related/Meal.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-import { IMealx }   from '../../../types/interfaces';
+import { DateTime } from 'luxon';
+import { IMealx, IDailyMealTotalx } from '../../../types_interfaces/interfaces';
 import mealInstance from '../../../services/MealService';
-
+import dailyTotals_Instance from '../../../services/dailyTotals_service';
+import MealTotalsService from '../../../services/MealTotalsService';
+import { calculateTotals } from '../../../utils/methods';
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'POST') {
-      // Destructure the request body directly into the expected structure of IMealx
       const mealData: IMealx = req.body;
-
-      // Validate or transform mealData here if necessary
+      const now = DateTime.now().setZone('Asia/Bangkok');
+      mealData.timestamp = now.toISO() ?? '';
+      mealData.date = now.toISODate() ?? '';
 
       try {
         const newMeal = await mealInstance.createMeal(mealData);
-        res.status(200).json({ meal: newMeal });
+
+        // Use shared calculateTotals and map to IDailyMealTotalx
+        const totals = calculateTotals(mealData.details);
+        const dailyMealTotals: IDailyMealTotalx = {
+          id: Date.now(), // or another unique id logic
+          date: mealData.date,
+          timestamp: mealData.timestamp,
+          caloriesTot: totals.caloriesTot,
+          carbTot: totals.carbTot,
+          fatTot: totals.fatTot,
+          fiberTot: totals.fiberTot,
+          portionTot: totals.portionTot,
+          proteinTot: totals.proteinTot,
+        };
+        await dailyTotals_Instance.createMeal(dailyMealTotals);
+
+        // Save to meal_totals.json (append the new dailyMealTotals)
+        const mealTotalsPath = path.join(process.cwd(), 'lib', 'data', 'meal_totals.json');
+        let mealTotalsArr = [];
+        try {
+          if (fs.existsSync(mealTotalsPath)) {
+            const fileData = fs.readFileSync(mealTotalsPath, 'utf-8');
+            mealTotalsArr = fileData ? JSON.parse(fileData) : [];
+          }
+        } catch (err) {
+          console.error('Error reading meal_totals.json:', err);
+        }
+        mealTotalsArr.push(dailyMealTotals);
+        try {
+          fs.writeFileSync(mealTotalsPath, JSON.stringify(mealTotalsArr, null, 2), 'utf-8');
+        } catch (err) {
+          console.error('Error writing meal_totals.json:', err);
+        }
+
+        res.status(200).json({ meal: newMeal, totals: dailyMealTotals });
       } catch (error) {
         console.error('Error in createMeal:', error);
         res.status(500).json({ message: 'Internal Server Error' });

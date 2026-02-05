@@ -3,7 +3,7 @@ import Image from 'next/image';
 import React from 'react';
 import Head from 'next/head';
 import styles from '../styles/homepage.module.scss';
-import { HomepageType } from '../types/homepage-types';
+import { HomepageType } from '../types_interfaces/homepage-types';
 
 // The page component. It renders JSX and receives its props.
 //The homepage does not require an API because it only displays static content and the current 
@@ -35,20 +35,20 @@ export default function Home(props: HomepageType) {
           </div>
 
           <div >
-            <Link href="meal/Meal" className='globalButton'>
+            <Link href="/meal/Meal" className='globalButton'>
                 Create a Meal
             </Link>
           </div>
 
           <div className={styles.button}>
-            <Link href="/totalsByDate">
-              <span className={'globalButton ${styles.buttonLink'}>Totals by date range</span>
+            <Link href="/totalsByDateRange">
+              <span className={`globalButton ${styles.buttonLink}`}>Totals by date range</span>
             </Link>
           </div>
 
           <div className={styles.button}>
             <Link href="/recipe/Recipe">
-              <span className={'globalButton ${styles.buttonLink'}>View/Modify Recipes</span>
+              <span className={`globalButton ${styles.buttonLink}`}>View/Modify Recipes</span>
             </Link>
           </div>
         </div>

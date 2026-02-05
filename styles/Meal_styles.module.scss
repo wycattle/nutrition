@@ -38,6 +38,30 @@
   opacity: 1;
 }
 
+// /* Override dropdown handle (arrow) color */
+// .react-dropdown-select-dropdown-handle svg {
+//   fill: #c6a3dd !important; /* or your preferred color */
+// }
+
+// /* Override dropdown item text and highlight */
+// .react-dropdown-select-item {
+//   color: #c6a3dd !important;
+// }
+// .react-dropdown-select-item[aria-selected="true"],
+// .react-dropdown-select-item:focus,
+// .react-dropdown-select-item:hover {
+//   background-color: #32232c !important; /* or your preferred highlight */
+//   color: #f7c1c1 !important;
+// }
+
+// /* Remove blue accent from the main dropdown border/focus */
+// .react-dropdown-select {
+//   border-color: #c6a3dd !important;
+// }
+// .react-dropdown-select:focus-within {
+//   box-shadow: 0 0 0 2px #c6a3dd !important;
+//   border-color: #c6a3dd !important;
+// }
 
 .select-food-group-container {
   width: 25vw;

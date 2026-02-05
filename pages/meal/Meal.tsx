@@ -4,7 +4,7 @@ import Select from 'react-dropdown-select';
 import * as R from 'ramda';
 import axios from 'axios';
 
-import { IOption , IRecipex, IMealDetail, IMealx, IDailyTotalx  } from '../../types/interfaces';
+import { IOption , IRecipex, IMealDetail, IMealx, IDailyMealTotalx  } from '../../types_interfaces/interfaces';
 
 import Meal_View from './Meal_View';
 
@@ -127,6 +127,28 @@ const Meal = () => {
     setTotals(newTotals);
   };
 
+  // Calculate calories by nutrient class using static multipliers
+  const nonProteinCalories = (totalsObj: {
+    carbTot: number;
+    fatTot: number;
+    proteinTot: number;
+  }) => {
+    // Multipliers: carb: 4.5, fat: 9.5, protein: 0
+    const carbCalories = (totalsObj.carbTot ?? 0) * 4.5;
+    const fatCalories = (totalsObj.fatTot ?? 0) * 9.5;
+    const proteinCalories = (totalsObj.proteinTot ?? 0) * 0;
+    const grandTotal = carbCalories + fatCalories; // protein always 0
+    return {
+      carbCalories,
+      fatCalories,
+      proteinCalories,
+      grandTotal,
+    };
+  };
+
+  // Calculate nutrient calories for the current totals
+  const nutrientCalories = nonProteinCalories(totals);
+
 
   const handleCheckboxChange = (index: number) => {
     setSelectedRows((prevRows: IMealDetail[]) => 
@@ -237,6 +259,7 @@ const handleSaveAsRecipe = () => {
       selectedRows={selectedRows}
       handleCheckboxChange={handleCheckboxChange}
       totals={totals}
+      nutrientCalories={nutrientCalories}
       showNameInput={showNameInput}
       namex={namex}
       setName={setName}

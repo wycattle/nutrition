@@ -1,7 +1,7 @@
 // utils/methods.ts
 
 import { formatInTimeZone } from 'date-fns-tz';
-import { IMealx, IMealDetail, IRecipex } from '../types/interfaces';
+import { IMealx, IMealDetail, IRecipex } from '../types_interfaces/interfaces';
 
 
 export function adjDate() {
@@ -35,23 +35,52 @@ export function adjDate() {
 
     //used in frontend
 
-    export const calculateTotals = (details: IMealDetail[]) => {
-      return details.reduce((acc, curr) => ({
-        portionTot: acc.portionTot + (curr.portion ?? 0),
-        caloriesTot: acc.caloriesTot + (curr.calories ?? 0),
-        carbTot: acc.carbTot + (curr.carb ?? 0),
-        fatTot: acc.fatTot + (curr.fat ?? 0),
-        proteinTot: acc.proteinTot + (curr.protein ?? 0),
-        fiberTot: acc.fiberTot + (curr.fiber ?? 0),
-      }), {
-        portionTot: 0,
-        caloriesTot: 0,
-        carbTot: 0,
-        fatTot: 0,
-        proteinTot: 0,
-        fiberTot: 0,
-      });
+
+export const calculateTotals = (details: IMealDetail[]) => {
+  return details.reduce((acc, curr) => ({
+    portionTot: acc.portionTot + (curr.portion ?? 0),
+    caloriesTot: acc.caloriesTot + (curr.calories ?? 0),
+    carbTot: acc.carbTot + (curr.carb ?? 0),
+    fatTot: acc.fatTot + (curr.fat ?? 0),
+    proteinTot: acc.proteinTot + (curr.protein ?? 0),
+    fiberTot: acc.fiberTot + (curr.fiber ?? 0),
+  }), {
+    portionTot: 0,
+    caloriesTot: 0,
+    carbTot: 0,
+    fatTot: 0,
+    proteinTot: 0,
+    fiberTot: 0,
+  });
+};
+
+// Calculate per-100g values for totals (portion=1 means 100g)
+export const calculatePer100g = (totals: {
+  portionTot: number;
+  caloriesTot: number;
+  carbTot: number;
+  fatTot: number;
+  proteinTot: number;
+  fiberTot: number;
+}) => {
+  const { portionTot } = totals;
+  if (!portionTot || portionTot === 0) {
+    return {
+      caloriesPer100g: 0,
+      carbPer100g: 0,
+      fatPer100g: 0,
+      proteinPer100g: 0,
+      fiberPer100g: 0,
     };
+  }
+  return {
+    caloriesPer100g: Number((totals.caloriesTot / portionTot).toFixed(2)),
+    carbPer100g: Number((totals.carbTot / portionTot).toFixed(2)),
+    fatPer100g: Number((totals.fatTot / portionTot).toFixed(2)),
+    proteinPer100g: Number((totals.proteinTot / portionTot).toFixed(2)),
+    fiberPer100g: Number((totals.fiberTot / portionTot).toFixed(2)),
+  };
+};
 
 
 

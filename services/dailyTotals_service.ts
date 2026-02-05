@@ -1,10 +1,10 @@
-import { IDailyTotalx } from '../types/interfaces';
+import { IDailyMealTotalx } from '../types_interfaces/interfaces';
 
 const dailyTotals_Instance = {
-  async createMeal(dailyTotals: IDailyTotalx): Promise<IDailyTotalx> {
+  async createMeal(dailyMealTotals: IDailyMealTotalx): Promise<IDailyMealTotalx> {
     // For now, just return the mealData.
     // Later, you can add DB logic here.
-    return dailyTotals;
+    return dailyMealTotals;
   }
 };
 

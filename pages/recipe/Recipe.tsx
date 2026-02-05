@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { IRecipex, IOption } from '../../types/interfaces';
+import { IRecipex, IOption } from '../../types_interfaces/interfaces';
 import Recipe_View from './recipe-view';
 
 function Recipes() {
@@ -9,11 +9,12 @@ function Recipes() {
   const [recipes, setRecipes]               = useState<IRecipex[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<IRecipex | null>(null);
 
+  // Fetch all recipes on mount
   useEffect(() => {
-    axios.get<IRecipex[]>('/api/recipe_related/view_recipes')
+    axios.get<IRecipex[]>('/api/recipe_related/recipes')
       .then(response => {
         setRecipes(response.data || []);
-        const uniqueValues = response.data.map(recipe => recipe.name);
+        const uniqueValues = (response.data || []).map(recipe => recipe.name);
         setOptions(uniqueValues.map(value => ({ label: value, value })));
       })
       .catch(error => {
@@ -21,10 +22,13 @@ function Recipes() {
       });
   }, []);
 
+  // Update selected recipe when selection changes
   useEffect(() => {
     if (selectedValue) {
-      const selectedRecipe = recipes.find(recipe => recipe.name === selectedValue.value);
-      setSelectedRecipe(selectedRecipe || null);
+      const recipe = recipes.find(r => r.name === selectedValue.value);
+      setSelectedRecipe(recipe || null);
+    } else {
+      setSelectedRecipe(null);
     }
   }, [selectedValue, recipes]);
 

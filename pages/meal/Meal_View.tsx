@@ -1,11 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 import Select from 'react-dropdown-select';
-import { IOption, IMealDetail } from '../../types/interfaces';
+import { IOption, IMealDetail } from '../../types_interfaces/interfaces';
 import styles from '../../styles/Meal_styles.module.scss';
-import { Meal_View_Props } from '../../types/interfaces';
+import { Meal_View_Props } from '../../types_interfaces/interfaces';
 
-const Meal_View: React.FC<Meal_View_Props> = ({
+
+//React.FC is FunctionComponent:  A React function component is
+//a plain JavaScript function that accepts properties ("props") as an argument 
+// and returns a React element (JSX)
+const Meal_View: React.FC<Meal_View_Props & { nutrientCalories: { carbCalories: number; fatCalories: number; proteinCalories: number; grandTotal: number } }> = ({
   dropdownOptions,
   dropdownSelectedValue,
   setDropdownSelectedValue,
@@ -20,6 +24,7 @@ const Meal_View: React.FC<Meal_View_Props> = ({
   selectedRows,
   handleCheckboxChange,
   totals,
+  nutrientCalories,
   showNameInput,
   namex,
   setName,
@@ -27,6 +32,8 @@ const Meal_View: React.FC<Meal_View_Props> = ({
   handleSaveAsRecipe,
   message,
 }) => (
+
+
   <div className={styles['page-root']}>
     <div>
       <Link href="/">
@@ -151,9 +158,10 @@ const Meal_View: React.FC<Meal_View_Props> = ({
             <td className="text-right">{item.fiber}</td>
           </tr>
         ))}
-        {/* Totals row */}
+        {/* Totals row (add blank col after caption) */}
         <tr>
           <td>Totals</td>
+          <td></td>
           <td></td>
           <td className="text-right">{totals?.portionTot}</td>
           <td className="text-right">{totals?.caloriesTot}</td>
@@ -161,6 +169,20 @@ const Meal_View: React.FC<Meal_View_Props> = ({
           <td className="text-right">{totals?.fatTot}</td>
           <td className="text-right">{totals?.proteinTot}</td>
           <td className="text-right">{totals?.fiberTot}</td>
+        </tr>
+        {/* Nutrient Calories row (caption, grand total, 4 blank cols at end) */}
+        <tr>
+          <td colSpan={2} className="text-right">Nutrient Calories</td>
+          <td></td>
+          <td></td>
+          <td className="text-right">Total non_protein cals:{nutrientCalories.grandTotal.toFixed(1)}</td>
+          <td className="text-right">Carb calories: {nutrientCalories.carbCalories.toFixed(1)}</td>
+          <td className="text-right">Fat calories: {nutrientCalories.fatCalories.toFixed(1)}</td>
+          {/* <td className="text-right">Protein: {nutrientCalories.proteinCalories.toFixed(1)}</td> */}
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
       </tbody>
     </table>
