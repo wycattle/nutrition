@@ -22,6 +22,7 @@ export default function TotalsByDateRange() {
       setLoading(false);
     }
   };
+  
 
   return (
     <TotalsByDateRange_View
