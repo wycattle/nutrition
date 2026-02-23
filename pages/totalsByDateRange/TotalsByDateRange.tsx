@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import TotalsByDateRange_View from './totalsByDateRange_View';
+import TotalsByDateRange_View from './TotalsByDateRange_View';
 
 export default function TotalsByDateRange() {
   const [startDate, setStartDate] = useState('');
