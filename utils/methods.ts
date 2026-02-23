@@ -100,7 +100,6 @@ export const calculatePer100g = (totals: {
     }));
 
     return {
-      name,
       date: new Date().toISOString(),
       timestamp: new Date().toISOString(),
       details: mealDetails,
