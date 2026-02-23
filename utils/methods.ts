@@ -86,7 +86,7 @@ export const calculatePer100g = (totals: {
 
 
   export const createMealObject = (name: string, selectedRows: IMealDetail[]): IMealx => {
-    const mealDetails: IMealDetail[] = selectedRows.map(row => ({
+    const mealDetails: IMealDetail[] = (selectedRows ?? []).map(row => ({
       desc1: row.desc1,
       desc2: row.desc2,
       portion: row.portion,

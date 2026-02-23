@@ -165,7 +165,7 @@ const Meal = () => {
 // save as meal
   const handleSaveAsMeal = () => {
     setShowNameInput(false);
-    const mealDetails: IMealDetail[] = selectedRows.map(row => ({
+    const mealDetails: IMealDetail[] = (selectedRows ?? []).map(row => ({
       desc1: row.desc1,
       desc2: row.desc2,
       portion: row.portion,
@@ -211,7 +211,7 @@ const handleSaveAsRecipe = () => {
     setMessage('Please enter a name for the recipe.');
     return;
   }
-  const recipeDetails: IMealDetail[] = selectedRows.map(row => ({
+  const recipeDetails: IMealDetail[] = (selectedRows ?? []).map(row => ({
     desc1: row.desc1,
     desc2: row.desc2,
     portion: row.portion,

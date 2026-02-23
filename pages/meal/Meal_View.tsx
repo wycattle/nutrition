@@ -72,7 +72,7 @@ const Meal_View: React.FC<Meal_View_Props & { nutrientCalories: { carbCalories: 
           </tr>
         </thead>
         <tbody>
-          {data.filter(item => item.desc1 === dropdownSelectedValue.value).map((item, index) => (
+          {(data ?? []).filter(item => item.desc1 === dropdownSelectedValue?.value).map((item, index) => (
             <tr key={index}>
               <td style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <input
@@ -140,7 +140,7 @@ const Meal_View: React.FC<Meal_View_Props & { nutrientCalories: { carbCalories: 
         </tr>
       </thead>
       <tbody>
-        {selectedRows.map((item, index) => (
+        {(selectedRows ?? []).map((item, index) => (
           <tr key={index}>
             <td>
               <input
