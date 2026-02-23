@@ -31,7 +31,10 @@ const Meal_View: React.FC<Meal_View_Props & { nutrientCalories: { carbCalories: 
   handleSaveAsMeal,
   handleSaveAsRecipe,
   message,
-}) => (
+}) => {
+  const safeNutrientCalories = nutrientCalories ?? { carbCalories: 0, fatCalories: 0, proteinCalories: 0, grandTotal: 0 };
+
+  return (
 
 
   <div className={styles['page-root']}>
@@ -175,9 +178,9 @@ const Meal_View: React.FC<Meal_View_Props & { nutrientCalories: { carbCalories: 
           <td colSpan={2} className="text-right">Nutrient Calories</td>
           <td></td>
           <td></td>
-          <td className="text-right">Total non_protein cals:{nutrientCalories.grandTotal.toFixed(1)}</td>
-          <td className="text-right">Carb calories: {nutrientCalories.carbCalories.toFixed(1)}</td>
-          <td className="text-right">Fat calories: {nutrientCalories.fatCalories.toFixed(1)}</td>
+          <td className="text-right">Total non_protein cals:{safeNutrientCalories.grandTotal.toFixed(1)}</td>
+          <td className="text-right">Carb calories: {safeNutrientCalories.carbCalories.toFixed(1)}</td>
+          <td className="text-right">Fat calories: {safeNutrientCalories.fatCalories.toFixed(1)}</td>
           {/* <td className="text-right">Protein: {nutrientCalories.proteinCalories.toFixed(1)}</td> */}
           <td></td>
           <td></td>
@@ -228,6 +231,7 @@ const Meal_View: React.FC<Meal_View_Props & { nutrientCalories: { carbCalories: 
 
     {message && <div className={styles['alert-popup2']}>{message}</div>}
   </div>
-);
+  );
+}
 
 export default Meal_View;
