@@ -1,0 +1,20 @@
+[
+  {
+    "name": "sardine sandwich",
+    "caloriesTot": 252,
+    "carbTot": 26.4,
+    "fatTot": 8.4,
+    "fiberTot": 2.3,
+    "portionTot": 1.6,
+    "proteinTot": 20.200000000000003
+  },
+  {
+    "name": "flax_chia_date_bread",
+    "caloriesTot": 8115,
+    "carbTot": 1498.2,
+    "fatTot": 105.3,
+    "fiberTot": 166.4,
+    "portionTot": 30.3,
+    "proteinTot": 269.8
+  }
+]

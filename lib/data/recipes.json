@@ -1,0 +1,233 @@
+[
+  {
+    "name": "black bean brownie",
+    "details": [
+      {
+        "desc1": "legume",
+        "desc2": "beans, black or red, COOKED",
+        "portion": 15,
+        "calories": 750,
+        "carb": 225,
+        "fat": 15,
+        "protein": 150,
+        "fiber": 30,
+        "GI": "",
+        "note": ""
+      },
+      {
+        "desc1": "sweet",
+        "desc2": "chocolate dark cmpd",
+        "portion": 2.5,
+        "calories": 1250,
+        "carb": 162.5,
+        "fat": 70,
+        "protein": 0,
+        "fiber": 0,
+        "GI": "",
+        "note": ""
+      },
+      {
+        "desc1": "veg",
+        "desc2": "cocoa",
+        "portion": 0.6,
+        "calories": 136.79999999999998,
+        "carb": 34.8,
+        "fat": 8.4,
+        "protein": 12,
+        "fiber": 19.8,
+        "GI": "5",
+        "note": "1tbsp=5g"
+      },
+      {
+        "desc1": "grain",
+        "desc2": "oatmeal, dry",
+        "portion": 2.5,
+        "calories": 950,
+        "carb": 175,
+        "fat": 15,
+        "protein": 32.5,
+        "fiber": 25,
+        "GI": "39",
+        "note": "0.5cup dry=40g"
+      },
+      {
+        "desc1": "grain",
+        "desc2": "flour - whole wheat",
+        "portion": 2.5,
+        "calories": 1000,
+        "carb": 177.5,
+        "fat": 0,
+        "protein": 37.5,
+        "fiber": 27.5,
+        "GI": "",
+        "note": "1 cup=120g"
+      },
+      {
+        "desc1": "sweet",
+        "desc2": "sugar, white gran",
+        "portion": 1,
+        "calories": 400,
+        "carb": 100,
+        "fat": 0,
+        "protein": 0,
+        "fiber": 0,
+        "GI": "",
+        "note": "one tsp=16cal, 2 lumps=19g"
+      },
+      {
+        "desc1": "nuts & seeds",
+        "desc2": "chia seed",
+        "portion": 0.2,
+        "calories": 98,
+        "carb": 8.8,
+        "fat": 6.2,
+        "protein": 3.2,
+        "fiber": 7.6000000000000005,
+        "GI": "2",
+        "note": ""
+      },
+      {
+        "desc1": "oil",
+        "desc2": "kewpie roasted sesame dressing",
+        "portion": 2,
+        "calories": 280,
+        "carb": 8,
+        "fat": 28,
+        "protein": 2,
+        "fiber": 0,
+        "GI": "",
+        "note": ""
+      },
+      {
+        "desc1": "fruit",
+        "desc2": "raisins",
+        "portion": 2,
+        "calories": 600,
+        "carb": 160,
+        "fat": 2,
+        "protein": 6,
+        "fiber": 8,
+        "GI": "",
+        "note": "dates are ~same = 277/100g"
+      }
+    ]
+  },
+  {
+    "name": "sardine sandwich",
+    "details": [
+      {
+        "desc1": "fish",
+        "desc2": "sardine Rosa",
+        "portion": 1,
+        "calories": 118,
+        "carb": 2.4,
+        "fat": 5.9,
+        "protein": 14.1,
+        "fiber": 0,
+        "GI": "0",
+        "note": ""
+      },
+      {
+        "desc1": "grain",
+        "desc2": "bread Tesco WW",
+        "portion": 0.5,
+        "calories": 130,
+        "carb": 23,
+        "fat": 2.5,
+        "protein": 6,
+        "fiber": 2,
+        "GI": "22",
+        "note": ""
+      },
+      {
+        "desc1": "veg",
+        "desc2": "carrot/onion",
+        "portion": 0.1,
+        "calories": 4,
+        "carb": 1,
+        "fat": 0,
+        "protein": 0.1,
+        "fiber": 0.30000000000000004,
+        "GI": "",
+        "note": "100g=~1cup"
+      }
+    ]
+  },
+  {
+    "name": "flax_chia_date_bread",
+    "details": [
+      {
+        "desc1": "grain",
+        "desc2": "flour - whole wheat",
+        "portion": 5,
+        "calories": 2000,
+        "carb": 355,
+        "fat": 0,
+        "protein": 75,
+        "fiber": 55,
+        "GI": "",
+        "note": "1 cup=120g"
+      },
+      {
+        "desc1": "grain",
+        "desc2": "flour - all purpose",
+        "portion": 12,
+        "calories": 4368,
+        "carb": 900,
+        "fat": 24,
+        "protein": 144,
+        "fiber": 36,
+        "GI": "53",
+        "note": "1 cup=460cal=125g"
+      },
+      {
+        "desc1": "nuts & seeds",
+        "desc2": "flaxseed",
+        "portion": 2,
+        "calories": 1000,
+        "carb": 70,
+        "fat": 70,
+        "protein": 40,
+        "fiber": 56,
+        "GI": "0",
+        "note": "1 cup (ground)=118g"
+      },
+      {
+        "desc1": "nuts & seeds",
+        "desc2": "chia seed",
+        "portion": 0.3,
+        "calories": 147,
+        "carb": 13.2,
+        "fat": 9.299999999999999,
+        "protein": 4.8,
+        "fiber": 11.4,
+        "GI": "2",
+        "note": ""
+      },
+      {
+        "desc1": "water",
+        "desc2": "water",
+        "portion": 9,
+        "calories": 0,
+        "carb": 0,
+        "fat": 0,
+        "protein": 0,
+        "fiber": 0,
+        "GI": "",
+        "note": ""
+      },
+      {
+        "desc1": "fruit",
+        "desc2": "raisins",
+        "portion": 2,
+        "calories": 600,
+        "carb": 160,
+        "fat": 2,
+        "protein": 6,
+        "fiber": 8,
+        "GI": "",
+        "note": "dates are ~same = 277/100g"
+      }
+    ]
+  }
+]

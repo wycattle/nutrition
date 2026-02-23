@@ -1,0 +1,176 @@
+[
+  {
+    "date": "2025-12-13",
+    "timestamp": "2025-12-13T06:33:57.382Z",
+    "details": [
+      {
+        "desc1": "fruit",
+        "desc2": "juice",
+        "portion": 1,
+        "calories": 55,
+        "carb": 26,
+        "fat": 0,
+        "protein": 0,
+        "fiber": 5,
+        "GI": "",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "date": "2025-12-13T13:55:39.020+07:00",
+    "timestamp": "2025-12-13T13:55:39.020+07:00",
+    "details": [
+      {
+        "desc1": "fruit",
+        "desc2": "juice",
+        "portion": 1,
+        "calories": 55,
+        "carb": 26,
+        "fat": 0,
+        "protein": 0,
+        "fiber": 5,
+        "GI": "",
+        "note": ""
+      },
+      {
+        "desc1": "grain",
+        "desc2": "rice, brown, cooked",
+        "portion": 1.2,
+        "calories": 134.4,
+        "carb": 28.799999999999997,
+        "fat": 1.2,
+        "protein": 2.4,
+        "fiber": 2.4,
+        "GI": "",
+        "note": "1cup=200g"
+      },
+      {
+        "desc1": "meat",
+        "desc2": "chicken white -no skin",
+        "portion": 1.2,
+        "calories": 132,
+        "carb": 0,
+        "fat": 1.2,
+        "protein": 27.599999999999998,
+        "fiber": 0,
+        "GI": "0",
+        "note": " "
+      },
+      {
+        "desc1": "veg",
+        "desc2": "cabbage, kale, cooked",
+        "portion": 1,
+        "calories": 24,
+        "carb": 6,
+        "fat": 0,
+        "protein": 1,
+        "fiber": 2,
+        "GI": "",
+        "note": ""
+      },
+      {
+        "desc1": "recipe",
+        "desc2": "black bean brownie",
+        "portion": 0.3,
+        "calories": 74.39999999999999,
+        "carb": 11.28,
+        "fat": 3.3,
+        "protein": 2.52,
+        "fiber": 1.14,
+        "GI": "",
+        "note": ""
+      },
+      {
+        "desc1": "recipe",
+        "desc2": "PBJ bread 50g+raisin",
+        "portion": 1,
+        "calories": 316,
+        "carb": 44,
+        "fat": 10,
+        "protein": 9,
+        "fiber": 4,
+        "GI": "",
+        "note": "one slice"
+      }
+    ]
+  },
+  {
+    "date": "2025-12-13",
+    "timestamp": "2025-12-13T14:27:21.667+07:00",
+    "details": [
+      {
+        "desc1": "legume",
+        "desc2": "beans, black or red, COOKED",
+        "portion": 1,
+        "calories": 50,
+        "carb": 15,
+        "fat": 1,
+        "protein": 10,
+        "fiber": 2,
+        "GI": "",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "date": "2026-01-17",
+    "timestamp": "2026-01-17T13:11:18.991+07:00",
+    "details": [
+      {
+        "desc1": "recipe",
+        "desc2": "PBJ bread 50g+raisin",
+        "portion": 1,
+        "calories": 316,
+        "carb": 44,
+        "fat": 10,
+        "protein": 9,
+        "fiber": 4,
+        "GI": "",
+        "note": "one slice"
+      },
+      {
+        "desc1": "sweet",
+        "desc2": "nescafe 3 in 1",
+        "portion": 1,
+        "calories": 72,
+        "carb": 16,
+        "fat": 2,
+        "protein": 1,
+        "fiber": 0,
+        "GI": "",
+        "note": "unit is one sleeve"
+      }
+    ]
+  },
+  {
+    "date": "2026-02-23",
+    "timestamp": "2026-02-23T09:49:16.214+07:00",
+    "details": [
+      {
+        "desc1": "fruit",
+        "desc2": "blueberry",
+        "portion": 2,
+        "calories": 0,
+        "carb": 0,
+        "fat": 0,
+        "protein": 0,
+        "fiber": 0,
+        "GI": "0",
+        "note": ""
+      },
+      {
+        "desc1": "fruit",
+        "desc2": "persimmon",
+        "portion": 3,
+        "calories": 210,
+        "carb": 57,
+        "fat": 0,
+        "protein": 3,
+        "fiber": 12,
+        "GI": "",
+        "note": ""
+      }
+    ]
+  }
+]

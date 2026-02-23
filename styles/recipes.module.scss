@@ -1,0 +1,110 @@
+
+.page-root {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-height: 100vh;
+	width: 100vw;
+	background-color: #353638 !important;
+}
+
+.back-to-home-page {
+	margin: 10px;
+	color: #f7c1c1;
+	font-size: 18px;
+	cursor: pointer;
+}
+
+.select-recipe-container {
+	margin: 20px 0;
+}
+
+.table-style {
+	width: 75vw;
+	margin: 25px 0;
+	border-collapse: collapse;
+	background: #32232c !important;
+	color: #c6a3dd;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px #00000033;
+}
+
+.table-style th, .table-style td {
+	border: 1px solid #725e5e;
+	padding: 8px 12px;
+	text-align: right;
+}
+
+.table-style th {
+	background: #3b4144;
+	color: #f7c1c1;
+	font-weight: 600;
+}
+
+.table-style td {
+	background: #32232c;
+}
+
+.table-style input[type="number"] {
+	width: 60px;
+	padding: 4px;
+	border-radius: 6px;
+	border: 1px solid #725e5e;
+	background: #3b4144;
+	color: #c6a3dd;
+}
+
+.table-style input[type="checkbox"] {
+	accent-color: #c6a3dd;
+	width: 18px;
+	height: 18px;
+}
+
+.button {
+	display: inline-block;
+	padding: 10px 24px;
+	border-radius: 10px;
+	background-color: #32232c;
+	color: #c6a3dd;
+	border: 2px solid #725e5e;
+	font-size: 18px;
+	margin: 10px 0;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+.button:hover {
+	background-color: #76393a;
+	color: #e3baba;
+}
+
+.totals-table {
+	margin-top: 1.5em;
+	width: 50vw;
+	border-radius: 10px;
+	background: #3b4144;
+	color: #f7c1c1;
+	border: 1px solid #725e5e;
+}
+.totals-table th, .totals-table td {
+	padding: 8px 16px;
+	text-align: right;
+}
+.totals-table th {
+	background: #32232c;
+	color: #c6a3dd;
+}
+.totals-table td {
+	background: #3b4144;
+}
+
+.success-message {
+	color: #7fff7f;
+	margin-left: 1em;
+	font-size: 1.1em;
+}
+.error-message {
+	color: #ff7f7f;
+	margin-left: 1em;
+	font-size: 1.1em;
+}
