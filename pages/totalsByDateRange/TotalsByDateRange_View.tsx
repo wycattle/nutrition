@@ -63,7 +63,7 @@ const TotalsByDateRange_View: React.FC<TotalsByDateRange_View_Props> = ({
       </div>
       {loading && <div>Loading...</div>}
       {error && <div style={{ color: 'red' }}>{error}</div>}
-      {totals.length > 0 && (
+      {(totals ?? []).length > 0 && (
         <table border={1} cellPadding={6} style={{ width: '100%', marginTop: 16 }}>
           <thead>
             <tr>
@@ -91,7 +91,7 @@ const TotalsByDateRange_View: React.FC<TotalsByDateRange_View_Props> = ({
           </tbody>
         </table>
       )}
-      {totals.length === 0 && !loading && <div>No totals found for this range.</div>}
+      {(totals ?? []).length === 0 && !loading && <div>No totals found for this range.</div>}
     </div>
   );
 };

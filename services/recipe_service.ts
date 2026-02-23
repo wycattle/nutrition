@@ -42,7 +42,7 @@ const RecipeService = {
   delete(name: string): boolean {
     const recipes = readRecipes();
     const filtered = recipes.filter(r => r.name !== name);
-    if (filtered.length === recipes.length) return false;
+    if ((filtered ?? []).length === (recipes ?? []).length) return false;
     writeRecipes(filtered);
     return true;
   }

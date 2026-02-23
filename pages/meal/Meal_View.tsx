@@ -190,7 +190,7 @@ const Meal_View: React.FC<Meal_View_Props & { nutrientCalories: { carbCalories: 
       </tbody>
     </table>
 
-    {selectedRows.length > 0 && (
+    {(selectedRows ?? []).length > 0 && (
       <>
         {/* Only show name input for recipe */}
         {showNameInput && (
