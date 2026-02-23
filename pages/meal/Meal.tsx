@@ -179,7 +179,7 @@ const Meal = () => {
     }));
   
     const mealx: IMealx = {
-      date: new Date,
+      date: new Date().toISOString(),
       timestamp:new Date().toISOString(),
       details: mealDetails,
     };
