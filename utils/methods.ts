@@ -16,7 +16,7 @@ export function adjDate() {
 
 
 //used in frontend and.....
- export const applyPortionToRow = (row, portionSize) => {
+ export const applyPortionToRow = (row: IMealDetail, portionSize: number): IMealDetail => {
   if (!row || portionSize <= 0) return row;
   
   return {
