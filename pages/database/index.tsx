@@ -44,7 +44,7 @@ const DatabasePage = () => {
         style={{ marginBottom: 12 }}
       />
       <br />
-      <button onClick={handleRunQuery} disabled={loading}>
+      <button className={styles.queryButton} onClick={handleRunQuery} disabled={loading}>
         {loading ? 'Running...' : 'Run Query'}
       </button>
       <div style={{ marginTop: 24 }}>

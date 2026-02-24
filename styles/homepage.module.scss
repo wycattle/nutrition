@@ -96,3 +96,25 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+.queryButton {
+  color: #c6a3dd !important;
+  background-color: #353638 !important;
+  border: 1px solid #c6a3dd;
+  font-size: 1.1em;
+  padding: 6px 18px;
+  border-radius: 8px;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.queryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.queryButton:hover:not(:disabled) {
+  background-color: #694242;
+  color: #e3baba;
+}
