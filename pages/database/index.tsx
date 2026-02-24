@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import DatabaseView from './database_view';
+import styles from '../../styles/homepage.module.scss';
 
 const DatabasePage = () => {
   const [query, setQuery] = useState('SELECT * FROM nutrition;');
@@ -35,7 +36,7 @@ const DatabasePage = () => {
       </div>
       <h1>View/Modify Database</h1>
       <textarea
-        className="queryBox"
+        className={styles.queryBox}
         value={query}
         onChange={e => setQuery(e.target.value)}
         rows={4}
