@@ -1,3 +1,4 @@
+
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { DateTime } from 'luxon';
 import { IMealx, IDailyMealTotalx } from '../../../types_interfaces/interfaces';
@@ -7,11 +8,21 @@ import MealTotalsService from '../../../services/MealTotalsService';
 import { calculateTotals } from '../../../utils/methods';
 import fs from 'fs';
 import path from 'path';
+import { getAuthenticatedUser } from '../../../utils/getAuthenticatedUser';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+
+  let userId: string;
+  try {
+    ({ userId } = await getAuthenticatedUser(req, res));
+  } catch (err) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
   try {
     if (req.method === 'POST') {
       const mealData: IMealx = req.body;
+      mealData.user_id = userId; // Attach user ID to meal data
       const now = DateTime.now().setZone('Asia/Bangkok');
       mealData.timestamp = now.toISO() ?? '';
       mealData.date = now.toISODate() ?? '';
@@ -31,6 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           fiberTot: totals.fiberTot,
           portionTot: totals.portionTot,
           proteinTot: totals.proteinTot,
+          user_id: userId, // Attach user ID to daily totals as well
         };
         await dailyTotals_Instance.createMeal(dailyMealTotals);
 
