@@ -15,10 +15,11 @@ export interface IOption {
 
 
 export interface IMealx {
-    date: string;
-    timestamp: string;
-    details: IMealDetail[];     //example of 'composition'
-  }
+  date: string;
+  timestamp: string;
+  details: IMealDetail[];     //example of 'composition'
+  user_id?: string;
+}
 
 
 export interface IMealDetail {
