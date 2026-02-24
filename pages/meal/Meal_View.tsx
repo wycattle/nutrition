@@ -31,8 +31,11 @@ const Meal_View: React.FC<Meal_View_Props & { nutrientCalories: { carbCalories: 
   handleSaveAsMeal,
   handleSaveAsRecipe,
   message,
-}) => {
+  }) => {
   const safeNutrientCalories = nutrientCalories ?? { carbCalories: 0, fatCalories: 0, proteinCalories: 0, grandTotal: 0 };
+
+
+
 
   return (
 
