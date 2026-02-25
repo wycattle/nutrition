@@ -1,11 +1,14 @@
 //_app.js
 
-import 'react-datepicker/dist/react-datepicker.css';
-import '../styles/global.scss'
+
+import { SessionProvider } from 'next-auth/react';
+
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Component {...pageProps} />  //add global CSS
+    <SessionProvider session={pageProps.session}>
+      <Component {...pageProps} />
+    </SessionProvider>
   );
 }
 

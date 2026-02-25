@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
-import GitHubProvider from "next-auth/providers/github"; // or your chosen provider
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
   providers: [
@@ -7,9 +8,18 @@ export const authOptions = {
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
     }),
-    // Add more providers as needed
+    GoogleProvider({
+      clientId: process.env.OAuth_client_ID!,
+      clientSecret: process.env.OAuth_client_secret!,
+    }),
   ],
-  // ...other NextAuth options
+  debug: true,
+  callbacks: {
+    async signIn({ user, account, profile, email, credentials }: any) {
+      console.log("signIn callback:", { user, account, profile, email, credentials });
+      return true;
+    },
+  },
 };
 
 export default NextAuth(authOptions);
