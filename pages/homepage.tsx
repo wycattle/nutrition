@@ -1,9 +1,14 @@
 
-import { signIn, signOut, useSession } from 'next-auth/react';
-
+import { HomepageType } from '../types_interfaces/homepage-types';
+import { useSession, signIn, signOut } from 'next-auth/react';
+import styles from '../styles/homepage.module.scss';
+import Image from 'next/image';
+import Link from 'next/link';
 // The page component. It renders JSX and receives its props.
-//The homepage does not require an API because it only displays static content and the current 
-// date, which can be provided directly from the server without any backend data fetching.  
+// The homepage does not require an API because it only displays static content and the current
+// date, which can be provided directly from the server without any backend data fetching.
+
+export default function Home(props: HomepageType) {
   const { currentDate } = props;
   const { data: session } = useSession();
 
@@ -69,6 +74,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
     </div>
   );
 }
+
 
 // Special named exports that Next.js calls on the server to fetch data.
 export async function getServerSideProps() {

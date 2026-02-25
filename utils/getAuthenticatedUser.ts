@@ -11,7 +11,10 @@ export async function getAuthenticatedUser(req: NextApiRequest, res: NextApiResp
   if (!session) {
     throw new Error("Unauthorized");
   }
-  // Use session.user.id or session.user.email depending on your provider
-  const userId = session.user.id || session.user.email;
+  // Use email as userId for simplicity
+  const userId = session.user?.email;
+  if (!userId) {
+    throw new Error("User email not found in session");
+  }
   return { session, userId };
 }

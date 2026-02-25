@@ -44,16 +44,17 @@ export interface IRecipex {
  
 
 export interface IDailyMealTotalx {
-    id: number;
-    date: string;
-    timestamp: string;
-    caloriesTot: number;
-    carbTot: number;
-    fatTot: number;
-    fiberTot: number;
-    portionTot: number;
-    proteinTot: number;
-  }
+  id: number;
+  date: string;
+  timestamp: string;
+  caloriesTot: number;
+  carbTot: number;
+  fatTot: number;
+  fiberTot: number;
+  portionTot: number;
+  proteinTot: number;
+  user_id?: string;
+}
 
 
 // For recipe totals row
