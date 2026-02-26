@@ -3,6 +3,7 @@ import { authOptions } from "../pages/api/auth/[...nextauth]";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 /**
+ * this grabs the user ID and 
  * Helper to get authenticated user session and userId from API route.
  * Throws if not authenticated.
  */
