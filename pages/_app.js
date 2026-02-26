@@ -2,6 +2,7 @@
 
 
 import { SessionProvider } from 'next-auth/react';
+import '../styles/global.scss'; // Import global styles
 
 
 function MyApp({ Component, pageProps }) {

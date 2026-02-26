@@ -49,7 +49,7 @@ export default function Home(props: HomepageType) {
         </div>
 
         <div>
-          <Link href="/meal/Meal" className='globalButton'>
+          <Link href="/meal" className='globalButton'>
             Create a Meal
           </Link>
         </div>
@@ -61,7 +61,7 @@ export default function Home(props: HomepageType) {
         </div>
 
         <div className={styles.button}>
-          <Link href="/recipe/Recipe">
+          <Link href="/recipe">
             <span className={`globalButton ${styles.buttonLink}`}>View/Modify Recipes</span>
           </Link>
         </div>
