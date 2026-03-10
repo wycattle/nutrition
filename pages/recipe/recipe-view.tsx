@@ -1,4 +1,7 @@
-
+/**
+ * pages/recipe/recipe-view.tsx
+ * Recipe view and edit component for my_nutrition_app
+ */
 import React, { useEffect, useState } from 'react';
 import Select from 'react-dropdown-select';
 import Link from 'next/link';
@@ -6,8 +9,7 @@ import { IOption, IRecipex, IMealDetail } from '../../types_interfaces/interface
 import axios from 'axios';
 import styles from '../../styles/recipes.module.scss';
 import { calculatePer100g } from '../../utils/methods';
-import fs from 'fs';
-import path from 'path';
+// Removed fs and path imports; data now comes from API
 
 interface RecipeViewProps {
   options: IOption[];
@@ -16,7 +18,7 @@ interface RecipeViewProps {
   selectedRecipe: IRecipex | null;
 }
 
-
+//FC is FunctionComponents
 const Recipe_View: React.FC<RecipeViewProps> = ({
   options,
   selectedValue,
@@ -91,11 +93,11 @@ const Recipe_View: React.FC<RecipeViewProps> = ({
         ? {
             ...row,
             portion: isNaN(portion) ? 0 : portion,
-            calories: (selectedRecipe?.details[idx].calories || 0) / (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
-            carb: (selectedRecipe?.details[idx].carb || 0) / (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
-            fat: (selectedRecipe?.details[idx].fat || 0) / (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
-            protein: (selectedRecipe?.details[idx].protein || 0) / (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
-            fiber: (selectedRecipe?.details[idx].fiber || 0) / (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
+            calories: (selectedRecipe?.details[idx].calories || 0) /  (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
+            carb:     (selectedRecipe?.details[idx].carb || 0) /      (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
+            fat:      (selectedRecipe?.details[idx].fat || 0) /       (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
+            protein:  (selectedRecipe?.details[idx].protein || 0) /   (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
+            fiber:    (selectedRecipe?.details[idx].fiber || 0) /     (selectedRecipe?.details[idx].portion || 1) * (isNaN(portion) ? 0 : portion),
           }
         : row
     ));
@@ -110,15 +112,6 @@ const Recipe_View: React.FC<RecipeViewProps> = ({
       };
       await axios.post('/api/recipe_related/recipes', updatedRecipe);
       setMessage('Recipe saved!');
-
-      // Save per100g values to a JSON file (recipe_per100g.json)
-      const per100gData = {
-        name: selectedRecipe.name,
-        ...per100g
-      };
-
-      // Call API to save per100gData (since fs is not available in browser)
-      await axios.post('/api/recipe_related/recipe_per100g', per100gData);
     } catch (err) {
       setMessage('Error saving recipe.');
     }
@@ -132,93 +125,118 @@ const Recipe_View: React.FC<RecipeViewProps> = ({
         </Link>
       </div>
 
-      <Select
-        options={options}
-        onChange={(value) => setSelectedValue(value[0] || null)}
-        placeholder="Select a recipe"
-        values={selectedValue ? [selectedValue] : []}
-      />
+      <div style={{ marginLeft: '2em', marginTop: '1em' }}>
+        <Select
+          options={options}
+          onChange={(value) => setSelectedValue(value[0] || null)}
+          placeholder="Select a recipe"
+          values={selectedValue ? [selectedValue] : []}
+        />
+      </div>
 
       {selectedRecipe && (
         <div>
-          <h2>{selectedRecipe.name}</h2>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th className='text-left'>Desc 1</th>
-                <th className='text-left'>Desc 2</th>
-                <th className='text-right'>Portion</th>
-                <th className='text-right'>Calories</th>
-                <th className='text-right'>Carb</th>
-                <th className='text-right'>Fat</th>
-                <th className='text-right'>Protein</th>
-                <th className='text-right'>Fiber</th>
-                <th className='text-right'>GI</th>
-                <th className='text-right'>Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              {editRows.map((item, index) => (
-                <tr key={index}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={checkedRows.has(index)}
-                      onChange={() => handleCheckbox(index)}
-                    />
-                  </td>
-                  <td className='text-left'>{item.desc1}</td>
-                  <td className='text-left'>{item.desc2}</td>
-                  <td>
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={item.portion ?? ''}
-                      onChange={e => handlePortionChange(index, e.target.value)}
-                      style={{ width: '60px' }}
-                    />
-                  </td>
-                  <td>{Math.round(item.calories || 0)}</td>
-                  <td>{Math.round(item.carb || 0)}</td>
-                  <td>{Math.round(item.fat || 0)}</td>
-                  <td>{Math.round(item.protein || 0)}</td>
-                  <td>{Math.round(item.fiber || 0)}</td>
-                  <td>{item.GI ?? ''}</td>
-                  <td>{item.note}</td>
+          {/* <h2 style={{ marginLeft: '1em', marginTop: '1em' }}>{selectedRecipe.name}</h2> */}
+          <div style={{ marginLeft: '1em' }}>
+            <table className={styles['table-style']}>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th style={{ textAlign: 'left' }}>Desc 1</th>
+                  <th style={{ textAlign: 'left' }}>Desc 2</th>
+                  <th className='text-right'>Portion</th>
+                  <th className='text-right'>Calories</th>
+                  <th className='text-right'>Carb</th>
+                  <th className='text-right'>Fat</th>
+                  <th className='text-right'>Protein</th>
+                  <th className='text-right'>Fiber</th>
+                  <th className='text-right'>GI</th>
+                  <th style={{ textAlign: 'left' }}>Note</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div style={{ marginTop: '1em' }}>
-            <button onClick={handleSave}>Save</button>
-            <span style={{ marginLeft: '1em', color: 'green' }}>{message}</span>
+              </thead>
+              <tbody>
+                {editRows.map((item, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={checkedRows.has(index)}
+                        onChange={() => handleCheckbox(index)}
+                      />
+                    </td>
+                    <td style={{ textAlign: 'left' }}>{item.desc1}</td>
+                    <td style={{ textAlign: 'left' }}>{item.desc2}</td>
+                    <td className='text-right'>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={item.portion ?? ''}
+                        onChange={e => handlePortionChange(index, e.target.value)}
+                        style={{ width: '60px', textAlign: 'center' }}
+                        className="my-input-class"
+                      />
+                    </td>
+                    <td className='text-right'>{Math.round(item.calories || 0)}</td>
+                    <td className='text-right'>{Math.round(item.carb || 0)}</td>
+                    <td className='text-right'>{Math.round(item.fat || 0)}</td>
+                    <td className='text-right'>{Math.round(item.protein || 0)}</td>
+                    <td className='text-right'>{Math.round(item.fiber || 0)}</td>
+                    <td className='text-right'>{item.GI ?? ''}</td>
+                    <td style={{ textAlign: 'left' }}>{item.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5em', marginTop: '1.5em' }}>
+          <div style={{ marginTop: '1em', marginLeft: '2em' }}>
+            <button
+              onClick={handleSave}
+              style={{
+                background: '#32232c',
+                color: '#c6a3dd',
+                border: '2px solid #725e5e',
+                borderRadius: '10px',
+                padding: '10px 24px',
+                fontSize: '20px',
+                cursor: 'pointer',
+              }}
+            >
+              Save changes
+            </button>
+            {message && (
+              <span style={{
+                marginLeft: '1em',
+                color: '#c6a3dd',
+                background: '#32232c',
+                borderRadius: '6px',
+                padding: '4px 12px',
+                border: '1px solid #725e5e',
+              }}>{message}</span>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.5em', marginTop: '1.5em', marginLeft: '2em' }}>
             <div>
               <h3 style={{ textAlign: 'center' }}>Totals</h3>
               <table className={styles['totals-table']}>
-                <thead>
-                  <tr>
-                    <th>Portion</th>
-                    <th>Calories</th>
-                    <th>Carb</th>
-                    <th>Fat</th>
-                    <th>Protein</th>
-                    <th>Fiber</th>
-                  </tr>
-                </thead>
                 <tbody>
-                  <tr>
-                    <td>{totals.portionTot.toFixed(2)}</td>
-                    <td>{Math.round(totals.caloriesTot)}</td>
-                    <td>{Math.round(totals.carbTot)}</td>
-                    <td>{Math.round(totals.fatTot)}</td>
-                    <td>{Math.round(totals.proteinTot)}</td>
-                    <td>{Math.round(totals.fiberTot)}</td>
+                  <tr style={{ background: '#3b4144', color: '#f7c1c1' }}>
+                    <th className='text-right'>Portion</th>
+                    <th className='text-right'>Calories</th>
+                    <th className='text-right'>Carb</th>
+                    <th className='text-right'>Fat</th>
+                    <th className='text-right'>Protein</th>
+                    <th className='text-right'>Fiber</th>
+                  </tr>
+                  <tr style={{ background: '#32232c', color: '#c6a3dd' }}>
+                    <td className='text-right'>{totals.portionTot.toFixed(2)}</td>
+                    <td className='text-right'>{Math.round(totals.caloriesTot)}</td>
+                    <td className='text-right'>{Math.round(totals.carbTot)}</td>
+                    <td className='text-right'>{Math.round(totals.fatTot)}</td>
+                    <td className='text-right'>{Math.round(totals.proteinTot)}</td>
+                    <td className='text-right'>{Math.round(totals.fiberTot)}</td>
                   </tr>
                 </tbody>
               </table>
@@ -226,24 +244,22 @@ const Recipe_View: React.FC<RecipeViewProps> = ({
             <div>
               <h3 style={{ textAlign: 'center' }}>Per 100g</h3>
               <table className={styles['totals-table']}>
-                <thead>
-                  <tr>
-                    <th>100g</th>
-                    <th>Calories</th>
-                    <th>Carb</th>
-                    <th>Fat</th>
-                    <th>Protein</th>
-                    <th>Fiber</th>
-                  </tr>
-                </thead>
                 <tbody>
-                  <tr>
-                    <td>100g</td>
-                    <td>{Math.round(per100g.caloriesPer100g)}</td>
-                    <td>{Math.round(per100g.carbPer100g)}</td>
-                    <td>{Math.round(per100g.fatPer100g)}</td>
-                    <td>{Math.round(per100g.proteinPer100g)}</td>
-                    <td>{Math.round(per100g.fiberPer100g)}</td>
+                  <tr style={{ background: '#3b4144', color: '#f7c1c1' }}>
+                    <th className='text-right'>100g</th>
+                    <th className='text-right'>Calories</th>
+                    <th className='text-right'>Carb</th>
+                    <th className='text-right'>Fat</th>
+                    <th className='text-right'>Protein</th>
+                    <th className='text-right'>Fiber</th>
+                  </tr>
+                  <tr style={{ background: '#32232c', color: '#c6a3dd' }}>
+                    <td className='text-right'>100g</td>
+                    <td className='text-right'>{Math.round(per100g.caloriesPer100g)}</td>
+                    <td className='text-right'>{Math.round(per100g.carbPer100g)}</td>
+                    <td className='text-right'>{Math.round(per100g.fatPer100g)}</td>
+                    <td className='text-right'>{Math.round(per100g.proteinPer100g)}</td>
+                    <td className='text-right'>{Math.round(per100g.fiberPer100g)}</td>
                   </tr>
                 </tbody>
               </table>

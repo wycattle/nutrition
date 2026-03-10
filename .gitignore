@@ -41,8 +41,9 @@ tree.txt
 lib/mydb.sqlite
 
 # IDE settings
-.vscode/settings.json
+.vscode/
 *.code-workspace
+*.vs/
 
 
 react_next_nutrition.code-workspace

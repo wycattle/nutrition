@@ -1,23 +1,23 @@
 import { IMealx } from '../types_interfaces/interfaces';
-import fs from 'fs';
-import path from 'path';
+import { Pool } from 'pg';
 
-const mealsFilePath = path.join(process.cwd(), 'lib', 'data', 'meals.json');
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 const mealInstance = {
   async createMeal(mealData: IMealx): Promise<IMealx> {
-    let meals: IMealx[] = [];
-    try {
-      if (fs.existsSync(mealsFilePath)) {
-        const fileData = fs.readFileSync(mealsFilePath, 'utf-8');
-        meals = JSON.parse(fileData);
-      }
-    } catch (err) {
-      // If file doesn't exist or is invalid, start with empty array
-      meals = [];
-    }
-    meals.push(mealData);
-    fs.writeFileSync(mealsFilePath, JSON.stringify(meals, null, 2), 'utf-8');
+    // Extract just the time part from the timestamp (as HH:mm:ss or similar)
+    const timeOnly = mealData.timestamp ? new Date(mealData.timestamp).toISOString().slice(11, 19) : null;
+    await pool.query(
+      `INSERT INTO user_meals (user_id, date, time, details, timestamp)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [
+        mealData.user_id,
+        mealData.date,                          // 'YYYY-MM-DD'  → DATE ✅
+        timeOnly,                               // Only the time part (HH:mm:ss) → TIME ✅
+        JSON.stringify(mealData.details),       // explicit serialize → JSONB ✅
+        mealData.timestamp                      // full ISO string for TIMESTAMPTZ ✅
+      ]
+    );
     return mealData;
   }
 };

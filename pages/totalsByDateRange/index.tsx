@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
-import TotalsByDateRange_View from './TotalsByDateRange_View';
+//pages\totalsByDateRange\index.tsx
+/**
+ * pages/totalsByDateRange/index.tsx
+ * Totals by date range page for my_nutrition_app
+ */
+
+import React, { useState, useMemo } from 'react';
+import useSWR from 'swr';
+import { getApiUrl } from '../../utils/getApiUrl';
+import { TotalsByDateRange_View } from './TotalsByDateRange_View';
+import { fetcher } from '../../utils/helper';
 
 export default function TotalsByDateRange() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [totals, setTotals] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [manualTrigger, setManualTrigger] = useState(0); // for refetching
 
-  const fetchTotals = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const res = await fetch(`/api/meal_related/meal_totals_by_date?start=${startDate}&end=${endDate}`);
-      if (!res.ok) throw new Error('Failed to fetch totals');
-      const data = await res.json();
-      setTotals(data.totals || []);
-    } catch (err) {
-      setError('Error fetching totals');
-    } finally {
-      setLoading(false);
-    }
+  // Compute effectiveEndDate (today if not set)
+  const effectiveEndDate = useMemo(() => {
+    if (endDate) return endDate;
+    const today = new Date();
+    return today.toISOString().slice(0, 10);
+  }, [endDate]);
+
+  // Build the API URL
+  const apiUrl = getApiUrl();
+  const shouldFetch = !!startDate;
+  const fetchKey = shouldFetch ? `${apiUrl}/api/meal_related/meal_totals_by_date?start=${startDate}&end=${effectiveEndDate}&t=${manualTrigger}` : null;
+
+  // Use shared fetcher utility for SWR data fetching
+  const { data, error, isValidating } = useSWR(fetchKey, fetcher, { revalidateOnFocus: false });
+
+  const fetchTotals = () => {
+    setManualTrigger(x => x + 1);
   };
 
   return (
@@ -30,9 +41,9 @@ export default function TotalsByDateRange() {
       setStartDate={setStartDate}
       setEndDate={setEndDate}
       fetchTotals={fetchTotals}
-      totals={totals}
-      loading={loading}
-      error={error}
+      totals={data?.totals || []}
+      loading={isValidating}
+      error={error ? 'Error fetching totals' : ''}
     />
   );
 }

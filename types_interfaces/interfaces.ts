@@ -34,12 +34,19 @@ export interface IMealDetail {
     GI      : number | undefined;
     note    : string;    }
 
-
+export interface NutrientCalories {
+  carbCalories: number;
+  fatCalories: number;
+  proteinCalories: number;
+  grandTotal: number;
+}
 
 
 export interface IRecipex {
-    name: string;
-    details: IMealDetail[];     }    
+  name: string;
+  details: IMealDetail[];
+  category?: string;
+}    
 
  
 
@@ -92,10 +99,20 @@ export interface Meal_View_Props {
     proteinTot: number;
     fiberTot: number;
   };
+  nutrientCalories: NutrientCalories;
   showNameInput: boolean;
   namex: string;
   setName: (name: string) => void;
   handleSaveAsMeal: () => void;
+  handleConfirmSaveMeal: () => void;
   handleSaveAsRecipe: () => void;
   message: string;
-}  
+  categoryOptions: IOption[];
+  selectedCategory: string;
+  setSelectedCategory: (cat: string) => void;
+  showDatePicker: boolean;
+  showConfirmSaveButton: boolean;
+  isSavingMeal: boolean;
+  recipeDate: Date | null;       // passed as meal_recipeDate from Meal component
+  setRecipeDate: (date: Date | null) => void;  // passed as setMeal_recipeDate from Meal component
+}

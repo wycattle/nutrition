@@ -1,18 +1,21 @@
-/* styles/Meal_styles.module.scss    */
+.portion-size-inputbox::-webkit-outer-spin-button,
+.portion-size-inputbox::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-// The * in .page-root * is the universal selector in CSS. It matches all elements that are descendants of .page-root, applying the style to every child, grandchild, etc.
-// .page-root * {
-//   color: #16d629 !important;
-//   background-color: #100b0b !important;
-// }
+.portion-size-inputbox[type=number] {
+  -moz-appearance: textfield;
+}
+.nutrient-calories-container {
+  background: transparent;
+  border-radius: 10px;
+  padding: 1em 0 1em 0;
+  margin: 2em 0 2em 4vw;
+  max-width: 55vw;
+  font-size: 1.1rem;
+}
 
-// remove the browser defaults
-// .page-root a,
-// .page-root a:visited,
-// .page-root a:active,
-// .page-root a:hover {
-//   text-decoration: none !important;
-// }
 
 .h2 {
   font-size: 1.5rem;
@@ -30,41 +33,22 @@
 
 
 .react-dropdown-select-input {
-  color: #c6a3dd !important; // or your preferred color
+  color: #c6a3dd !important; 
 }
 
+
 .react-dropdown-select-input::placeholder {
-  color: #c6a3dd !important; // or your preferred color
+  color: #c6a3dd !important; 
   opacity: 1;
 }
 
-// /* Override dropdown handle (arrow) color */
-// .react-dropdown-select-dropdown-handle svg {
-//   fill: #c6a3dd !important; /* or your preferred color */
-// }
 
-// /* Override dropdown item text and highlight */
-// .react-dropdown-select-item {
-//   color: #c6a3dd !important;
-// }
-// .react-dropdown-select-item[aria-selected="true"],
-// .react-dropdown-select-item:focus,
-// .react-dropdown-select-item:hover {
-//   background-color: #32232c !important; /* or your preferred highlight */
-//   color: #f7c1c1 !important;
-// }
 
-// /* Remove blue accent from the main dropdown border/focus */
-// .react-dropdown-select {
-//   border-color: #c6a3dd !important;
-// }
-// .react-dropdown-select:focus-within {
-//   box-shadow: 0 0 0 2px #c6a3dd !important;
-//   border-color: #c6a3dd !important;
-// }
+
 
 .select-food-group-container {
-  width: 25vw;
+  width: 450px;
+  max-width: 90vw;
   margin: auto;
   text-align: center;
   font-size: 1.125rem;
@@ -83,22 +67,47 @@
   transform: scale(2);
 }
 
+// this is the meal components dropdown after food group is selected
 .table-style {
-  width: 75vw;
+  width: 55vw;
   text-align: right;
   margin: 25px;
   border: 1px solid #000;
+  table-layout: fixed;
 }
+
+/* Remove display:block from thead/tbody for proper alignment */
+.table-style thead {
+  text-align: right;
+}
+
+/* Add a scrollable wrapper for tbody if needed */
+.table-scroll-wrapper {
+  max-height: 25vh;
+  overflow-y: auto;
+  width: 100%;
+}
+
+// Remove width/min-width from th/td so colgroup controls widths
+.table-style th,
+.table-style td {
+  padding: 0.25em 0.5em;
+  box-sizing: border-box;
+  text-align: right;
+}
+
+
 
 .portion-size-inputbox {
   width: 50px;
   text-align: center;
   font-size: 20px;
-  border: 2px solid;
+  border: 2px solid #725e5e !important;
   padding: 5px;
   margin: 5px auto;
   border-radius: 25px;
-  color:  #d6bfbf;  //the number input box and the border around it
+  color: #c6a3dd !important; /* Match globalButton font color */
+  background: #32232c !important; /* Match globalButton background */
   box-shadow: 0 2px 4px rgba(44, 68, 66, 0.5);
 }
 
@@ -107,13 +116,15 @@
   align-items: center;
   padding: 10px;
   margin: 20px auto;
-  width: fit-content;
-  background-color: #2e2c2c;
+  width: 350px; // Increased width for a wider oval
+  background-color: #222121;
   border: 2px solid;
   border-radius: 15px;
+  gap: 1.5em; // Add spacing between label and input
 }
 
-.portion-size-inputboxStyle.blink {
+
+.blink {
   animation: blink-portion 1s infinite;
 }
 

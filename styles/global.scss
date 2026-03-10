@@ -1,12 +1,19 @@
 /* styles/global.scss */
 
-/* Reset browser defaults */
-*,
+
+.react-datepicker__input-container input[type="text"] {
+  color: #c6a3dd !important;
+  background: #32232c !important;
+  border: 1px solid #725e5e !important;
+  font-size: 16px;
+}
+
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-size: 20px;
   background-color: transparent;   // bkgrd behind the buttons
   
 }
@@ -23,9 +30,9 @@ body {
   margin: 0;
   padding: 0;
   background-attachment: fixed;
-  color: #f7c1c1 !important; //fontcolor of meal table
-  background-color: #3b4144 !important;
-  border-color: #049980 !important;
+  color: #ffd5d5 !important; //fontcolor of meal table
+  background-color: #1f262b !important;
+  border-color: #07efc8 !important;
   border: 2px solid #418b7e;
   font-family: 'Lucida Sans';
   border-radius: 50px;
@@ -40,12 +47,6 @@ label {
   color: inherit;
 }
 
-
-// a:-webkit-any-link {
-//   color: #dda3a3;
-//   cursor: pointer;
-//   text-decoration: none; // eliminates the underscore
-// }
 
 label {
   display: inline-block;
@@ -74,6 +75,19 @@ label {
   // transition: background 0.2s;
 }
 
+.my-input-class {
+  color: #f7c1c1 !important;
+  background-color: #32232c !important;
+}
+
+.my-button-class {
+  color: #f7c1c1 !important;
+  background-color: #45625d;
+  padding: 10px 24px;
+  font-size: 20px;
+  border-radius: 10px;
+}
+
 .react-dropdown-select-dropdown {
   background: #32232c !important; 
   color: #c6a3dd !important;      
@@ -82,5 +96,27 @@ label {
 .react-dropdown-select-item {
   background: #32232c !important;
   color: #c6a3dd !important;
+}
 
+.react-dropdown-select-input {
+  color: #c6a3dd !important;
+}
+
+.react-dropdown-select-input::placeholder {
+  color: #c6a3dd !important;
+  opacity: 1;
+}
+
+a.globalButton, a.globalButton:visited, a.globalButton:active {
+  border: 2px solid #725e5e !important;
+  color: #c6a3dd !important;
+  background-color: #32232c !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  font-size: 20px;
+  padding: 10px;
+  margin: 20px;
+  text-decoration: none;
 }

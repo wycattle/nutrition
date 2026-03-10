@@ -1,29 +1,46 @@
 // pages/api/nutrition.js
-import fs from 'fs';
-import path from 'path';
-import { parse } from 'csv-parse/sync';
+import { Pool } from 'pg';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './auth/[...nextauth]';
 
-const csvFilePath = path.join(process.cwd(), 'lib', 'data', 'nutrition_table.csv');
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-// Read and parse the CSV file
-//nutritionData is defined at module scope
-//Top level = directly inside the module, not nested inside any function, class, or block.
-const nutritionData = parse(fs.readFileSync(csvFilePath, 'utf8'), {
-  columns: true, // Parse the CSV into objects with column headers as keys
-  skip_empty_lines: true,
-  relax_column_count: true, // Allows rows with blanks in fields
-});
-
-export default function handler(req, res) {
-  if (req.method === 'GET') {
-    try {
-      res.status(200).json(nutritionData);
-    } catch (error) {
-      console.error('Error fetching nutrition data:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  } else {
+export default async function handler(req, res) {
+  if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+
+  // Identify the user
+  const session = await getServerSession(req, res, authOptions);
+  if (!session?.user?.email) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    // Look up their UUID
+    const userResult = await pool.query(
+      `SELECT id FROM users WHERE email = $1`,
+      [session.user.email]
+    );
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const userId = userResult.rows[0].id;
+
+    // Return THIS user's personal nutrition table
+    const result = await pool.query(
+      `SELECT id, desc1, desc2, portion, calories, carb, fat,
+              protein, fiber, gi AS "GI", note
+       FROM user_nutrition
+       WHERE user_id = $1
+       ORDER BY id`,
+      [userId]
+    );
+    res.status(200).json(result.rows);
+
+  } catch (error) {
+    console.error('Error fetching user nutrition data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
