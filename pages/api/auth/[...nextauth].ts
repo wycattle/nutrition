@@ -39,9 +39,9 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      // Try to find an existing user by email
+      const client = await pool.connect();
+      let success = false;
       try {
-        const client = await pool.connect();
         try {
           // Find user by email
           const existingUser = await client.query(
@@ -90,16 +90,27 @@ export const authOptions: NextAuthOptions = {
             console.log(`Seeded recipes for: ${user.email}`);
           }
           await client.query('COMMIT');
+          success = true;
         } catch (err) {
           await client.query('ROLLBACK');
           console.error('Seeding error:', err);
-        } finally {
-          client.release();
         }
+        return true;
       } catch (err) {
         console.error('DB connect error during signIn:', err);
+        return false;
+      } finally {
+        // Log the attempt
+        try {
+          await client.query(
+            `INSERT INTO login_events (email, provider, success) VALUES ($1, $2, $3)`,
+            [user?.email || email || null, account?.provider || null, success]
+          );
+        } catch (logErr) {
+          console.error('Failed to log login event:', logErr);
+        }
+        client.release();
       }
-      return true;
     },
   },
 };
