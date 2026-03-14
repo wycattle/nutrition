@@ -35,7 +35,24 @@ export default function Home() {
         {/* Sign in/out button - now below the image */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '24px 0 0 0' }}>
           {!session ? (
-            <button className="globalButton" style={{ margin: '0 0 8px 0' }} onClick={() => signIn()}>Sign in</button>
+            <>
+   
+              <button
+                className="globalButton"
+                style={{ margin: '0 0 8px 0', background: '#DB4437' }}
+                onClick={() => signIn('google')}
+              >
+                Sign in with Google
+              </button>
+              
+              <button
+                className="globalButton"
+                style={{ margin: '0 0 8px 0', background: '#2F2F6F' }}
+                onClick={() => signIn('microsoft')}
+              >
+                Sign in with Microsoft
+              </button>
+            </>
           ) : (
             <button className="globalButton" style={{ margin: '0 0 8px 0' }} onClick={() => signOut()}>Sign out</button>
           )}

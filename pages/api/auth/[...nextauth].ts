@@ -1,7 +1,9 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import AzureADProvider from "next-auth/providers/azure-ad";
 import PostgresAdapter from "@auth/pg-adapter";
+
 import pool from "../../../lib/postgres";
 
 export const authOptions: NextAuthOptions = {
@@ -19,6 +21,11 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    AzureADProvider({
+      clientId: process.env.MICROSOFT_CLIENT_ID!,
+      clientSecret: process.env.MICROSOFT_CLIENT_SECRET!,
       allowDangerousEmailAccountLinking: true,
     }),
   ],
@@ -42,6 +49,16 @@ export const authOptions: NextAuthOptions = {
       const client = await pool.connect();
       let success = false;
       try {
+        // --- ALLOWLIST CHECK ---
+        const allowed = await client.query(
+          `SELECT 1 FROM approved_emails WHERE email = $1`,
+          [user.email]
+        );
+        if (allowed.rows.length === 0) {
+          // Not approved
+          console.warn(`Login attempt denied for unapproved email: ${user.email}`);
+          return false;
+        }
         try {
           // Find user by email
           const existingUser = await client.query(
@@ -100,7 +117,11 @@ export const authOptions: NextAuthOptions = {
         console.error('DB connect error during signIn:', err);
         return false;
       } finally {
-        // Log the attempt
+        console.log('Logging login event:', {
+          email: user?.email || email || null,
+          provider: account?.provider || null,
+          success
+        });
         try {
           await client.query(
             `INSERT INTO login_events (email, provider, success) VALUES ($1, $2, $3)`,
