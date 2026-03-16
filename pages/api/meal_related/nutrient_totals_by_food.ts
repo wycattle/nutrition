@@ -37,7 +37,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const { rows } = await pool.query(sql, [start, end]);
-    res.status(200).json({ totals: rows });
+    // Round all numeric fields to 0 decimal places (integers)
+    const roundedRows = rows.map(row => ({
+      ...row,
+      portion: row.portion !== undefined ? Math.round(Number(row.portion)) : row.portion,
+      calories: row.calories !== undefined ? Math.round(Number(row.calories)) : row.calories,
+      carb: row.carb !== undefined ? Math.round(Number(row.carb)) : row.carb,
+      fat: row.fat !== undefined ? Math.round(Number(row.fat)) : row.fat,
+      protein: row.protein !== undefined ? Math.round(Number(row.protein)) : row.protein,
+      fiber: row.fiber !== undefined ? Math.round(Number(row.fiber)) : row.fiber,
+    }));
+    res.status(200).json({ totals: roundedRows });
   } catch (error) {
     console.error('Error querying nutrient totals by food:', error);
     res.status(500).json({ message: 'Internal Server Error' });
