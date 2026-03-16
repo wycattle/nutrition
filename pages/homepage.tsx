@@ -45,13 +45,7 @@ export default function Home() {
                 Sign in with Google
               </button>
               
-              {/* <button
-                className="globalButton"
-                style={{ margin: '0 0 8px 0', background: '#2F2F6F' }}
-                onClick={() => signIn('microsoft')}
-              >
-                Sign in with Microsoft
-              </button> */}
+              {/* Microsoft login button removed */}
             </>
           ) : (
             <button className="globalButton" style={{ margin: '0 0 8px 0' }} onClick={() => signOut()}>Sign out</button>
