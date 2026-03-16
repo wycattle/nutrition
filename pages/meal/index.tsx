@@ -54,6 +54,25 @@ const Meal = () => {
   const [categoryOptions, setCategoryOptions] = useState<IOption[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
 
+  // Nutrition search state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState<IMealDetail[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return;
+    setIsSearching(true);
+    try {
+      const res = await axios.get(`/api/nutrition_search?search_word=${encodeURIComponent(searchTerm)}`);
+      setSearchResults(res.data);
+    } catch (err) {
+      setSearchResults([]);
+      setMessage('No results or error searching.');
+      setTimeout(() => setMessage(''), 1500);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   // Fetch available recipe categories from API
   useEffect(() => {
     // console.time('categories-fetch');
@@ -370,6 +389,11 @@ const Meal = () => {
         isSavingMeal={isSavingMeal}
         recipeDate={meal_recipeDate}
         setRecipeDate={setMeal_recipeDate}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        handleSearch={handleSearch}
+        searchResults={searchResults}
+        isSearching={isSearching}
       />
     </div>
   );

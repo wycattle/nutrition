@@ -115,4 +115,10 @@ export interface Meal_View_Props {
   isSavingMeal: boolean;
   recipeDate: Date | null;       // passed as meal_recipeDate from Meal component
   setRecipeDate: (date: Date | null) => void;  // passed as setMeal_recipeDate from Meal component
+  // Nutrition search props
+  searchTerm: string;
+  setSearchTerm: (s: string) => void;
+  handleSearch: () => void;
+  searchResults: IMealDetail[];
+  isSearching: boolean;
 }

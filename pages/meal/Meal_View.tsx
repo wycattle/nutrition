@@ -19,7 +19,12 @@ const Spinner = () => (
 //React.FC is FunctionComponent:  A React function component is
 //a plain JavaScript function that accepts properties ("props") as an argument 
 // and returns a React element (JSX)
-const Meal_View: React.FC<Meal_View_Props> = ({
+const Meal_View: React.FC<Meal_View_Props & {
+  searchTerm: string;
+  setSearchTerm: (s: string) => void;
+  handleSearch: () => void;
+  searchResults: IMealDetail[];
+}> = ({
   dropdownOptions,
   dropdownSelectedValue,
   setDropdownSelectedValue,
@@ -50,7 +55,12 @@ const Meal_View: React.FC<Meal_View_Props> = ({
   isSavingMeal,
   recipeDate,       // = meal_recipeDate from index.tsx
   setRecipeDate,    // = setMeal_recipeDate from index.tsx
-  }) => {
+  searchTerm,
+  setSearchTerm,
+  handleSearch,
+  searchResults,
+  isSearching,
+}) => {
   const safeNutrientCalories = nutrientCalories ?? { carbCalories: 0, fatCalories: 0, proteinCalories: 0, grandTotal: 0 };
 
   // Ref for the portion size input (for focusing)
@@ -69,22 +79,112 @@ const Meal_View: React.FC<Meal_View_Props> = ({
       </Link>
     </div>
 
-    <div className={styles['select-food-group-container']}>
-      <label htmlFor="select-food-group-item">
-        Select a food group
-      </label>
-      <div id="select-food-group-item">
-        <Select
-          options={dropdownOptions}
-          onChange={(newValue) => {
-            setDropdownSelectedValue(newValue[0]);
-          }}
-          placeholder='Click here . . .'
-          values={dropdownSelectedValue ? [dropdownSelectedValue] : []}
-          dropdownHeight="auto"
+    <div style={{ display: 'flex', alignItems: 'center', width: '80vw', marginLeft: '5vw' }}>
+      <div className={styles['select-food-group-container']}>
+        <label htmlFor="select-food-group-item">
+          Select a food group
+        </label>
+        <div id="select-food-group-item">
+          <Select
+            options={dropdownOptions}
+            onChange={(newValue) => {
+              setDropdownSelectedValue(newValue[0]);
+            }}
+            placeholder='Click here . . .'
+            values={dropdownSelectedValue ? [dropdownSelectedValue] : []}
+            dropdownHeight="auto"
+          />
+        </div>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', 
+        marginLeft: 'auto' }}>
+        <label htmlFor="nutrition-search-box" style={{ marginRight: 4 }}>
+          search the nutrition table
+        </label>
+        <input
+          id="nutrition-search-box"
+          type="text"
+          placeholder="type & press Enter..."
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
+          style={{ minWidth: 180 }}
         />
+        {isSearching && <Spinner />}
+        {!isSearching && searchResults.length > 0 && (
+          <span style={{ color: '#07efc8', fontSize: '0.85em' }}>
+            {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+          </span>
+        )}
       </div>
     </div>
+
+    {/* Search results table (only show columns present in data) */}
+    {searchResults.length > 0 && (
+      <div
+        style={{
+          margin: '1em 1vw 1em 57vw', // move away from right edge
+          width: 500,
+          minWidth: 340,
+          maxWidth: 600,
+          border: '2px solid #07efc8',
+          borderRadius: 12,
+          background: '#23272b',
+          boxShadow: '0 2px 8px rgba(44,68,66,0.12)',
+          overflowX: 'auto',
+        }}
+      >
+        <table
+          style={{
+            fontSize: '0.95em',
+            borderCollapse: 'collapse',
+            width: '100%',
+            tableLayout: 'fixed',
+          }}
+        >
+          <colgroup>
+            <col style={{ width: '120px' }} />
+            <col style={{ width: '320px' }} />
+          </colgroup>
+          <thead>
+            <tr style={{ borderBottom: '2px solid #ed5b5b', color: '#52e87a' }}>
+              <th style={{ padding: '0.3em 0.6em', textAlign: 'left' }}>Desc 1</th>
+              <th
+                style={{
+                  padding: '0.3em 0.6em',
+                  textAlign: 'left',
+                  maxWidth: 220,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                Desc 2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {searchResults.map((item, idx) => (
+              <tr key={idx} style={{ borderBottom: '1px solid #725e5e' }}>
+                <td style={{ padding: '0.3em 0.6em', textAlign: 'left' }}>{item.desc1}</td>
+                <td
+                  style={{
+                    padding: '0.3em 0.6em',
+                    textAlign: 'left',
+                    maxWidth: 220,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {item.desc2}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
 
     {dropdownSelectedValue && (
       <table className={styles['table-style']}>
@@ -117,7 +217,6 @@ const Meal_View: React.FC<Meal_View_Props> = ({
                       dropdownCheckedRows.delete(index);
                     } else {
                       dropdownCheckedRows.add(index);
-                      // Clear the portion input, focus, and select for fresh entry
                       if (typeof setPortionSize === 'function') setPortionSize(0);
                       setTimeout(() => {
                         if (focusPortionInputRef.current) {
@@ -144,7 +243,7 @@ const Meal_View: React.FC<Meal_View_Props> = ({
       </table>
     )}
 
-    <div className={styles['portion-container']}>
+    <div className={styles['portion-container']} style={{ margin: '20px 0 20px 5vw' }}>
       <label
         htmlFor="portionSize"
         className={isBlinking ? styles['blink'] : ''}
@@ -154,9 +253,10 @@ const Meal_View: React.FC<Meal_View_Props> = ({
       <input
         id="portionSize"
         ref={focusPortionInputRef}
+
         className={`${styles['portion-size-inputbox']} ${isBlinking ? styles['blink'] : ''}`}
         type="number"
-        placeholder="0"
+        placeholder=""
         onFocus={(e) => e.target.value = ""}
         value={portionSize}
         onChange={(e) => setPortionSize(Number(e.target.value))}
@@ -320,6 +420,7 @@ const Meal_View: React.FC<Meal_View_Props> = ({
         </div>
       </>
     )}
+
 
     {message && <div className={styles['alert-popup2']}>{message}</div>}
   </div>
