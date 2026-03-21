@@ -12,7 +12,7 @@ import axios from 'axios';
 
 
 import { IOption , IRecipex, IMealDetail, IMealx, IDailyMealTotalx  } from '../../types_interfaces/interfaces';
-import Meal_View from './Meal_View';
+import Meal_View from '../../components/meal/Meal_View';
 import { fetcher } from '../../utils/helper';
 
 // Main Meal component: handles all UI state and logic for meal creation
