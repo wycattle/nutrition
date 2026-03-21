@@ -9,6 +9,7 @@ import { IOption, IRecipex, IMealDetail } from '../../types_interfaces/interface
 import axios from 'axios';
 import styles from '../../styles/recipes.module.scss';
 import { calculatePer100g } from '../../utils/methods';
+import Spinner from '../../utils/Spinner';
 // Removed fs and path imports; data now comes from API
 
 interface RecipeViewProps {
@@ -16,6 +17,7 @@ interface RecipeViewProps {
   selectedValue: IOption | null;
   setSelectedValue: (value: IOption | null) => void;
   selectedRecipe: IRecipex | null;
+  isLoading: boolean;
 }
 
 //FC is FunctionComponents
@@ -24,6 +26,7 @@ const Recipe_View: React.FC<RecipeViewProps> = ({
   selectedValue,
   setSelectedValue,
   selectedRecipe,
+  isLoading,
 }) => {
   const [editRows, setEditRows] = useState<IMealDetail[]>([]);
   const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
@@ -125,13 +128,15 @@ const Recipe_View: React.FC<RecipeViewProps> = ({
         </Link>
       </div>
 
-      <div style={{ marginLeft: '2em', marginTop: '1em' }}>
+      <div style={{ marginLeft: '2em', marginTop: '1em', display: 'flex', alignItems: 'center', gap: '1em' }}>
         <Select
           options={options}
           onChange={(value) => setSelectedValue(value[0] || null)}
-          placeholder="Select a recipe"
+          placeholder={isLoading ? "Loading recipes..." : "Select a recipe"}
           values={selectedValue ? [selectedValue] : []}
+          disabled={isLoading}
         />
+        {isLoading && <Spinner size={24} />}
       </div>
 
       {selectedRecipe && (
