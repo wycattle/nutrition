@@ -12,7 +12,7 @@ import { fetcher } from '../../utils/helper';
 function Recipes() {
   const [selectedValue, setSelectedValue] = useState<IOption | null>(null);
   // Use shared fetcher utility for SWR data fetching
-  const { data: recipes = [], error } = useSWR<IRecipex[]>('/api/recipe_related/recipes', fetcher);
+  const { data: recipes = [], error, isLoading } = useSWR<IRecipex[]>('/api/recipe_related/recipes', fetcher);
 
   const options: IOption[] = (recipes || []).map(recipe => ({ label: recipe.name, value: recipe.name }));
   const selectedRecipe = selectedValue ? recipes.find(r => r.name === selectedValue.value) || null : null;
@@ -23,6 +23,7 @@ function Recipes() {
       selectedValue={selectedValue}
       setSelectedValue={setSelectedValue}
       selectedRecipe={selectedRecipe}
+      isLoading={isLoading}
     />
   );
 }

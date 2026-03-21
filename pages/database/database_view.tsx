@@ -6,6 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from '../../styles/Meal_styles.module.scss';
+import Spinner from '../../utils/Spinner';
 
 
 interface DatabaseViewProps {
@@ -68,14 +69,8 @@ const DatabaseView: React.FC<DatabaseViewProps> = ({ result, error, loading, use
 
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 16, margin: '32px 0 24px 24px' }}>
-      <div className="spinner" style={{ width: 32, height: 32, border: '4px solid #c6a3dd', borderTop: '4px solid #32232c', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+      <Spinner />
       <span style={{ fontSize: '1.2em', color: '#c6a3dd' }}>Calculating...</span>
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
   if (error) return <div style={{ color: 'red' }}>{error}</div>;

@@ -36,6 +36,7 @@
     "react-dom": "^19.2.0",
     "react-dropdown-select": "^4.12.2",
     "react-redux": "^9.2.0",
+    "react-speech-recognition": "^4.0.1",
     "recoil": "^0.7.7",
     "swr": "^2.4.1"
   },
@@ -47,6 +48,7 @@
     "@types/pg": "^8.16.0",
     "@types/ramda": "^0.31.1",
     "@types/react": "19.1.13",
+    "@types/react-speech-recognition": "^3.9.6",
     "baseline-browser-mapping": "^2.10.0",
     "cross-env": "^10.0.0",
     "eslint": "^9.36.0",

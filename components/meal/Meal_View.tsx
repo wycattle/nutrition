@@ -6,29 +6,19 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { IOption, IMealDetail, NutrientCalories } from '../../types_interfaces/interfaces';
 import styles from '../../styles/Meal_styles.module.scss';
 import { Meal_View_Props } from '../../types_interfaces/interfaces';
+import Spinner from '../../utils/Spinner';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
-// Simple spinner component
-const Spinner = () => (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '1em 0' }}>
-    <div style={{ border: '4px solid #f3f3f3', borderTop: '4px solid #32232c', borderRadius: '50%', width: 32, height: 32, animation: 'spin 1s linear infinite' }} />
-    <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-  </div>
-);
 
 
 //React.FC is FunctionComponent:  A React function component is
 //a plain JavaScript function that accepts properties ("props") as an argument 
 // and returns a React element (JSX)
-const Meal_View: React.FC<Meal_View_Props & {
-  searchTerm: string;
-  setSearchTerm: (s: string) => void;
-  handleSearch: () => void;
-  searchResults: IMealDetail[];
-}> = ({
-  dropdownOptions,
+const Meal_View: React.FC<Meal_View_Props> = ({
+  dropdownOptions = [],
   dropdownSelectedValue,
   setDropdownSelectedValue,
-  data,
+  data = [],
   dropdownCheckedRows,
   setDropdownCheckedRows,
   handleRowSelect,
@@ -36,7 +26,7 @@ const Meal_View: React.FC<Meal_View_Props & {
   setPortionSize,
   isBlinking,
   handleApplyPortion,
-  selectedRows,
+  selectedRows = [],
   handleCheckboxChange,
   totals,
   nutrientCalories,
@@ -47,18 +37,18 @@ const Meal_View: React.FC<Meal_View_Props & {
   handleConfirmSaveMeal,
   handleSaveAsRecipe,
   message,
-  categoryOptions,
+  categoryOptions = [],
   selectedCategory,
   setSelectedCategory,
   showDatePicker,
   showConfirmSaveButton,
   isSavingMeal,
-  recipeDate,       // = meal_recipeDate from index.tsx
-  setRecipeDate,    // = setMeal_recipeDate from index.tsx
+  recipeDate,
+  setRecipeDate,
   searchTerm,
   setSearchTerm,
   handleSearch,
-  searchResults,
+  searchResults = [],
   isSearching,
 }) => {
   const safeNutrientCalories = nutrientCalories ?? { carbCalories: 0, fatCalories: 0, proteinCalories: 0, grandTotal: 0 };
@@ -66,12 +56,18 @@ const Meal_View: React.FC<Meal_View_Props & {
   // Ref for the portion size input (for focusing)
   const focusPortionInputRef = React.useRef<HTMLInputElement>(null);
 
+  // Voice input for the nutrition search box
+  const { transcript, listening: isListening, browserSupportsSpeechRecognition: isSpeechSupported, resetTranscript } = useSpeechRecognition();
+
+  // When transcript updates, feed it into the search box
+  React.useEffect(() => {
+    if (transcript) setSearchTerm(transcript);
+  }, [transcript]);
+
 
 
 
   return (
-
-
   <div className={styles['page-root']}>
     <div>
       <Link href="/">
@@ -79,8 +75,9 @@ const Meal_View: React.FC<Meal_View_Props & {
       </Link>
     </div>
 
-    <div style={{ display: 'flex', alignItems: 'center', width: '80vw', marginLeft: '5vw' }}>
-      <div className={styles['select-food-group-container']}>
+    {/* Controls Row: food group dropdown and search box */}
+    <div style={{ display: 'flex', alignItems: 'center', width: '100vw', maxWidth: '100vw', margin: '0 auto', boxSizing: 'border-box', padding: '0 2vw' }}>
+      <div className={styles['select-food-group-container']} style={{ flex: '0 0 420px', minWidth: 320 }}>
         <label htmlFor="select-food-group-item">
           Select a food group
         </label>
@@ -96,8 +93,7 @@ const Meal_View: React.FC<Meal_View_Props & {
           />
         </div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', 
-        marginLeft: 'auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', marginLeft: '2vw', flex: 1 }}>
         <label htmlFor="nutrition-search-box" style={{ marginRight: 4 }}>
           search the nutrition table
         </label>
@@ -105,12 +101,45 @@ const Meal_View: React.FC<Meal_View_Props & {
           id="nutrition-search-box"
           type="text"
           placeholder="type & press Enter..."
-          value={searchTerm}
+          value={searchTerm || ''}
           onChange={e => setSearchTerm(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
           style={{ minWidth: 180 }}
         />
+        {isSpeechSupported && (
+          <button
+            type="button"
+            title={isListening ? 'Stop listening' : 'Search by voice (Chrome/Edge only)'}
+            onClick={() => {
+              if (isListening) {
+                SpeechRecognition.stopListening();
+                setTimeout(handleSearch, 300);
+              } else {
+                resetTranscript();
+                SpeechRecognition.startListening({ language: 'en-US' });
+              }
+            }}
+            style={{
+              background: isListening ? '#c0392b' : '#32232c',
+              color: isListening ? '#fff' : '#c6a3dd',
+              border: `2px solid ${isListening ? '#e74c3c' : '#725e5e'}`,
+              borderRadius: '8px',
+              padding: '4px 10px',
+              cursor: 'pointer',
+              fontSize: '1.2em',
+              lineHeight: 1,
+              transition: 'background 0.2s, border-color 0.2s',
+            }}
+          >
+            {isListening ? '⏹' : '🎤'}
+          </button>
+        )}
         {isSearching && <Spinner />}
+        {!isSearching && searchTerm?.trim() && searchResults.length === 0 && (
+          <span style={{ color: '#ed5b5b', fontSize: '0.85em' }}>
+            Item not found
+          </span>
+        )}
         {!isSearching && searchResults.length > 0 && (
           <span style={{ color: '#07efc8', fontSize: '0.85em' }}>
             {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
@@ -119,14 +148,22 @@ const Meal_View: React.FC<Meal_View_Props & {
       </div>
     </div>
 
-    {/* Search results table (only show columns present in data) */}
+
+
+
+    {/* Search results table: always full width, below controls row */}
     {searchResults.length > 0 && (
       <div
         style={{
-          margin: '1em 1vw 1em 57vw', // move away from right edge
-          width: 500,
-          minWidth: 340,
-          maxWidth: 600,
+          position: 'relative',
+          left: '50%',
+          right: '50%',
+          marginLeft: '-50vw',
+          marginRight: '-50vw',
+          width: '100vw',
+          maxWidth: '100vw',
+          minWidth: 600,
+          margin: '2em -50vw',
           border: '2px solid #07efc8',
           borderRadius: 12,
           background: '#23272b',
@@ -140,11 +177,12 @@ const Meal_View: React.FC<Meal_View_Props & {
             borderCollapse: 'collapse',
             width: '100%',
             tableLayout: 'fixed',
+            minWidth: '100%',
           }}
         >
           <colgroup>
-            <col style={{ width: '120px' }} />
-            <col style={{ width: '320px' }} />
+            <col style={{ width: '15%' }} />
+            <col style={{ width: '85%' }} />
           </colgroup>
           <thead>
             <tr style={{ borderBottom: '2px solid #ed5b5b', color: '#52e87a' }}>
@@ -153,7 +191,6 @@ const Meal_View: React.FC<Meal_View_Props & {
                 style={{
                   padding: '0.3em 0.6em',
                   textAlign: 'left',
-                  maxWidth: 220,
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -171,7 +208,6 @@ const Meal_View: React.FC<Meal_View_Props & {
                   style={{
                     padding: '0.3em 0.6em',
                     textAlign: 'left',
-                    maxWidth: 220,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -187,22 +223,56 @@ const Meal_View: React.FC<Meal_View_Props & {
     )}
 
     {dropdownSelectedValue && (
-      <table className={styles['table-style']}>
+      <div
+        style={{
+          position: 'relative',
+          left: '50%',
+          right: '50%',
+          marginLeft: '-50vw',
+          marginRight: '-50vw',
+          width: '100vw',
+          maxWidth: '100vw',
+          minWidth: 600,
+          margin: '2em -50vw',
+          overflowX: 'auto',
+        }}
+      >
+        <table 
+          className={styles['table-style']} 
+          style={{ 
+            fontSize: '0.95em', 
+            borderCollapse: 'collapse', 
+            width: '60%', 
+            tableLayout: 'fixed',
+            minWidth: '60%',
+          }}
+        >
+          <colgroup>
+            <col style={{ width: '5%' }} />
+            <col style={{ width: '10%' }} />
+            <col style={{ width: '15%' }} />
+            <col style={{ width: '5%' }} />
+            <col style={{ width: '8%' }} />
+            <col style={{ width: '8%' }} />
+            <col style={{ width: '8%' }} />
+            <col style={{ width: '8%' }} />
+            <col style={{ width: '8%' }} />
+          </colgroup>
         <thead className={styles['table-style']}>
           <tr>
             <th style={{ textAlign: 'left' }}>Select</th>
             <th style={{ textAlign: 'left' }}>Desc 1</th>
             <th style={{ textAlign: 'left' }}>Desc 2</th>
-            <th style={{ textAlign: 'left' }}>Portion</th>
-            <th style={{ textAlign: 'left' }}>Calories</th>
-            <th style={{ textAlign: 'left' }}>Carb</th>
-            <th style={{ textAlign: 'left' }}>Fat</th>
-            <th style={{ textAlign: 'left' }}>Protein</th>
-            <th style={{ textAlign: 'left' }}>Fiber</th>
+            <th style={{ textAlign: 'right' }}>Portion</th>
+            <th style={{ textAlign: 'right' }}>Calories</th>
+            <th style={{ textAlign: 'right' }}>Carb</th>
+            <th style={{ textAlign: 'right' }}>Fat</th>
+            <th style={{ textAlign: 'right' }}>Protein</th>
+            <th style={{ textAlign: 'right' }}>Fiber</th>
           </tr>
         </thead>
         <tbody>
-          {(data ?? []).filter(item => item.desc1 === dropdownSelectedValue?.value)
+          {data.filter(item => item.desc1 === dropdownSelectedValue?.value)
             .sort((a, b) => (a.desc2 ?? '').localeCompare(b.desc2 ?? ''))
             .map((item, index) => (
             <tr key={index}>
@@ -217,10 +287,8 @@ const Meal_View: React.FC<Meal_View_Props & {
                       dropdownCheckedRows.delete(index);
                     } else {
                       dropdownCheckedRows.add(index);
-                      if (typeof setPortionSize === 'function') setPortionSize(0);
                       setTimeout(() => {
                         if (focusPortionInputRef.current) {
-                          focusPortionInputRef.current.value = '';
                           focusPortionInputRef.current.focus();
                         }
                       }, 0);
@@ -231,16 +299,17 @@ const Meal_View: React.FC<Meal_View_Props & {
               </td>
               <td style={{ textAlign: 'left' }}>{item.desc1}</td>
               <td style={{ textAlign: 'left' }}>{item.desc2}</td>
-              <td style={{ textAlign: 'left' }}>{item.portion}</td>
-              <td style={{ textAlign: 'left' }}>{item.calories}</td>
-              <td style={{ textAlign: 'left' }}>{item.carb}</td>
-              <td style={{ textAlign: 'left' }}>{item.fat}</td>
-              <td style={{ textAlign: 'left' }}>{item.protein}</td>
-              <td style={{ textAlign: 'left' }}>{item.fiber}</td>
+              <td style={{ textAlign: 'right' }}>{item.portion}</td>
+              <td style={{ textAlign: 'right' }}>{item.calories}</td>
+              <td style={{ textAlign: 'right' }}>{item.carb}</td>
+              <td style={{ textAlign: 'right' }}>{item.fat}</td>
+              <td style={{ textAlign: 'right' }}>{item.protein}</td>
+              <td style={{ textAlign: 'right' }}>{item.fiber}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
     )}
 
     <div className={styles['portion-container']} style={{ margin: '20px 0 20px 5vw' }}>
@@ -257,8 +326,10 @@ const Meal_View: React.FC<Meal_View_Props & {
         className={`${styles['portion-size-inputbox']} ${isBlinking ? styles['blink'] : ''}`}
         type="number"
         placeholder=""
-        onFocus={(e) => e.target.value = ""}
-        value={portionSize}
+        onFocus={(e) => {
+          e.target.select();
+        }}
+        value={portionSize === 0 ? '' : portionSize}
         onChange={(e) => setPortionSize(Number(e.target.value))}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
@@ -269,34 +340,47 @@ const Meal_View: React.FC<Meal_View_Props & {
     </div>
 
     <h2 className={styles.h2}>Selected Rows (check box to delete)</h2>
-    <div style={{ width: '55vw', minWidth: 600, maxWidth: 900, marginLeft: 24, marginRight: 'auto' }}>
-      <table className={styles['table-style']} style={{ fontSize: '1em', borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed' }}>
+    <div
+      style={{
+        position: 'relative',
+        left: '50%',
+        right: '50%',
+        marginLeft: '-50vw',
+        marginRight: '-50vw',
+        width: '100vw',
+        maxWidth: '100vw',
+        minWidth: 600,
+        margin: '2em -50vw',
+        overflowX: 'auto',
+      }}
+    >
+      <table className={styles['table-style']} style={{ fontSize: '0.95em', borderCollapse: 'collapse', width: '60%', tableLayout: 'fixed', minWidth: '60%' }}>
         <colgroup>
-          <col style={{ width: '7vw', minWidth: 60, maxWidth: 100 }} /> {/* Remove */}
-          <col style={{ width: '10vw', minWidth: 80, maxWidth: 120 }} /> {/* Desc1 */}
-          <col style={{ width: '16vw', minWidth: 120, maxWidth: 180 }} /> {/* Desc2 */}
-          <col style={{ width: '6vw', minWidth: 50, maxWidth: 70 }} /> {/* Portion */}
-          <col style={{ width: '6vw', minWidth: 50, maxWidth: 70 }} /> {/* Calories */}
-          <col style={{ width: '6vw', minWidth: 50, maxWidth: 70 }} /> {/* Carb */}
-          <col style={{ width: '6vw', minWidth: 50, maxWidth: 70 }} /> {/* Fat */}
-          <col style={{ width: '6vw', minWidth: 50, maxWidth: 70 }} /> {/* Protein */}
-          <col style={{ width: '6vw', minWidth: 50, maxWidth: 70 }} /> {/* Fiber */}
+          <col style={{ width: '5%' }} /> {/* Remove */}
+          <col style={{ width: '10%' }} /> {/* Desc1 */}
+          <col style={{ width: '15%' }} /> {/* Desc2 */}
+          <col style={{ width: '5%' }} /> {/* Portion */}
+          <col style={{ width: '8%' }} /> {/* Calories */}
+          <col style={{ width: '8%' }} /> {/* Carb */}
+          <col style={{ width: '8%' }} /> {/* Fat */}
+          <col style={{ width: '8%' }} /> {/* Protein */}
+          <col style={{ width: '8%' }} /> {/* Fiber */}
         </colgroup>
         <thead className={styles['table-style']}>
           <tr>
-            <th style={{ textAlign: 'center', background: '#222121', border: '1px solid #000', fontWeight: 600, fontSize: '1em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Remove</th>
-            <th style={{ textAlign: 'left', background: '#222121', border: '1px solid #000', fontWeight: 600, fontSize: '1em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Desc 1</th>
-            <th style={{ textAlign: 'left', background: '#222121', border: '1px solid #000', fontWeight: 600, fontSize: '1em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Desc 2</th>
-            <th style={{ textAlign: 'right', background: '#222121', border: '1px solid #000', fontWeight: 600, fontSize: '1em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Portion</th>
-            <th style={{ textAlign: 'right', background: '#222121', border: '1px solid #000', fontWeight: 600, fontSize: '1em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Calories</th>
-            <th style={{ textAlign: 'right', background: '#222121', border: '1px solid #000', fontWeight: 600, fontSize: '1em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Carb</th>
-            <th style={{ textAlign: 'right', background: '#222121', border: '1px solid #000', fontWeight: 600, fontSize: '1em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Fat</th>
-            <th style={{ textAlign: 'right', background: '#222121', border: '1px solid #000', fontWeight: 600, fontSize: '1em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Protein</th>
-            <th style={{ textAlign: 'right', background: '#222121', border: '1px solid #000', fontWeight: 600, fontSize: '1em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Fiber</th>
+            <th style={{ textAlign: 'left' }}>Remove</th>
+            <th style={{ textAlign: 'left' }}>Desc 1</th>
+            <th style={{ textAlign: 'left' }}>Desc 2</th>
+            <th style={{ textAlign: 'right' }}>Portion</th>
+            <th style={{ textAlign: 'right' }}>Calories</th>
+            <th style={{ textAlign: 'right' }}>Carb</th>
+            <th style={{ textAlign: 'right' }}>Fat</th>
+            <th style={{ textAlign: 'right' }}>Protein</th>
+            <th style={{ textAlign: 'right' }}>Fiber</th>
           </tr>
         </thead>
         <tbody className={styles['table-style']}>
-          {(selectedRows ?? []).map((item, index) => (
+          {selectedRows.map((item, index) => (
             <tr key={index} style={{ height: '32px', background: index % 2 === 0 ? '#23272b' : '#1f2226' }}>
               <td style={{ textAlign: 'center', border: '1px solid #000', background: 'inherit' }}>
                 <input
@@ -341,7 +425,7 @@ const Meal_View: React.FC<Meal_View_Props & {
         {/* <span>Protein: {safeNutrientCalories.proteinCalories.toFixed(1)}</span> */}
       </div>
     </div>
-    {(selectedRows ?? []).length > 0 && (
+    {selectedRows.length > 0 && (
       <>
         {/* Only show name and category input for recipe */}
         {showNameInput && (
