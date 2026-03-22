@@ -10,6 +10,7 @@ import Link from 'next/link';
 
 // The page component. It renders JSX and receives its props.
 // The homepage does not require an API because it only displays static content.
+//When session is falsy (user not signed in), the sign in button is shown.
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -34,24 +35,16 @@ export default function Home() {
 
         {/* Sign in/out button - now below the image */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '24px 0 0 0' }}>
-          {!session ? (
-            <>
-   
-              <button
-                className="globalButton"
-                style={{ margin: '0 0 8px 0', background: '#DB4437' }}
-                onClick={() => signIn('google')}
-              >
-                Sign in with Google
-              </button>
-              
-              {/* Microsoft login button removed */}
-            </>
-          ) : (
-            <button className="globalButton" style={{ margin: '0 0 8px 0' }} onClick={() => signOut()}>Sign out</button>
+          {!session && (
+            <button
+              className="globalButton"
+              style={{ margin: '0 0 8px 0', background: '#DB4437' }}
+              onClick={() => signIn('google')}
+            >
+              Sign in with Google
+            </button>
           )}
         </div>
-
         {/* Only show these buttons if signed in */}
         {session && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 32 }}>
