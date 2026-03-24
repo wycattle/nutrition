@@ -7,10 +7,10 @@ export function getApiUrl() {
 // it determines the base API URL to use for fetch requests based on the environment:
 
 if (process.env.NODE_ENV === 'production') {
-    return process.env.NEXT_PUBLIC_API_URL_PRODUCTION;
+    return process.env.NEXT_PUBLIC_API_URL_PRODUCTION || '';
   }
   if (typeof window !== 'undefined' && window.location.hostname.startsWith('192.168')) {
-    return process.env.NEXT_PUBLIC_API_URL_LAN;
+    return process.env.NEXT_PUBLIC_API_URL_LAN || '';
   }
-  return process.env.NEXT_PUBLIC_API_URL_LOCAL;
+  return process.env.NEXT_PUBLIC_API_URL_LOCAL || '';
 }

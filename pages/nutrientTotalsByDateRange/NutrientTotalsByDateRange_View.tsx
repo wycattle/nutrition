@@ -52,6 +52,19 @@ export const NutrientTotalsByDateRange_View: React.FC<NutrientTotalsByDateRangeV
     return [...sorted, ...avgRows];
   }, [totals, sortCol, sortDir]);
 
+  // Summed totals across all data rows (excluding any avg rows)
+  const grandTotal = useMemo(() => {
+    const dataRows = totals.filter((row: any) => !String(row.desc1).toLowerCase().includes('avg'));
+    return dataRows.reduce((acc, row) => ({
+      calories: acc.calories + (Number(row.calories) || 0),
+      carb:     acc.carb     + (Number(row.carb)     || 0),
+      fat:      acc.fat      + (Number(row.fat)      || 0),
+      protein:  acc.protein  + (Number(row.protein)  || 0),
+      fiber:    acc.fiber    + (Number(row.fiber)     || 0),
+      portion:  acc.portion  + (Number(row.portion)  || 0),
+    }), { calories: 0, carb: 0, fat: 0, protein: 0, fiber: 0, portion: 0 });
+  }, [totals]);
+
   // Click handler for sorting
   const handleSort = (col: string) => {
     if (sortCol === col) {
@@ -62,27 +75,7 @@ export const NutrientTotalsByDateRange_View: React.FC<NutrientTotalsByDateRangeV
     }
   };
 
-  // Calculate number of days in the span (inclusive)
-  let numDays = 1;
-  if (startDateObj && endDateObj) {
-    // Calculate difference in ms, then convert to days, add 1 for inclusive
-    numDays = Math.floor((endDateObj.getTime() - startDateObj.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    if (numDays < 1) numDays = 1;
-  }
 
-  const numCols = ['calories', 'carb', 'fat', 'protein', 'fiber', 'portion'];
-
-  // Compute column totals for the summary row
-  const colTotals = numCols.reduce((acc, col) => {
-    acc[col] = totals.reduce((sum, row) => sum + (Number(row[col]) || 0), 0);
-    return acc;
-  }, {} as Record<string, number>);
-
-  // Calculate averages per day for the grand total row
-  const colAverages = numCols.reduce((acc, col) => {
-    acc[col] = numDays > 0 ? colTotals[col] / numDays : 0;
-    return acc;
-  }, {} as Record<string, number>);
 
 
   return (
@@ -136,26 +129,24 @@ export const NutrientTotalsByDateRange_View: React.FC<NutrientTotalsByDateRangeV
       {totals.length > 0 && (
         <>
           <div style={{ marginBottom: 8, fontSize: '1.08em', color: '#f7c1c1', fontWeight: 500 }}>
-            This table aggregates (sum) nutrients by desc2 and shows the average in the bottom row. All columns are sortable, just click the header.
+            Nutrients aggregated (summed) by food. Click any column header to sort.
           </div>
           <table border={1} cellPadding={6} style={{ width: '100%', marginTop: 0, borderCollapse: 'collapse', cursor: 'pointer' }}>
             <thead>
               <tr style={{ background: '#333' }}>
                 <th style={{ textAlign: 'left' }} onClick={() => handleSort('desc1')}>Food Group (desc1)</th>
-                <th style={{ textAlign: 'left' }} onClick={() => handleSort('desc2')}>Food (desc2)</th>
-                <th style={{ textAlign: 'right' }} onClick={() => handleSort('calories')}>Calories{sortCol === 'calories' ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}</th>
-                <th style={{ textAlign: 'right' }} onClick={() => handleSort('carb')}>Carb{sortCol === 'carb' ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}</th>
-                <th style={{ textAlign: 'right' }} onClick={() => handleSort('fat')}>Fat{sortCol === 'fat' ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}</th>
-                <th style={{ textAlign: 'right' }} onClick={() => handleSort('protein')}>Protein{sortCol === 'protein' ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}</th>
-                <th style={{ textAlign: 'right' }} onClick={() => handleSort('fiber')}>Fiber{sortCol === 'fiber' ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}</th>
-                <th style={{ textAlign: 'right' }} onClick={() => handleSort('portion')}>Portion{sortCol === 'portion' ? (sortDir === 'asc' ? ' ▲' : ' ▼') : ''}</th>
+                <th style={{ textAlign: 'right' }} onClick={() => handleSort('calories')}>Calories {sortCol === 'calories' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                <th style={{ textAlign: 'right' }} onClick={() => handleSort('carb')}>Carb {sortCol === 'carb' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                <th style={{ textAlign: 'right' }} onClick={() => handleSort('fat')}>Fat {sortCol === 'fat' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                <th style={{ textAlign: 'right' }} onClick={() => handleSort('protein')}>Protein {sortCol === 'protein' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                <th style={{ textAlign: 'right' }} onClick={() => handleSort('fiber')}>Fiber {sortCol === 'fiber' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                <th style={{ textAlign: 'right' }} onClick={() => handleSort('portion')}>Portion {sortCol === 'portion' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
               </tr>
             </thead>
             <tbody>
               {sortedTotals.map((row: any, i: number) => (
                 <tr key={i}>
                   <td style={{ textAlign: 'left' }}>{row.desc1}</td>
-                  <td style={{ textAlign: 'left' }}>{row.desc2}</td>
                   <td style={{ textAlign: 'right' }}>{Number(row.calories).toFixed(0)}</td>
                   <td style={{ textAlign: 'right' }}>{Number(row.carb).toFixed(1)}</td>
                   <td style={{ textAlign: 'right' }}>{Number(row.fat).toFixed(1)}</td>
@@ -164,17 +155,18 @@ export const NutrientTotalsByDateRange_View: React.FC<NutrientTotalsByDateRangeV
                   <td style={{ textAlign: 'right' }}>{Number(row.portion).toFixed(0)}</td>
                 </tr>
               ))}
-              {/* Grand total row (average per day) */}
-              <tr style={{ fontWeight: 'bold', background: '#222' }}>
-                <td colSpan={2}>Avg/Day (over {numDays} day{numDays !== 1 ? 's' : ''})</td>
-                <td style={{ textAlign: 'right' }}>{colAverages.calories.toFixed(0)}</td>
-                <td style={{ textAlign: 'right' }}>{colAverages.carb.toFixed(1)}</td>
-                <td style={{ textAlign: 'right' }}>{colAverages.fat.toFixed(1)}</td>
-                <td style={{ textAlign: 'right' }}>{colAverages.protein.toFixed(1)}</td>
-                <td style={{ textAlign: 'right' }}>{colAverages.fiber.toFixed(1)}</td>
-                <td style={{ textAlign: 'right' }}>{colAverages.portion.toFixed(0)}</td>
-              </tr>
             </tbody>
+            <tfoot>
+              <tr style={{ fontWeight: 'bold', background: '#222', color: '#f7c1c1', borderTop: '3px solid #725e5e' }}>
+                <td style={{ textAlign: 'left' }}>Total</td>
+                <td style={{ textAlign: 'right' }}>{grandTotal.calories.toFixed(0)}</td>
+                <td style={{ textAlign: 'right' }}>{grandTotal.carb.toFixed(1)}</td>
+                <td style={{ textAlign: 'right' }}>{grandTotal.fat.toFixed(1)}</td>
+                <td style={{ textAlign: 'right' }}>{grandTotal.protein.toFixed(1)}</td>
+                <td style={{ textAlign: 'right' }}>{grandTotal.fiber.toFixed(1)}</td>
+                <td style={{ textAlign: 'right' }}>{grandTotal.portion.toFixed(0)}</td>
+              </tr>
+            </tfoot>
           </table>
         </>
       )}

@@ -2,11 +2,19 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import pool from '../../../lib/postgres';
+import { getAuthenticatedUser } from '../../../utils/getAuthenticatedUser';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     res.status(405).json({ message: 'Method Not Allowed' });
     return;
+  }
+
+  let userId: string;
+  try {
+    ({ userId } = await getAuthenticatedUser(req, res));
+  } catch (err) {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 
   const { start, end } = req.query;
@@ -16,37 +24,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  // This SQL matches the FastAPI/pandas logic: group by date, sum nutrients, rename columns
+  // Query user_meal_totals which stores pre-aggregated totals per meal; group by date to get daily totals
   const sql = `
-    WITH flat AS (
-      SELECT
-        date::date AS date,
-        (item->>'calories')::numeric AS calories,
-        (item->>'carb')::numeric AS carb,
-        (item->>'fat')::numeric AS fat,
-        (item->>'fiber')::numeric AS fiber,
-        (item->>'portion')::numeric AS portion,
-        (item->>'protein')::numeric AS protein
-      FROM user_meals,
-        jsonb_array_elements(details) AS item
-      WHERE date::date BETWEEN $1::date AND $2::date
-    )
     SELECT
-      date,
-      COALESCE(SUM(calories),0) AS "caloriesTot",
-      COALESCE(SUM(carb),0)     AS "carbTot",
-      COALESCE(SUM(fat),0)      AS "fatTot",
-      COALESCE(SUM(fiber),0)    AS "fiberTot",
-      COALESCE(SUM(portion),0)  AS "portionTot",
-      COALESCE(SUM(protein),0)  AS "proteinTot"
-    FROM flat
-    GROUP BY date
-    ORDER BY date
+      date::date AS date,
+      COALESCE(SUM(calories_tot), 0) AS "caloriesTot",
+      COALESCE(SUM(carb_tot),     0) AS "carbTot",
+      COALESCE(SUM(fat_tot),      0) AS "fatTot",
+      COALESCE(SUM(fiber_tot),    0) AS "fiberTot",
+      COALESCE(SUM(portion_tot),  0) AS "portionTot",
+      COALESCE(SUM(protein_tot),  0) AS "proteinTot"
+    FROM user_meal_totals
+    WHERE user_id = $1 AND date::date BETWEEN $2::date AND $3::date
+    GROUP BY date::date
+    ORDER BY date::date
   `;
 
   try {
-    const { rows } = await pool.query(sql, [start, end]);
-    // Optionally add an average row, as in FastAPI
+    const { rows } = await pool.query(sql, [userId, start, end]);
+    // add an average row, as in FastAPI
     let totals = rows;
     if (totals.length > 0) {
       const avg = {

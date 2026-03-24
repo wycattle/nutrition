@@ -19,7 +19,10 @@ export default function TotalsByDateRange() {
   const effectiveEndDate = useMemo(() => {
     if (endDate) return endDate;
     const today = new Date();
-    return today.toISOString().slice(0, 10);
+    const y = today.getFullYear();
+    const m = String(today.getMonth() + 1).padStart(2, '0');
+    const d = String(today.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
   }, [endDate]);
 
   // Build the API URL

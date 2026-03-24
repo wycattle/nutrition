@@ -14,11 +14,12 @@ import Link from 'next/link';
 
 export default function Home() {
   const { data: session, status } = useSession();
-  console.log('[DEBUG] useSession status:', status, 'session:', session);
 
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.outerbox}>
+
+        <Link href="/about" className={styles.aboutLink}>About</Link>
 
         <h1 className={`globalButton ${styles.header}`}>Welcome to my Nutrition App</h1>
 
@@ -35,7 +36,7 @@ export default function Home() {
 
         {/* Sign in/out button - now below the image */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '24px 0 0 0' }}>
-          {!session && (
+          {status === 'unauthenticated' && (
             <button
               className="globalButton"
               style={{ margin: '0 0 8px 0', background: '#DB4437' }}
@@ -46,10 +47,10 @@ export default function Home() {
           )}
         </div>
         {/* Only show these buttons if signed in */}
-        {session && (
+        {status === 'authenticated' && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 32 }}>
             <Link href="/meal" className='globalButton'>
-              Create a Meal
+              Create Meal or Recipe
             </Link>
             <Link href="/combinedTotalsByDateRange" className='globalButton'>
               Meal Totals

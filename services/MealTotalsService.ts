@@ -43,21 +43,8 @@ const MealTotalsService = {
   },
 
   async save(total: IDailyMealTotalx): Promise<IDailyMealTotalx> {
-    // Aggregate all meals for this user and date from user_meals
-    const agg = await pool.query(
-      `SELECT 
-          SUM((details->0->>'calories')::numeric) AS "caloriesTot",
-          SUM((details->0->>'carb')::numeric) AS "carbTot",
-          SUM((details->0->>'fat')::numeric) AS "fatTot",
-          SUM((details->0->>'fiber')::numeric) AS "fiberTot",
-          SUM((details->0->>'portion')::numeric) AS "portionTot",
-          SUM((details->0->>'protein')::numeric) AS "proteinTot"
-       FROM user_meals
-       WHERE user_id = $1 AND date = $2`,
-      [total.user_id, total.date]
-    );
-    const row = agg.rows[0];
-    // Upsert into user_meal_totals
+    // Store this meal's totals as a delta row. meal_totals_by_date SUMs all rows per day,
+    // so each row must represent one meal only — not a cumulative daily total.
     const result = await pool.query(
       `INSERT INTO user_meal_totals
          (user_id, date, timestamp, calories_tot, carb_tot, fat_tot, fiber_tot, portion_tot, protein_tot)
@@ -75,12 +62,12 @@ const MealTotalsService = {
         total.user_id,
         total.date,
         total.timestamp,
-        row.caloriesTot || 0,
-        row.carbTot || 0,
-        row.fatTot || 0,
-        row.fiberTot || 0,
-        row.portionTot || 0,
-        row.proteinTot || 0,
+        total.caloriesTot,
+        total.carbTot,
+        total.fatTot,
+        total.fiberTot,
+        total.portionTot,
+        total.proteinTot,
       ]
     );
     return { ...total, id: result.rows[0].id };

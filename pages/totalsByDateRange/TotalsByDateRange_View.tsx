@@ -52,7 +52,16 @@ export const TotalsByDateRange_View: React.FC<TotalsByDateRangeViewProps> = ({
           Start Date:
           <DatePicker
             selected={startDateObj}
-            onChange={date => setStartDate(date ? date.toISOString().slice(0, 10) : '')}
+            onChange={date => {
+            if (date) {
+              const y = date.getFullYear();
+              const m = String(date.getMonth() + 1).padStart(2, '0');
+              const d = String(date.getDate()).padStart(2, '0');
+              setStartDate(`${y}-${m}-${d}`);
+            } else {
+              setStartDate('');
+            }
+          }}
             dateFormat="yyyy-MM-dd"
             maxDate={endDateObj || undefined}
             placeholderText="Select start date"
@@ -63,7 +72,16 @@ export const TotalsByDateRange_View: React.FC<TotalsByDateRangeViewProps> = ({
           End Date:
           <DatePicker
             selected={endDateObj}
-            onChange={date => setEndDate(date ? date.toISOString().slice(0, 10) : '')}
+            onChange={date => {
+            if (date) {
+              const y = date.getFullYear();
+              const m = String(date.getMonth() + 1).padStart(2, '0');
+              const d = String(date.getDate()).padStart(2, '0');
+              setEndDate(`${y}-${m}-${d}`);
+            } else {
+              setEndDate('');
+            }
+          }}
             dateFormat="yyyy-MM-dd"
             minDate={startDateObj || undefined}
             placeholderText="Select end date"
@@ -75,6 +93,10 @@ export const TotalsByDateRange_View: React.FC<TotalsByDateRangeViewProps> = ({
       {loading && <div>Loading...</div>}
       {error && <div style={{ color: 'red' }}>{error}</div>}
       {(totals ?? []).length > 0 && (
+        <>
+        <div style={{ marginBottom: 4, fontSize: '0.85em', color: '#c6a3dd', fontStyle: 'italic' }}>
+          Calories shown are recalculated from carb and fat only (protein excluded). Stated calories are the total in the nutrition table. Carb/fat cals are the recalculated value.  Conversion: 1g carb = 4 cal, 1g fat = 10 cal.
+        </div>
         <table border={1} cellPadding={6} style={{ width: '100%', marginTop: 16 }}>
           <thead>
             <tr>
@@ -111,7 +133,7 @@ export const TotalsByDateRange_View: React.FC<TotalsByDateRangeViewProps> = ({
                   </tr>
               );
             })}
-            {/* Styled average row at the end, if present */}
+
             {totals.length > 0 && totals[totals.length - 1].date === 'Average' && (() => {
               const avg = totals[totals.length - 1];
               const carb_cals = (Number(avg.carbTot) || 0) * 4.0;
@@ -131,6 +153,7 @@ export const TotalsByDateRange_View: React.FC<TotalsByDateRangeViewProps> = ({
             })()}
           </tbody>
         </table>
+        </>
       )}
       {(totals ?? []).length === 0 && !loading && <div>No totals found for this range.</div>}
     </div>

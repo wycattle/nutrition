@@ -50,6 +50,8 @@ export const authOptions: NextAuthOptions = {
       let success = false;
       try {
         // --- ALLOWLIST CHECK ---
+        // Fail fast if DB is slow (Neon cold start can hang for 30s+)
+        await client.query(`SET LOCAL statement_timeout = '5000'`);
         const allowed = await client.query(
           `SELECT 1 FROM approved_emails WHERE email = $1`,
           [user.email]

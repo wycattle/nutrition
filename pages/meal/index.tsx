@@ -12,7 +12,7 @@ import axios from 'axios';
 
 
 import { IOption , IRecipex, IMealDetail, IMealx, IDailyMealTotalx  } from '../../types_interfaces/interfaces';
-import Meal_View from '../../components/meal/Meal_View';
+import Meal_View from './Meal_View';
 import { fetcher } from '../../utils/helper';
 
 // Main Meal component: handles all UI state and logic for meal creation
@@ -258,8 +258,14 @@ const Meal = () => {
       note: row.note,
     }));
     // Build meal object for API
+    // Use local date parts to avoid UTC offset shifting the date (e.g. UTC+7 midnight → previous UTC day)
+    const localDate = [
+      meal_recipeDate.getFullYear(),
+      String(meal_recipeDate.getMonth() + 1).padStart(2, '0'),
+      String(meal_recipeDate.getDate()).padStart(2, '0'),
+    ].join('-');
     const mealx: IMealx = {
-      date: meal_recipeDate.toISOString().slice(0, 10),
+      date: localDate,
       timestamp: meal_recipeDate.toISOString(),
       details: mealDetails,
     };

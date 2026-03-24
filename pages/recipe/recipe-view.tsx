@@ -106,6 +106,17 @@ const Recipe_View: React.FC<RecipeViewProps> = ({
     ));
   };
 
+  const handleCellChange = (idx: number, field: keyof IMealDetail, value: string) => {
+    if (field === 'note' || field === 'desc1' || field === 'desc2') {
+      setEditRows(prev => prev.map((row, i) => i === idx ? { ...row, [field]: value } : row));
+    } else {
+      const numVal = parseFloat(value);
+      setEditRows(prev => prev.map((row, i) =>
+        i === idx ? { ...row, [field]: isNaN(numVal) ? undefined : numVal } : row
+      ));
+    }
+  };
+
   const handleSave = async () => {
     if (!selectedRecipe) return;
     try {
@@ -182,13 +193,48 @@ const Recipe_View: React.FC<RecipeViewProps> = ({
                         className="my-input-class"
                       />
                     </td>
-                    <td className='text-right'>{Math.round(item.calories || 0)}</td>
-                    <td className='text-right'>{Math.round(item.carb || 0)}</td>
-                    <td className='text-right'>{Math.round(item.fat || 0)}</td>
-                    <td className='text-right'>{Math.round(item.protein || 0)}</td>
-                    <td className='text-right'>{Math.round(item.fiber || 0)}</td>
-                    <td className='text-right'>{item.GI ?? ''}</td>
-                    <td style={{ textAlign: 'left' }}>{item.note}</td>
+                    <td className='text-right'>
+                      <input type="number" min="0" step="1"
+                        value={item.calories !== undefined ? Math.round(item.calories) : ''}
+                        onChange={e => handleCellChange(index, 'calories', e.target.value)}
+                        style={{ width: '65px', textAlign: 'center' }} className="my-input-class" />
+                    </td>
+                    <td className='text-right'>
+                      <input type="number" min="0" step="0.1"
+                        value={item.carb !== undefined ? Number(item.carb.toFixed(1)) : ''}
+                        onChange={e => handleCellChange(index, 'carb', e.target.value)}
+                        style={{ width: '55px', textAlign: 'center' }} className="my-input-class" />
+                    </td>
+                    <td className='text-right'>
+                      <input type="number" min="0" step="0.1"
+                        value={item.fat !== undefined ? Number(item.fat.toFixed(1)) : ''}
+                        onChange={e => handleCellChange(index, 'fat', e.target.value)}
+                        style={{ width: '55px', textAlign: 'center' }} className="my-input-class" />
+                    </td>
+                    <td className='text-right'>
+                      <input type="number" min="0" step="0.1"
+                        value={item.protein !== undefined ? Number(item.protein.toFixed(1)) : ''}
+                        onChange={e => handleCellChange(index, 'protein', e.target.value)}
+                        style={{ width: '55px', textAlign: 'center' }} className="my-input-class" />
+                    </td>
+                    <td className='text-right'>
+                      <input type="number" min="0" step="0.1"
+                        value={item.fiber !== undefined ? Number(item.fiber.toFixed(1)) : ''}
+                        onChange={e => handleCellChange(index, 'fiber', e.target.value)}
+                        style={{ width: '55px', textAlign: 'center' }} className="my-input-class" />
+                    </td>
+                    <td className='text-right'>
+                      <input type="number" min="0" step="1"
+                        value={item.GI ?? ''}
+                        onChange={e => handleCellChange(index, 'GI', e.target.value)}
+                        style={{ width: '45px', textAlign: 'center' }} className="my-input-class" />
+                    </td>
+                    <td style={{ textAlign: 'left' }}>
+                      <input type="text"
+                        value={item.note ?? ''}
+                        onChange={e => handleCellChange(index, 'note', e.target.value)}
+                        style={{ width: '120px' }} className="my-input-class" />
+                    </td>
                   </tr>
                 ))}
               </tbody>

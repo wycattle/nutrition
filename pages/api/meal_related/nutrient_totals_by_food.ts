@@ -21,7 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const sql = `
     SELECT
       item->>'desc1'                                  AS desc1,
-      item->>'desc2'                                  AS desc2,
       COALESCE(SUM((item->>'portion')::numeric),  0)  AS portion,
       COALESCE(SUM((item->>'calories')::numeric), 0)  AS calories,
       COALESCE(SUM((item->>'carb')::numeric),     0)  AS carb,
@@ -31,21 +30,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     FROM user_meals,
       jsonb_array_elements(details) AS item
     WHERE date::date BETWEEN $1::date AND $2::date
-    GROUP BY desc1, desc2
-    ORDER BY desc1, calories DESC
+    GROUP BY desc1
+    ORDER BY calories DESC
   `;
 
   try {
     const { rows } = await pool.query(sql, [start, end]);
     // Round all numeric fields to 0 decimal places (integers)
     const roundedRows = rows.map(row => ({
-      ...row,
-      portion: row.portion !== undefined ? Math.round(Number(row.portion)) : row.portion,
-      calories: row.calories !== undefined ? Math.round(Number(row.calories)) : row.calories,
-      carb: row.carb !== undefined ? Math.round(Number(row.carb)) : row.carb,
-      fat: row.fat !== undefined ? Math.round(Number(row.fat)) : row.fat,
-      protein: row.protein !== undefined ? Math.round(Number(row.protein)) : row.protein,
-      fiber: row.fiber !== undefined ? Math.round(Number(row.fiber)) : row.fiber,
+      desc1: row.desc1,
+      portion:  Math.round(Number(row.portion)),
+      calories: Math.round(Number(row.calories)),
+      carb:     Math.round(Number(row.carb)),
+      fat:      Math.round(Number(row.fat)),
+      protein:  Math.round(Number(row.protein)),
+      fiber:    Math.round(Number(row.fiber)),
     }));
     res.status(200).json({ totals: roundedRows });
   } catch (error) {
