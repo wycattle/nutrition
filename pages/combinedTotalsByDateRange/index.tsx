@@ -1,74 +1,84 @@
 // pages/combinedTotalsByDateRange/index.tsx
 // Combined page: shows TotalsByDateRange (left) and NutrientTotals (right) side by side.
-// This page owns all data fetching; the two child View components are pure display.
 
-// useState: React hook — like a class instance variable that triggers a re-render when set.
-// useMemo: React hook — like Python's @cached_property; recomputes only when dependencies change.
 import React, { useState, useMemo } from 'react';
-
-// useSWR: data-fetching hook. Given a URL key, it fires a GET request and returns
-// { data, error, isValidating }. Re-fetches automatically whenever the key string changes.
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import useSWR from 'swr';
-
-// Returns the base API URL (e.g. "http://localhost:3000") based on environment.
 import { getApiUrl } from '../../utils/getApiUrl';
-
-// fetcher: simple wrapper — fetch(url).then(r => r.json()). Passed to useSWR as the GET function.
 import { fetcher } from '../../utils/helper';
 
-// Reusable view components. Each is also used by its own standalone page.
-import { TotalsByDateRange_View } from '../totalsByDateRange/TotalsByDateRange_View';
-import { NutrientTotalsByDateRange_View } from '../nutrientTotalsByDateRange/NutrientTotalsByDateRange_View';
-
 export default function CombinedTotalsByDateRange() {
-  // startDate / endDate: controlled by the date pickers inside TotalsByDateRange_View.
-  // They live here (not in the child) so both views share the same date range.
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-
-  // manualTrigger: an integer that is incremented each time the user clicks "Fetch".
-  // Including it in the SWR key string forces a re-fetch even if the dates haven't changed.
   const [manualTrigger, setManualTrigger] = useState(0);
 
-  // effectiveEndDate: if the user hasn't set an end date, default to today.
-  // useMemo means this only recalculates when endDate changes — not on every render.
+  // Nutrient totals sorting state
+  const [sortCol, setSortCol] = useState<string>('calories');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+
   const effectiveEndDate = useMemo(() => {
     if (endDate) return endDate;
-    return new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+    return new Date().toISOString().slice(0, 10);
   }, [endDate]);
 
-  // Base URL for all API calls (e.g. "http://localhost:3000").
   const apiUrl = getApiUrl();
-
-  // Guard: don't fetch at all until the user has chosen a start date.
-  // !! converts a string to boolean: '' → false, '2026-03-01' → true.
   const shouldFetch = !!startDate;
 
-  // --- Fetch 1: daily calorie/macro totals (left table) ---
-  // The key is a URL string. useSWR watches it; when it changes, a new GET request fires.
-  // If shouldFetch is false, key is null → useSWR skips the request entirely.
   const fetchKeyTotals = shouldFetch
     ? `${apiUrl}/api/meal_related/meal_totals_by_date?start=${startDate}&end=${effectiveEndDate}&t=${manualTrigger}`
     : null;
-  // Destructuring with renaming: data → totalsData, error → totalsError, isValidating → loadingTotals.
-  // isValidating is true while a request is in-flight (like a "loading" boolean).
   const { data: totalsData, error: totalsError, isValidating: loadingTotals } = useSWR(fetchKeyTotals, fetcher, { revalidateOnFocus: false });
 
-  // --- Fetch 2: per-food nutrient totals (right table) ---
   const fetchKeyNutrients = shouldFetch
     ? `${apiUrl}/api/meal_related/nutrient_totals_by_food?start=${startDate}&end=${effectiveEndDate}&t=${manualTrigger}`
     : null;
   const { data: nutrientsData, error: nutrientsError, isValidating: loadingNutrients } = useSWR(fetchKeyNutrients, fetcher, { revalidateOnFocus: false });
 
-  // fetchBoth: called when the user clicks "Fetch Totals".
-  // Incrementing manualTrigger changes both SWR key strings → both fetches fire simultaneously.
   const fetchBoth = () => setManualTrigger(x => x + 1);
 
-  return (
-    // Outer container: wide enough to fit both tables side by side.
-    <div style={{ maxWidth: 1600, margin: '0 auto', padding: 24, position: 'relative' }}>
+  const startDateObj = startDate ? new Date(startDate) : null;
+  const endDateObj = endDate ? new Date(endDate) : new Date();
+  const totals: any[] = totalsData?.totals || [];
+  const nutrients: any[] = nutrientsData?.totals || [];
 
-      {/* "Back" button pinned to the top-left corner via position:absolute */}
+  // Nutrient totals: sorted rows and grand total
+  const sortedNutrients = useMemo(() => {
+    if (!nutrients || nutrients.length === 0) return [];
+    const dataRows = nutrients.filter((row: any) => !String(row.desc1).toLowerCase().includes('avg'));
+    const avgRows = nutrients.filter((row: any) => String(row.desc1).toLowerCase().includes('avg'));
+    const sorted = [...dataRows].sort((a, b) => {
+      const aVal = Number(a[sortCol]) || 0;
+      const bVal = Number(b[sortCol]) || 0;
+      if (sortDir === 'asc') return aVal - bVal;
+      return bVal - aVal;
+    });
+    return [...sorted, ...avgRows];
+  }, [nutrients, sortCol, sortDir]);
+
+  const grandTotal = useMemo(() => {
+    const dataRows = nutrients.filter((row: any) => !String(row.desc1).toLowerCase().includes('avg'));
+    return dataRows.reduce((acc, row) => ({
+      calories: acc.calories + (Number(row.calories) || 0),
+      carb:     acc.carb     + (Number(row.carb)     || 0),
+      fat:      acc.fat      + (Number(row.fat)      || 0),
+      protein:  acc.protein  + (Number(row.protein)  || 0),
+      fiber:    acc.fiber    + (Number(row.fiber)     || 0),
+      portion:  acc.portion  + (Number(row.portion)  || 0),
+    }), { calories: 0, carb: 0, fat: 0, protein: 0, fiber: 0, portion: 0 });
+  }, [nutrients]);
+
+  const handleSort = (col: string) => {
+    if (sortCol === col) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortCol(col);
+      setSortDir('desc');
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: 1600, margin: '0 auto', padding: 24, position: 'relative' }}>
       <div style={{ position: 'absolute', top: 0, left: 0, margin: 0, zIndex: 10 }}>
         <a href="/">
           <span className="globalButton">Back to Home Page</span>
@@ -77,40 +87,165 @@ export default function CombinedTotalsByDateRange() {
 
       <h1 style={{ marginTop: 48 }}>Totals by Date Range & Nutrient Totals</h1>
 
-      {/* Flex row: left panel (fixed ~520px) + right panel (grows to fill remaining space) */}
       <div style={{ display: 'flex', gap: 32, flexWrap: 'nowrap', alignItems: 'flex-start' }}>
 
         {/* LEFT: daily totals table + date pickers + fetch button */}
-        {/* flex: '0 0 520px' means "don't grow, don't shrink, stay at 520px" */}
         <div style={{ flex: '0 0 520px', minWidth: 400, marginRight: 32 }}>
-          <TotalsByDateRange_View
-            startDate={startDate}
-            endDate={endDate}
-            setStartDate={setStartDate}       // called by DatePicker to update state here
-            setEndDate={setEndDate}           // called by DatePicker to update state here
-            fetchTotals={fetchBoth}           // called by the Fetch button
-            totals={totalsData?.totals || []} // "?." = safe navigation: undefined if no data yet; "|| []" = default to empty array
-            loading={loadingTotals}           // true while HTTP request is in-flight
-            error={totalsError ? 'Error fetching totals' : ''}
-            hideHeaderAndControls={true}      // suppress the child's own Back button and title (this page owns those)
-          />
+          <div style={{ maxWidth: 600, margin: '0 auto', padding: 24, position: 'relative' }}>
+            <h2 style={{ marginTop: 48 }}>Totals by Date Range - today's date is default end date, but modify if you want</h2>
+            <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
+              <label style={{ marginRight: 8 }}>
+                Start Date:
+                <DatePicker
+                  selected={startDateObj}
+                  onChange={date => {
+                    if (date) {
+                      const y = date.getFullYear();
+                      const m = String(date.getMonth() + 1).padStart(2, '0');
+                      const d = String(date.getDate()).padStart(2, '0');
+                      setStartDate(`${y}-${m}-${d}`);
+                    } else {
+                      setStartDate('');
+                    }
+                  }}
+                  dateFormat="yyyy-MM-dd"
+                  maxDate={endDateObj || undefined}
+                  placeholderText="Select start date"
+                  isClearable
+                />
+              </label>
+              <label style={{ marginLeft: 16, marginRight: 8 }}>
+                End Date:
+                <DatePicker
+                  selected={endDateObj}
+                  onChange={date => {
+                    if (date) {
+                      const y = date.getFullYear();
+                      const m = String(date.getMonth() + 1).padStart(2, '0');
+                      const d = String(date.getDate()).padStart(2, '0');
+                      setEndDate(`${y}-${m}-${d}`);
+                    } else {
+                      setEndDate('');
+                    }
+                  }}
+                  dateFormat="yyyy-MM-dd"
+                  minDate={startDateObj || undefined}
+                  placeholderText="Select end date"
+                  isClearable={false}
+                />
+              </label>
+              <button onClick={fetchBoth} style={{ marginLeft: 16 }}>Fetch Totals</button>
+            </div>
+            {loadingTotals && <div>Loading...</div>}
+            {totalsError && <div style={{ color: 'red' }}>Error fetching totals</div>}
+            {(totals ?? []).length > 0 && (
+              <>
+                <div style={{ marginBottom: 4, fontSize: '0.85em', color: '#c6a3dd', fontStyle: 'italic' }}>
+                  Calories shown are recalculated from carb and fat only (protein excluded). Stated calories are the total in the nutrition table. Carb/fat cals are the recalculated value.  Conversion: 1g carb = 4 cal, 1g fat = 10 cal.
+                </div>
+                <table border={1} cellPadding={6} style={{ width: '100%', marginTop: 16 }}>
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'center' }}>Date</th>
+                      <th style={{ textAlign: 'right' }}>Stated Calories</th>
+                      <th style={{ textAlign: 'right' }}>Carb/Fat Cals</th>
+                      <th style={{ textAlign: 'right' }}>Carb_cals</th>
+                      <th style={{ textAlign: 'right' }}>Fat_cals</th>
+                      <th style={{ textAlign: 'right' }}>Carb (g)</th>
+                      <th style={{ textAlign: 'right' }}>Fat (g)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {totals.filter((row: any) => row.date !== 'Average').map((row: any) => {
+                      const carb_cals = (Number(row.carbTot) || 0) * 4.5;
+                      const fat_cals = (Number(row.fatTot) || 0) * 9.5;
+                      const carb_fat_cals = carb_cals + fat_cals;
+                      return (
+                        <tr key={row.date}>
+                          <td style={{ textAlign: 'center' }}>{typeof row.date === 'string' && row.date.length >= 10 ? row.date.slice(0, 10) : row.date}</td>
+                          <td style={{ textAlign: 'right' }}>{Math.round(Number(row.caloriesTot) || 0)}</td>
+                          <td style={{ textAlign: 'right' }}>{Math.round(carb_fat_cals)}</td>
+                          <td style={{ textAlign: 'right' }}>{Math.round(carb_cals)}</td>
+                          <td style={{ textAlign: 'right' }}>{Math.round(fat_cals)}</td>
+                          <td style={{ textAlign: 'right' }}>{Math.round(Number(row.carbTot) || 0)}</td>
+                          <td style={{ textAlign: 'right' }}>{Math.round(Number(row.fatTot) || 0)}</td>
+                        </tr>
+                      );
+                    })}
+                    {totals.length > 0 && totals[totals.length - 1].date === 'Average' && (() => {
+                      const avg = totals[totals.length - 1];
+                      const carb_cals = (Number(avg.carbTot) || 0) * 4.0;
+                      const fat_cals = (Number(avg.fatTot) || 0) * 9.0;
+                      const carb_fat_cals = carb_cals + fat_cals;
+                      return (
+                        <tr style={{ fontWeight: 'bold', background: '#222', color: '#c6a3dd', borderTop: '3px solid #725e5e', borderBottom: '3px solid #725e5e' }}>
+                          <td style={{ fontWeight: 'bold', fontSize: '1.15em', background: '#222', color: '#f7c1c1', border: '2px solid #725e5e', textAlign: 'center' }}>Average</td>
+                          <td style={{ fontWeight: 'bold', fontSize: '1.15em', background: '#222', color: '#f7c1c1', border: '2px solid #725e5e', textAlign: 'right' }}>{Math.round(Number(avg.caloriesTot) || 0)}</td>
+                          <td style={{ fontWeight: 'bold', fontSize: '1.15em', background: '#222', color: '#f7c1c1', border: '2px solid #725e5e', textAlign: 'right' }}>{Math.round(carb_fat_cals)}</td>
+                          <td style={{ fontWeight: 'bold', fontSize: '1.15em', background: '#222', color: '#f7c1c1', border: '2px solid #725e5e', textAlign: 'right' }}>{Math.round(carb_cals)}</td>
+                          <td style={{ fontWeight: 'bold', fontSize: '1.15em', background: '#222', color: '#f7c1c1', border: '2px solid #725e5e', textAlign: 'right' }}>{Math.round(fat_cals)}</td>
+                          <td style={{ fontWeight: 'bold', fontSize: '1.15em', background: '#222', color: '#f7c1c1', border: '2px solid #725e5e', textAlign: 'right' }}>{Math.round(Number(avg.carbTot) || 0)}</td>
+                          <td style={{ fontWeight: 'bold', fontSize: '1.15em', background: '#222', color: '#f7c1c1', border: '2px solid #725e5e', textAlign: 'right' }}>{Math.round(Number(avg.fatTot) || 0)}</td>
+                        </tr>
+                      );
+                    })()}
+                  </tbody>
+                </table>
+              </>
+            )}
+            {(totals ?? []).length === 0 && !loadingTotals && <div>No totals found for this range.</div>}
+          </div>
         </div>
 
         {/* RIGHT: per-food nutrient totals table */}
-        {/* marginTop:120 visually aligns the table with the left table (below the date pickers) */}
         <div style={{ flex: 2, minWidth: 600, marginTop: 120 }}>
-          <NutrientTotalsByDateRange_View
-            startDate={startDate}
-            endDate={endDate}
-            effectiveEndDate={effectiveEndDate}
-            setStartDate={() => {}}           // no-op: date changes are controlled by the left panel only
-            setEndDate={() => {}}             // no-op: same reason
-            fetchTotals={fetchBoth}
-            totals={nutrientsData?.totals || []}
-            loading={loadingNutrients}
-            error={nutrientsError ? 'Error fetching data' : ''}
-            hideHeaderAndControls={true}
-          />
+          {loadingNutrients && <div>Loading...</div>}
+          {nutrientsError && <div style={{ color: 'red' }}>Error fetching data</div>}
+          {nutrients.length > 0 && (
+            <>
+              <div style={{ marginBottom: 8, fontSize: '1.08em', color: '#f7c1c1', fontWeight: 500 }}>
+                Nutrients aggregated (summed) by food. Click any column header to sort.
+              </div>
+              <table border={1} cellPadding={6} style={{ width: '100%', marginTop: 0, borderCollapse: 'collapse', cursor: 'pointer' }}>
+                <thead>
+                  <tr style={{ background: '#333' }}>
+                    <th style={{ textAlign: 'left' }} onClick={() => handleSort('desc1')}>Food Group (desc1)</th>
+                    <th style={{ textAlign: 'right' }} onClick={() => handleSort('calories')}>Calories {sortCol === 'calories' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                    <th style={{ textAlign: 'right' }} onClick={() => handleSort('carb')}>Carb {sortCol === 'carb' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                    <th style={{ textAlign: 'right' }} onClick={() => handleSort('fat')}>Fat {sortCol === 'fat' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                    <th style={{ textAlign: 'right' }} onClick={() => handleSort('protein')}>Protein {sortCol === 'protein' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                    <th style={{ textAlign: 'right' }} onClick={() => handleSort('fiber')}>Fiber {sortCol === 'fiber' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                    <th style={{ textAlign: 'right' }} onClick={() => handleSort('portion')}>Portion {sortCol === 'portion' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedNutrients.map((row: any, i: number) => (
+                    <tr key={i}>
+                      <td style={{ textAlign: 'left' }}>{row.desc1}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.calories).toFixed(0)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.carb).toFixed(1)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.fat).toFixed(1)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.protein).toFixed(1)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.fiber).toFixed(1)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.portion).toFixed(0)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr style={{ fontWeight: 'bold', background: '#222', color: '#f7c1c1', borderTop: '3px solid #725e5e' }}>
+                    <td style={{ textAlign: 'left' }}>Total</td>
+                    <td style={{ textAlign: 'right' }}>{grandTotal.calories.toFixed(0)}</td>
+                    <td style={{ textAlign: 'right' }}>{grandTotal.carb.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right' }}>{grandTotal.fat.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right' }}>{grandTotal.protein.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right' }}>{grandTotal.fiber.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right' }}>{grandTotal.portion.toFixed(0)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </>
+          )}
+          {nutrients.length === 0 && !loadingNutrients && <div>No data found for this date range.</div>}
         </div>
       </div>
     </div>
