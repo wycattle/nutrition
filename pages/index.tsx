@@ -1,17 +1,66 @@
 /**
  * pages/index.tsx
- * Entry point for the Next.js app, re-exports homepage
+ * Homepage for my_nutrition_app
  */
 
-import React from 'react';
-import Home, { getServerSideProps } from './homepage';
+import { useSession, signIn } from 'next-auth/react';
+import styles from '../styles/homepage.module.scss';
+import Image from 'next/image';
+import Link from 'next/link';
 
-export { getServerSideProps };
+export default function Home() {
+  const { status } = useSession();    //useSession runs the client-side
 
-const IndexPage = (props: any) => {
-  return <Home {...props} />;
-};
+  return (
+    <div className={styles.pageWrapper}>
+      <div className={styles.outerbox}>
 
-export default IndexPage;
+        <Link href="/about" className={styles.aboutLink}>About</Link>
+
+        <h1 className={`globalButton ${styles.header}`}>Welcome to my Nutrition App</h1>
+
+        <div className={styles.image1}>
+          <Image
+            src="/images/IMG_0748.JPG"
+            alt="Splash Image"
+            width={300}
+            height={300}
+            priority
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '24px 0 0 0' }}>
+          {status === 'unauthenticated' && (
+            <button
+              className="globalButton"
+              style={{ margin: '0 0 8px 0', background: '#DB4437' }}
+              onClick={() => signIn('google')}
+            >
+              Sign in with Google
+            </button>
+          )}
+        </div>
+
+        {status === 'authenticated' && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 32 }}>
+            <Link href="/meal" className='globalButton'>
+              Create Meal or Recipe
+            </Link>
+            <Link href="/combinedTotalsByDateRange" className='globalButton'>
+              Meal Totals
+            </Link>
+            <Link href="/recipe" className='globalButton'>
+              View/Modify Recipes
+            </Link>
+            <Link href="/database" className='globalButton'>
+              View/Modify Database
+            </Link>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
 
 
