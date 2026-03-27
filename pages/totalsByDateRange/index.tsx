@@ -15,7 +15,6 @@ import { fetcher } from '../../utils/helper';
 export default function TotalsByDateRange() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [manualTrigger, setManualTrigger] = useState(0);
 
   const effectiveEndDate = useMemo(() => {
     if (endDate) return endDate;
@@ -28,7 +27,7 @@ export default function TotalsByDateRange() {
 
   const apiUrl = getApiUrl();
   const shouldFetch = !!startDate;
-  const fetchKey = shouldFetch ? `${apiUrl}/api/meal_related/meal_totals_by_date?start=${startDate}&end=${effectiveEndDate}&t=${manualTrigger}` : null;
+  const fetchKey = shouldFetch ? `${apiUrl}/api/meal_related/meal_totals_by_date?start=${startDate}&end=${effectiveEndDate}` : null;
 
   const { data, error, isValidating } = useSWR(fetchKey, fetcher, { revalidateOnFocus: false });
 
@@ -88,7 +87,6 @@ export default function TotalsByDateRange() {
             isClearable={false}
           />
         </label>
-        <button onClick={() => setManualTrigger(x => x + 1)} style={{ marginLeft: 16 }}>Fetch Totals</button>
       </div>
       {loading && <div>Loading...</div>}
       {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}

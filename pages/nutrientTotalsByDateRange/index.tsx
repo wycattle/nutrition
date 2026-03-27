@@ -14,8 +14,18 @@ export default function NutrientTotalsByDateRange() {
   const [manualTrigger, setManualTrigger] = useState(0);
 
   // Sorting state for table
-  const [sortCol, setSortCol] = useState<string>('calories');
+  const [sortCol, setSortCol] = useState<string>('carb');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+
+  // Collapsible groups: Set of desc1 keys that are expanded
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const toggleGroup = (desc1: string) => {
+    setExpandedGroups(prev => {
+      const next = new Set(prev);
+      if (next.has(desc1)) next.delete(desc1); else next.add(desc1);
+      return next;
+    });
+  };
 
   const effectiveEndDate = useMemo(() => {
     if (endDate) return endDate;
@@ -37,18 +47,44 @@ export default function NutrientTotalsByDateRange() {
   const startDateObj = startDate ? new Date(startDate) : null;
   const endDateObj = endDate ? new Date(endDate) : new Date();
 
-  // Memoized sorted data
-  const sortedTotals = useMemo(() => {
+  // Grouped multi-index data: desc1 groups → desc2 detail rows
+  const groupedTotals = useMemo(() => {
     if (!totals || totals.length === 0) return [];
-    const dataRows = totals.filter((row: any) => !String(row.desc1).toLowerCase().includes('avg'));
-    const avgRows = totals.filter((row: any) => String(row.desc1).toLowerCase().includes('avg'));
-    const sorted = [...dataRows].sort((a, b) => {
-      const aVal = Number(a[sortCol]) || 0;
-      const bVal = Number(b[sortCol]) || 0;
-      if (sortDir === 'asc') return aVal - bVal;
-      return bVal - aVal;
+    const groupMap: Record<string, any[]> = {};
+    totals.forEach((row: any) => {
+      const key = row.desc1 ?? '(unknown)';
+      if (!groupMap[key]) groupMap[key] = [];
+      groupMap[key].push(row);
     });
-    return [...sorted, ...avgRows];
+    const groups = Object.entries(groupMap).map(([desc1, rows]) => {
+      const subtotal = rows.reduce((acc: any, row: any) => ({
+        calories: acc.calories + (Number(row.calories) || 0),
+        carb:     acc.carb     + (Number(row.carb)     || 0),
+        fat:      acc.fat      + (Number(row.fat)      || 0),
+        protein:  acc.protein  + (Number(row.protein)  || 0),
+        fiber:    acc.fiber    + (Number(row.fiber)     || 0),
+        portion:  acc.portion  + (Number(row.portion)  || 0),
+      }), { calories: 0, carb: 0, fat: 0, protein: 0, fiber: 0, portion: 0 });
+      const col = sortCol === 'desc1' ? 'desc2' : sortCol;
+      const sortedRows = [...rows].sort((a: any, b: any) => {
+        const aRaw = a[col]; const bRaw = b[col];
+        const aNum = Number(aRaw); const bNum = Number(bRaw);
+        if (!isNaN(aNum) && !isNaN(bNum)) return sortDir === 'asc' ? aNum - bNum : bNum - aNum;
+        return sortDir === 'asc'
+          ? String(aRaw ?? '').localeCompare(String(bRaw ?? ''))
+          : String(bRaw ?? '').localeCompare(String(aRaw ?? ''));
+      });
+      return { desc1, rows: sortedRows, subtotal };
+    });
+    groups.sort((a, b) => {
+      if (sortCol === 'desc1' || sortCol === 'desc2') {
+        return sortDir === 'asc' ? a.desc1.localeCompare(b.desc1) : b.desc1.localeCompare(a.desc1);
+      }
+      const aVal = (a.subtotal as any)[sortCol] as number;
+      const bVal = (b.subtotal as any)[sortCol] as number;
+      return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
+    });
+    return groups;
   }, [totals, sortCol, sortDir]);
 
   // Summed totals across all data rows (excluding any avg rows)
@@ -111,7 +147,7 @@ export default function NutrientTotalsByDateRange() {
             isClearable={false}
           />
         </label>
-        <button onClick={() => setManualTrigger(x => x + 1)} style={{ marginLeft: 16 }}>Fetch Totals</button>
+        {/* <button onClick={() => setManualTrigger(x => x + 1)} style={{ marginLeft: 16 }}>Fetch Totals</button> */}
       </div>
 
       {loading && <div>Loading...</div>}
@@ -125,7 +161,7 @@ export default function NutrientTotalsByDateRange() {
           <table border={1} cellPadding={6} style={{ width: '100%', marginTop: 0, borderCollapse: 'collapse', cursor: 'pointer' }}>
             <thead>
               <tr style={{ background: '#333' }}>
-                <th style={{ textAlign: 'left' }} onClick={() => handleSort('desc1')}>Food Group (desc1)</th>
+                <th style={{ textAlign: 'left' }} onClick={() => handleSort('desc1')}>Food Group → Food {sortCol === 'desc1' || sortCol === 'desc2' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
                 <th style={{ textAlign: 'right' }} onClick={() => handleSort('calories')}>Calories {sortCol === 'calories' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
                 <th style={{ textAlign: 'right' }} onClick={() => handleSort('carb')}>Carb {sortCol === 'carb' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
                 <th style={{ textAlign: 'right' }} onClick={() => handleSort('fat')}>Fat {sortCol === 'fat' ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</th>
@@ -135,16 +171,34 @@ export default function NutrientTotalsByDateRange() {
               </tr>
             </thead>
             <tbody>
-              {sortedTotals.map((row: any, i: number) => (
-                <tr key={i}>
-                  <td style={{ textAlign: 'left' }}>{row.desc1}</td>
-                  <td style={{ textAlign: 'right' }}>{Number(row.calories).toFixed(0)}</td>
-                  <td style={{ textAlign: 'right' }}>{Number(row.carb).toFixed(1)}</td>
-                  <td style={{ textAlign: 'right' }}>{Number(row.fat).toFixed(1)}</td>
-                  <td style={{ textAlign: 'right' }}>{Number(row.protein).toFixed(1)}</td>
-                  <td style={{ textAlign: 'right' }}>{Number(row.fiber).toFixed(1)}</td>
-                  <td style={{ textAlign: 'right' }}>{Number(row.portion).toFixed(0)}</td>
-                </tr>
+              {groupedTotals.map((group: any, gi: number) => (
+                <React.Fragment key={gi}>
+                  <tr
+                    style={{ background: '#3a2535', fontWeight: 'bold', color: '#f7c1c1', borderTop: '2px solid #725e5e', cursor: 'pointer', userSelect: 'none' }}
+                    onClick={() => toggleGroup(group.desc1)}
+                  >
+                    <td style={{ textAlign: 'left', textTransform: 'uppercase', fontSize: '0.9em', letterSpacing: '0.04em' }}>
+                      {expandedGroups.has(group.desc1) ? '▾' : '▸'} {group.desc1}
+                    </td>
+                    <td style={{ textAlign: 'right' }}>{group.subtotal.calories.toFixed(0)}</td>
+                    <td style={{ textAlign: 'right' }}>{group.subtotal.carb.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right' }}>{group.subtotal.fat.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right' }}>{group.subtotal.protein.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right' }}>{group.subtotal.fiber.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right' }}>{group.subtotal.portion.toFixed(0)}</td>
+                  </tr>
+                  {expandedGroups.has(group.desc1) && group.rows.map((row: any, i: number) => (
+                    <tr key={i} style={{ background: '#1c1c1c' }}>
+                      <td style={{ textAlign: 'left', paddingLeft: 24, color: '#ccc', fontSize: '0.95em' }}>{row.desc2}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.calories).toFixed(0)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.carb).toFixed(1)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.fat).toFixed(1)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.protein).toFixed(1)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.fiber).toFixed(1)}</td>
+                      <td style={{ textAlign: 'right' }}>{Number(row.portion).toFixed(0)}</td>
+                    </tr>
+                  ))}
+                </React.Fragment>
               ))}
             </tbody>
             <tfoot>

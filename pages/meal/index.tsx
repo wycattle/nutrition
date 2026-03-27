@@ -11,7 +11,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import * as R from 'ramda';
 import useSWR from 'swr';
 import axios from 'axios';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 import { IOption, IRecipex, IMealDetail, IMealx, IDailyMealTotalx } from '../../types_interfaces/interfaces';
 import { fetcher } from '../../utils/helper';
@@ -23,11 +22,6 @@ const Meal = () => {
   // Ref for the portion size input (for focusing)
   const focusPortionInputRef = React.useRef<HTMLInputElement>(null);
 
-  // Voice input for the nutrition search box
-  const { transcript, listening: isListening, browserSupportsSpeechRecognition, resetTranscript } = useSpeechRecognition();
-  // Defer speech support check to client-side only to avoid SSR hydration mismatch
-  const [isSpeechSupported, setIsSpeechSupported] = React.useState(false);
-  React.useEffect(() => { setIsSpeechSupported(browserSupportsSpeechRecognition); }, [browserSupportsSpeechRecognition]);
   const [dropdownSelectedValue, setDropdownSelectedValue] = useState<IOption | null>(null);
   // Currently selected row (food item)
   const [selectedRow, setSelectedRow] = useState<IMealDetail | null>(null);
@@ -64,11 +58,6 @@ const Meal = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<IMealDetail[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-
-  // When transcript updates, feed it into the search box
-  React.useEffect(() => {
-    if (transcript) setSearchTerm(transcript);
-  }, [transcript]);
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
@@ -111,7 +100,7 @@ const Meal = () => {
   useEffect(() => {
     const uniqueValues = R.uniq(R.map((item: IMealDetail) => item.desc1, nutritionData));
     const dropdownOptions = R.map((value: string) => ({ label: value, value }), uniqueValues);
-    // Only update if different to avoid infinite loop
+
     setDropdownOptions(prev => {
       const prevLabels = prev.map(opt => opt.label).join(',');
       const newLabels = dropdownOptions.map(opt => opt.label).join(',');
@@ -417,34 +406,6 @@ const Meal = () => {
           onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
           style={{ minWidth: 180 }}
         />
-        {isSpeechSupported && (
-          <button
-            type="button"
-            title={isListening ? 'Stop listening' : 'Search by voice (Chrome/Edge only)'}
-            onClick={() => {
-              if (isListening) {
-                SpeechRecognition.stopListening();
-                setTimeout(handleSearch, 300);
-              } else {
-                resetTranscript();
-                SpeechRecognition.startListening({ language: 'en-US' });
-              }
-            }}
-            style={{
-              background: isListening ? '#c0392b' : '#32232c',
-              color: isListening ? '#fff' : '#c6a3dd',
-              border: `2px solid ${isListening ? '#e74c3c' : '#725e5e'}`,
-              borderRadius: '8px',
-              padding: '4px 10px',
-              cursor: 'pointer',
-              fontSize: '1.2em',
-              lineHeight: 1,
-              transition: 'background 0.2s, border-color 0.2s',
-            }}
-          >
-            {isListening ? '⏹' : '🎤'}
-          </button>
-        )}
         {isSearching && <Spinner />}
         {!isSearching && searchTerm?.trim() && safeSearchResults.length === 0 && (
           <span style={{ color: '#ed5b5b', fontSize: '0.85em' }}>

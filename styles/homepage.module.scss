@@ -19,20 +19,13 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 80px;
   align-items: center;
   border: 2px solid #131212;
   border-radius: 60px;
-  background: radial-gradient(circle at center, #000403, #536873);
+  background: radial-gradient(circle 700px at 50% 25%, #000403, #536873);
 }
-
-
-// .outerbox .header,
-// .outerbox .buttonLink,
-// .outerbox .timeDisplay {
-//   background-color: #ee0796 !important;
-//   color: #c6a3dd !important;
-// }
 
 .backToHomeTopLeft {
   position: absolute;

@@ -21,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const sql = `
     SELECT
       item->>'desc1'                                  AS desc1,
+      item->>'desc2'                                  AS desc2,
       COALESCE(SUM((item->>'portion')::numeric),  0)  AS portion,
       COALESCE(SUM((item->>'calories')::numeric), 0)  AS calories,
       COALESCE(SUM((item->>'carb')::numeric),     0)  AS carb,
@@ -30,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     FROM user_meals,
       jsonb_array_elements(details) AS item
     WHERE date::date BETWEEN $1::date AND $2::date
-    GROUP BY desc1
+    GROUP BY desc1, desc2
     ORDER BY calories DESC
   `;
 
@@ -39,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Round all numeric fields to 0 decimal places (integers)
     const roundedRows = rows.map(row => ({
       desc1: row.desc1,
+      desc2: row.desc2,
       portion:  Math.round(Number(row.portion)),
       calories: Math.round(Number(row.calories)),
       carb:     Math.round(Number(row.carb)),
