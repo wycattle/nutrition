@@ -1,0 +1,53 @@
+﻿This app runs in all browsers cross platforms, but Chrome is the easiest because Authentication works easiest with Chrome – if you are already logged in to your Google username the log-in process for the app is skipped (since it knows you already). If you go in thru Firefox or Edge you go thru the whole 9 yards with gmail login.
+
+When you are in the app the first time, you will be assigned a userId and that id will stick with you forever – it also will allow you to create tables that are unique to your account. Your recipes, meals – everything will be tagged with the userId.
+
+Security – general note – this app is hosted on Vercel and uses a cloud dbase Neon. Vercel has strict policies and is considered very safe. Further, the app is by invitation only, and I have a list of email addresses allowed – so, it’s just us chickens, meaning the possibility of any data compromise is near null.  The server is in N. Carolina, so for US users there should be almost no latency noticeable. 
+
+Start by examining the nutrition table – the button ‘View/Modify Database’. It has been ‘seeded’ with my table. Note that the box on top is an sql editor which runs the query displayed – and note in the box below, that the query is being run for your userId. Feel free to run any sql query. 
+
+
+The table rows are fully editable – note the ‘Add Row’ button and note that the new row is added at the bottom of the table – you can find nutrition data at https://cronometer.com/  and this one, I believe, is by far the easiest to use. When finished entering data, don’t forget to press the ‘save’ button on the far right…….. if you enter a row of data and then later find it’s ‘not there’ – the reason is usually that you forgot to press ‘save’.
+Similarly, to delete a row, just check the box and press ‘delete’.
+There is a sneaky exercise awaiting:  look up the row ‘blueberry’ (fruit) and notice the specs are all 0. Go fire up Cronometer and find/enter the specs…………..
+
+Portion size – everything in this app uses per 100g data, and portion size ‘1’  means 100g. So, 0.5 means 50g etc.
+Note the structure of the table. All rows are grouped by desc1 (food group) and desc2 (some description). Also note that each time you enter this page, the sql query runs and your new entries are now in ‘correct’ order ……… sorted by food group and item name.
+
+Go next to the top left “Back to Home Page” button (this is available on all pages) and press the View/Modify Recipes button.  Click ‘Select a Recipe” – your account has been seeded with a few recipes. Have a look at ‘flax chia date bread’ and note: all elements are editable altho you will likely only edit the portion size……
+
+Note that you can modify a recipe and save it with the same name – overwriting the previous one.
+
+Since recipes are created along with meals in the Create Meal or Recipe page, in order to add a new ingredient to a recipe, you have to make a whole new recipe…….. so, I find it useful to include any and all ingredients I might want to experiment with – and portion size can be reduced to 0 on the ones you don’t want to use this time. Speaking of ‘this time’ – you might save a recipe “My Bread_1”  and change it every time you make it. If you create meals and record them – the version of My Bread_1 that was used on some past date will not change when you overwrite a recipe. Ie, My Bread is whatever the recipe is at the time you record use of it in a meal……………
+
+A helpful feature of this setup is that, if you are experimenting with a recipe or you see a recipe somewhere that you want to try – usually there is no nutrition data available (there are reasons for that) – so this gives you two versions- the middle table: Totals (like it says) ……… and Per 100g. So, eg, you can juggle the portion sizes of choc chips to get the ‘fat’ content you want…….. etc.
+
+Create a Meal or Recipe…………  the nutrition table, as you have seen, is organized primarily by food group. So follow the clues and click in the ‘Select a food group’ box; a dropdown will appear with all the groups. This requires you remembering where many of the items are – most are obvious, but some aren’t. Cocoa, eg is in ‘Veg’.   Note the ‘search the nutrition table’ box to the right – if you can’t remember what food group your choice is in, you can look it up here (without having to leave the page to investigate the nutrition table.)
+
+Click on any food group, and you will see all the items in that group with a checkbox. When you check one row, focus immediately shifts to portion-size and you must enter some value – no need to move the cursor, it’s already in the box – and remember, 1=100g.  Click ‘enter’ and that item chosen is now in the ‘Selected Rows’ table immediately below – check to make sure the portion size is correct. If not, checking the box will delete it and try again. 
+
+Note that when any entries exist in the Selected Rows table, 2 buttons appear below: Save as Meal? Or Save as Recipe.  When you’re finished with the row items, choose one of those. If it is a meal, it will ask you for a date (and then a ‘confirm meal’ button will appear). If it’s a meal, it will ask you for a recipe name. That’s it. 
+
+Finally, look at the Totals By Date Range & Nutrient Totals page – the button in the homepage. Just click on the ‘start date’ datepicker – and if you want totals up to the present day, leave it as is – the table will appear automatically. If you want a different end date, pick that – but it defaults to ‘today’.
+The top, small table readjusts the total by removing protein from the calorie total. The rationale here involves the timing of protein ingestion. Eg, if you eat a carb appetizer – say 200g of beets – and wait one hour, then eat 30g of protein powder shake, the protein powder will almost entirely be metabolized as protein – ie, not converted to glycogen………..  If, alternatively, you eat the protein shake on an empty stomach, a large part of the protein will be converted to glycogen……… Food labeling laws are based on protein as 1g=~4 calories (as if it were a carbohydrate.)  This table straightens that out and gives a more realistic picture. 
+
+The big table Nutrients by Food:
+This is sortable by any column, and the default sort is the Carb col (hence the down arrow). Click any other col and it will sort.
+Click any row header and the items inside it will drop down. Look at the example in your table (seeded) from 2026-03-26 – it’s only one day’s meals. Note the carb total of 282g. Click on the row header ‘Sweet’ and you’ll see ‘mooncakes’ and ‘jam’. Note that just the addition of a mooncake on that day added substantial amounts of all nutrients; them mooncakes pack a punch. This allows you to drill down and find that punch.
+One weakness of this layout is the ‘recipes’   row – click and drop down. Note that all these items could be classed in the other food groups, but aren’t. When you make a recipe, and then use that recipe in a meal from the ‘Recipe’ food group (eg My Bread_1, 150g) it will be accessed only as ‘recipe’ (and you have to look for it in Recipes (not Grain with the other breads). 
+
+The main purposes of writing this app were to monitor 1)protein intake, 2)caloric intake (independent of protein intake) to determine an ‘equilibrium’ amount where I neither lose nor gain weight.
+It is also useful for looking at a day’s intake part-way thru the day to determine how much to eat (or not eat) further……… but that depends on the data being entered.
+
+Which brings up the topic of data entry. Most of the nutrition tracking apps have ‘retention’ problems because the data entry is so burdensome……… there’s no getting around that. 
+Keep a notebook next to the scale in the kitchen……  you’ll be able to eyeball the weights for most things after a few days……. And we eat pretty much the same things day in day out…… so it’s not complicated. Eating in restaurants basically kills all that – but those meals/days can be skipped. 
+
+I contemplated using a voice to text AI for data entry, but those things don’t work well either and are just another source of frustration. That said, what I’ve found is that after a very short while, you’ll remember your way around the nutrition table and the commonly eaten portion sizes….
+
+The app works on a smart phone – log into google, gmail and it’s the same. But the screen size is too small (for me) to be useful. The larger screen is a must.
+
+Finally, a note on the nutrition data sources… the main reason you don’t find nutrition data shown anywhere in most recipe blogs etc is that it is quite difficult to pin down….. The USDA db is probably the largest, and it is a nightmare. Try looking up ‘black beans’ and, yes, you can get one profile, but the reality is there are potentially hundreds of different entries that could be conceived of as ‘black beans’ in multiple sections of the USDA db aside from the numerous different subspecies etc of black beans and the lab samples that were assayed – all returning different values…………..   so, Cronometer ‘curates’ these db’s and gives you a single, easy to understand and complete nutrient profile……. Navigating around Cronometer itself takes a bit of getting used to but…………..  a lot better than the USDA.
+
+Bon Appetit . . . . 
+
+
