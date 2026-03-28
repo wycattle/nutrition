@@ -103,10 +103,23 @@ export const authOptions: NextAuthOptions = {
           if (parseInt(recCount.rows[0].count) === 0) {
             await client.query(
               `INSERT INTO user_recipes (user_id, name, details, category)
-               SELECT $1, name, details, category FROM recipes`,
+               SELECT $1, name, details, category FROM recipes_master`,
               [user.id]
             );
             console.log(`Seeded recipes for: ${user.email}`);
+          }
+          // Seed user_meals if empty
+          const mealCount = await client.query(
+            `SELECT COUNT(*) FROM user_meals WHERE user_id = $1`,
+            [user.id]
+          );
+          if (parseInt(mealCount.rows[0].count) === 0) {
+            await client.query(
+              `INSERT INTO user_meals (user_id, date, timestamp, details, created_at, time)
+               SELECT $1, date, timestamp, details, created_at, time FROM meals_master`,
+              [user.id]
+            );
+            console.log(`Seeded meals for: ${user.email}`);
           }
           await client.query('COMMIT');
           success = true;

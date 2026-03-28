@@ -6,5 +6,4 @@ export default {
   turbopack: {
     root: process.cwd(), // Explicitly set the root for Turbopack
   },
-  // ...other config
 };
