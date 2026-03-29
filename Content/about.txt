@@ -1,11 +1,10 @@
-﻿This app runs in all browsers cross platforms, but Chrome is the easiest because Authentication works easiest with Chrome – if you are already logged in to your Google username the log-in process for the app is skipped (since it knows you already). If you go in thru Firefox or Edge you go thru the whole 9 yards with gmail login.
+﻿This app runs in all browsers cross platform, but Chrome is the easiest because you are logged in thru your gmail account; if you are already logged in to your Google username in the browser, the log-in process for the app is skipped (since Google knows you already). If you enter thru Firefox or Edge you go thru the whole gmail login process.
 
-When you are in the app the first time, you will be assigned a userId and that id will stick with you forever – it also will allow you to create tables that are unique to your account. Your recipes, meals – everything will be tagged with the userId.
+When you are in the app the first time, you will be assigned a userId and that id will stick with you throughout all subsequent logins allowing you to create tables that are unique to your account that accumulate your recipes, meals – everything will be tagged with the userId and only you can view them.
 
-Security – general note – this app is hosted on Vercel and uses a cloud dbase Neon. Vercel has strict policies and is considered very safe. Further, the app is by invitation only, and I have a list of email addresses allowed – so, it’s just us chickens, meaning the possibility of any data compromise is near null.  The server is in N. Carolina, so for US users there should be almost no latency noticeable. 
+Security – general note – this app is hosted on Vercel and uses a cloud dbase in Neon. Further, the app is by invitation only, and I have a list of email addresses allowed – so, it’s just us chickens, meaning the possibility of any data compromise is nill.  The server is east coast USA, so for US users there should be no noticeable latency. 
 
-Start by examining the nutrition table – the button ‘View/Modify Database’. It has been ‘seeded’ with my table. Note that the box on top is an sql editor which runs the query displayed – and note in the box below, that the query is being run for your userId. Feel free to run any sql query. 
-
+Start by examining the nutrition table – on the homepage, press the button ‘View/Modify Database’. It has been ‘seeded’ with a table. Note that the box on top is an sql editor which runs the query displayed – and note in the box below, that the query is being run for your userId. You can run any sql query from there. 
 
 The table rows are fully editable – note the ‘Add Row’ button and note that the new row is added at the bottom of the table – you can find nutrition data at https://cronometer.com/  and this one, I believe, is by far the easiest to use. When finished entering data, don’t forget to press the ‘save’ button on the far right…….. if you enter a row of data and then later find it’s ‘not there’ – the reason is usually that you forgot to press ‘save’.
 Similarly, to delete a row, just check the box and press ‘delete’.

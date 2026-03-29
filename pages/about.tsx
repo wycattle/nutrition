@@ -12,7 +12,8 @@ export async function getStaticProps() {
 export default function About({ paragraphs }: { paragraphs: string[] }) {
   return (
     <div className={styles.pageWrapper}>
-      <div className={styles.outerbox} style={{ padding: '60px 60px', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+        <div className={styles.outerbox} style={{ padding: '60px 60px', alignItems: 'flex-start', 
+          justifyContent: 'flex-start', background: 'none' }}>
         <Link href="/" className={styles.aboutLink} style={{ position: 'absolute', top: 16, right: 24 }}>
           ← Home
         </Link>
