@@ -55,6 +55,9 @@ export default function Home() {
             <Link href="/database" className='globalButton'>
               View/Modify Database
             </Link>
+            <Link href="/dayplanner" className='globalButton'>
+              Day Diet Planner
+            </Link>
           </div>
         )}
 

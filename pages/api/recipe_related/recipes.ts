@@ -56,13 +56,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const totals = calculateTotals(recipeData.details);
       const per100g = calculatePer100g(totals);
       await pool.query(
-        `DELETE FROM user_nutrition WHERE user_id = $1 AND desc1 = 'recipe' AND desc2 = $2`,
-        [userId, recipeData.name]
+        `DELETE FROM user_nutrition WHERE user_id = $1 AND desc1 = $2 AND desc2 = $3`,
+        [userId, recipeData.category ?? 'recipe', recipeData.name]
       );
       await pool.query(
         `INSERT INTO user_nutrition (user_id, desc1, desc2, portion, calories, carb, fat, protein, fiber, note)
-         VALUES ($1, 'recipe', $2, 1, $3, $4, $5, $6, $7, $8)`,
-        [userId, recipeData.name, per100g.caloriesPer100g, per100g.carbPer100g, per100g.fatPer100g,
+         VALUES ($1, $2, $3, 1, $4, $5, $6, $7, $8, $9)` ,
+        [userId, recipeData.category ?? 'recipe', recipeData.name, per100g.caloriesPer100g, per100g.carbPer100g, per100g.fatPer100g,
          per100g.proteinPer100g, per100g.fiberPer100g, recipeData.category ?? '']
       );
 

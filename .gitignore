@@ -46,6 +46,7 @@ lib/mydb.sqlite
 .vscode/
 *.code-workspace
 *.vs/
+**/*.jpg
 
 
 react_next_nutrition.code-workspace

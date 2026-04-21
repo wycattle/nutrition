@@ -34,6 +34,15 @@ function Recipes() {
     fiberTot: 0,
   });
   const [message, setMessage] = useState('');
+  const [categories, setCategories] = useState<string[]>([]);
+  const [recipeCategory, setRecipeCategory] = useState<string>('');
+
+  // Fetch categories for recipe-level category selector
+  useEffect(() => {
+    axios.get('/api/recipe_related/categories')
+      .then(res => setCategories((res.data || []).map((c: { name: string }) => c.name)))
+      .catch(() => setCategories([]));
+  }, []);
   const [per100g, setPer100g] = useState({
     caloriesPer100g: 0,
     carbPer100g: 0,
@@ -42,14 +51,16 @@ function Recipes() {
     fiberPer100g: 0,
   });
 
-  // When recipe changes, reset editRows and checkedRows
+  // When recipe changes, reset editRows, checkedRows, and recipeCategory
   useEffect(() => {
     if (selectedRecipe) {
       setEditRows(selectedRecipe.details.map(row => ({ ...row })));  //The spread { ...row } makes a shallow copy so edits don't mutate the original prop.
       setCheckedRows(new Set(selectedRecipe.details.map((_, i) => i)));
+      setRecipeCategory(selectedRecipe.category ?? '');
     } else {
       setEditRows([]);
       setCheckedRows(new Set());
+      setRecipeCategory('');
     }
   }, [selectedRecipe]);
 
@@ -113,11 +124,21 @@ function Recipes() {
     }
   };
 
+  const handleAddRow = () => {
+    const newIdx = editRows.length;
+    setEditRows(prev => [
+      ...prev,
+      { desc1: '', desc2: '', portion: 0, calories: 0, carb: 0, fat: 0, protein: 0, fiber: 0, GI: 0, note: '' },
+    ]);
+    setCheckedRows(prev => { const s = new Set(prev); s.add(newIdx); return s; });
+  };
+
   const handleSave = async () => {
     if (!selectedRecipe) return;
     try {
       const updatedRecipe = {
         ...selectedRecipe,
+        category: recipeCategory,
         details: editRows.filter((_, i) => checkedRows.has(i)),
       };
       await axios.post('/api/recipe_related/recipes', updatedRecipe);
@@ -145,6 +166,22 @@ function Recipes() {
           disabled={isLoading}
         />
         {isLoading && <Spinner size={24} />}
+        {selectedRecipe && (
+          <>
+            <label style={{ color: '#c6a3dd', fontSize: '14px' }}>Category:</label>
+            <select
+              value={recipeCategory}
+              onChange={e => setRecipeCategory(e.target.value)}
+              className="my-input-class"
+              style={{ minWidth: '100px' }}
+            >
+              <option value="">-- select --</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </>
+        )}
       </div>
 
       {selectedRecipe && (
@@ -177,7 +214,12 @@ function Recipes() {
                       />
                     </td>
                     <td style={{ textAlign: 'left' }}>{item.desc1}</td>
-                    <td style={{ textAlign: 'left' }}>{item.desc2}</td>
+                    <td style={{ textAlign: 'left' }}>
+                      <input type="text"
+                        value={item.desc2 ?? ''}
+                        onChange={e => handleCellChange(index, 'desc2', e.target.value)}
+                        style={{ width: '160px' }} className="my-input-class" />
+                    </td>
                     <td className='text-right'>
                       <input
                         type="number"
@@ -235,6 +277,23 @@ function Recipes() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          <div style={{ marginTop: '0.5em', marginLeft: '1em' }}>
+            <button
+              onClick={handleAddRow}
+              style={{
+                background: '#32232c',
+                color: '#c6a3dd',
+                border: '2px solid #725e5e',
+                borderRadius: '10px',
+                padding: '6px 18px',
+                fontSize: '16px',
+                cursor: 'pointer',
+              }}
+            >
+              + Add Row
+            </button>
           </div>
 
           <div style={{ marginTop: '1em', marginLeft: '2em' }}>

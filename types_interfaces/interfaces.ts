@@ -64,6 +64,17 @@ export interface IDailyMealTotalx {
 }
 
 
+// For Day Diet Planner
+export interface IDayPlanDetail extends IMealDetail {
+  time_of_day?: string; // 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack' | 'Other' | ''
+}
+
+export interface IDayPlan {
+  name: string;
+  details: IDayPlanDetail[];
+  notes?: string;
+}
+
 // For recipe totals row
 export interface IRecipeTotals {
   name: string;

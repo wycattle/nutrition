@@ -25,6 +25,22 @@ export default function About({ paragraphs }: { paragraphs: string[] }) {
             <p key={i} style={{ marginBottom: 20 }}>{para}</p>
           ))}
         </div>
+
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          style={{
+            marginTop: 40,
+            background: 'none',
+            border: '1px solid #c6a3dd',
+            color: '#c6a3dd',
+            padding: '8px 20px',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontSize: 14,
+          }}
+        >
+          ↑ Back to top
+        </button>
       </div>
     </div>
   );
