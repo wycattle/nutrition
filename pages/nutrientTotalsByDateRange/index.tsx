@@ -111,7 +111,7 @@ export default function NutrientTotalsByDateRange() {
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 16 }}>
+      <div style={{ display: 'inline-block' }}>
         <Link href="/">
           <span className="globalButton">Back to Home Page</span>
         </Link>

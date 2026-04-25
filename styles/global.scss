@@ -120,3 +120,7 @@ a.globalButton, a.globalButton:visited, a.globalButton:active {
   margin: 20px;
   text-decoration: none;
 }
+@keyframes saveBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}

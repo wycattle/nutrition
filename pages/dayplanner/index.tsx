@@ -12,6 +12,7 @@ import Select from 'react-dropdown-select';
 import * as R from 'ramda';
 import useSWR from 'swr';
 import axios from 'axios';
+import { RDA } from '../../utils/rda';
 
 import {
   IOption,
@@ -86,6 +87,9 @@ export default function DayPlanner() {
     }));
   }, [editRows, checkedRows]);
 
+  const [nutritionDetails, setNutritionDetails] = useState<{ per100g: Record<string, number>; lipidCols: string[]; vitaminCols: string[] } | null>(null);
+  const [nutritionDetailsLoading, setNutritionDetailsLoading] = useState(false);
+
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const toggleGroup = (key: string) =>
     setExpandedGroups(prev => {
@@ -93,6 +97,19 @@ export default function DayPlanner() {
       s.has(key) ? s.delete(key) : s.add(key);
       return s;
     });
+
+  // Auto-fetch nutrition details when editRows change
+  useEffect(() => {
+    const active = editRows.filter((_, i) => checkedRows.has(i));
+    if (active.length === 0) { setNutritionDetails(null); return; }
+    setNutritionDetailsLoading(true);
+    axios.post('/api/recipe_related/nutrition_details', {
+      details: active.map(r => ({ desc1: r.desc1, desc2: r.desc2, portion: r.portion })),
+    })
+      .then(res => setNutritionDetails(res.data))
+      .catch(() => setNutritionDetails(null))
+      .finally(() => setNutritionDetailsLoading(false));
+  }, [editRows, checkedRows]);
 
   // ── Food picker state ──────────────────────────────────────────────────
   const focusPortionRef = React.useRef<HTMLInputElement>(null);
@@ -332,8 +349,10 @@ export default function DayPlanner() {
     <div style={{ padding: '0 2vw 4em 2vw' }}>
 
       {/* ── Header ── */}
-      <div style={{ marginBottom: '0.25em' }}>
-        <Link href="/"><span style={{ color: '#c6a3dd', cursor: 'pointer' }}>← Back to Home Page</span></Link>
+      <div style={{ display: 'inline-block' }}>
+        <Link href="/">
+          <span className="globalButton">Back to Home Page</span>
+        </Link>
       </div>
       <h2 style={{ color: '#c6a3dd', margin: '0.3em 0 0.75em 0' }}>One Day Diet Planner</h2>
 
@@ -805,6 +824,57 @@ export default function DayPlanner() {
           </table>
         </div>
       )}
+
+      {/* ── Nutrition Details (Lipids, Minerals, Vitamins) ── */}
+      {nutritionDetailsLoading && <div style={{ marginBottom: '1em' }}><Spinner size={20} /></div>}
+      {!nutritionDetailsLoading && nutritionDetails && (() => {
+        const LABELS: Record<string, string> = {
+          omega3: 'Omega-3 (g)', omega6: 'Omega-6 (g)', cholesterol_mg: 'Cholesterol (mg)',
+          sodium_mg: 'Sodium (mg)', potassium_mg: 'Potassium (mg)', calcium_mg: 'Calcium (mg)',
+          iron_mg: 'Iron (mg)', magnesium_mg: 'Magnesium (mg)', iodine_mcg: 'Iodine (mcg)',
+          manganese_mg: 'Manganese (mg)', selenium_mcg: 'Selenium (mcg)', zinc_mg: 'Zinc (mg)',
+          vit_a_mcg: 'Vitamin A (mcg)', vit_b1_mg: 'Vitamin B1 (mg)', vit_b2_mg: 'Vitamin B2 (mg)',
+          vit_b3_mg: 'Vitamin B3 (mg)', vit_b5_mg: 'Vitamin B5 (mg)', vit_b6_mg: 'Vitamin B6 (mg)',
+          vit_b12_mcg: 'Vitamin B12 (mcg)', biotin_mcg: 'Biotin (mcg)', choline_mg: 'Choline (mg)',
+          folate_mcg: 'Folate (mcg)', vit_c_mg: 'Vitamin C (mg)', vit_d_mcg: 'Vitamin D (mcg)',
+          vit_e_mg: 'Vitamin E (mg)', vit_k_mcg: 'Vitamin K (mcg)',
+        };
+
+        const renderSection = (title: string, cols: string[]) => (
+          <div style={{ marginBottom: '1em' }}>
+            <h4 style={{ color: '#f7c1c1', margin: '0 0 4px 0' }}>{title}</h4>
+            <table style={{ fontSize: '0.9em', borderCollapse: 'collapse', width: 320 }}>
+              <thead>
+                <tr style={{ background: '#3b4144', color: '#f7c1c1' }}>
+                  <th style={{ textAlign: 'left', padding: '4px 12px' }}>Nutrient</th>
+                  <th style={{ textAlign: 'right', padding: '4px 12px' }}>Per 100g</th>
+                  <th style={{ textAlign: 'right', padding: '4px 12px' }}>% RDA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cols.map((col, i) => {
+                  const val = nutritionDetails.per100g[col];
+                  const rda = RDA[col];
+                  const pct = val && rda ? Math.round((val / rda) * 100) : null;
+                  return (
+                    <tr key={col} style={{ background: i % 2 === 0 ? '#32232c' : '#3b2d36', color: '#c6a3dd' }}>
+                      <td style={{ textAlign: 'left', padding: '3px 12px' }}>{LABELS[col] ?? col}</td>
+                      <td style={{ textAlign: 'right', padding: '3px 12px' }}>{val === 0 ? '—' : val}</td>
+                      <td style={{ textAlign: 'right', padding: '3px 12px' }}>{pct !== null ? `${pct}%` : '—'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        );
+        return (
+          <div style={{ borderTop: '1px solid #725e5e', paddingTop: '1em', marginBottom: '1em', display: 'flex', gap: '2em', flexWrap: 'wrap' }}>
+            {renderSection('Lipids & Minerals', nutritionDetails.lipidCols)}
+            {renderSection('Vitamins', nutritionDetails.vitaminCols)}
+          </div>
+        );
+      })()}
 
       {/* ── Save / Delete ── */}
       <div style={{ borderTop: '1px solid #725e5e', paddingTop: '1em', display: 'flex', alignItems: 'center', gap: '1em', flexWrap: 'wrap' }}>

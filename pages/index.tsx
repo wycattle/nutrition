@@ -43,20 +43,20 @@ export default function Home() {
 
         {status === 'authenticated' && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 32 }}>
-            <Link href="/meal" className='globalButton'>
-              Create Meal or Recipe
+            <Link href="/meal" className='globalButton' style={{ textAlign: 'center' }}>
+              Create<br />Meal or Recipe
             </Link>
-            <Link href="/combinedTotalsByDateRange" className='globalButton'>
+            <Link href="/combinedTotalsByDateRange" className='globalButton' style={{ textAlign: 'center' }}>
               Meal Totals
             </Link>
-            <Link href="/recipe" className='globalButton'>
-              View/Modify Recipes
+            <Link href="/recipe" className='globalButton' style={{ textAlign: 'center' }}>
+              View/Modify<br />Recipes
             </Link>
-            <Link href="/database" className='globalButton'>
-              View/Modify Database
+            <Link href="/database" className='globalButton' style={{ textAlign: 'center' }}>
+              View/Modify<br />Database
             </Link>
-            <Link href="/dayplanner" className='globalButton'>
-              Day Diet Planner
+            <Link href="/dayplanner" className='globalButton' style={{ textAlign: 'center' }}>
+              One Day<br />Diet Planner
             </Link>
           </div>
         )}

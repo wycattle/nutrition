@@ -4,13 +4,15 @@
  * Totals by date range page for my_nutrition_app
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import useSWR from 'swr';
+import axios from 'axios';
 import { getApiUrl } from '../../utils/getApiUrl';
 import { fetcher } from '../../utils/helper';
+import { RDA } from '../../utils/rda';
 
 export default function TotalsByDateRange() {
   const [startDate, setStartDate] = useState('');
@@ -35,17 +37,37 @@ export default function TotalsByDateRange() {
   const loading = isValidating;
   const errorMessage = error ? 'Error fetching totals' : '';
 
+  // Fetch nutrient breakdown (lipids/vitamins) via nutrient_totals_by_food + nutrition_details
+  const foodsFetchKey = shouldFetch
+    ? `${apiUrl}/api/meal_related/nutrient_totals_by_food?start=${startDate}&end=${effectiveEndDate}`
+    : null;
+  const { data: foodsData } = useSWR(foodsFetchKey, fetcher, { revalidateOnFocus: false });
+  const [nutritionDetails, setNutritionDetails] = useState<{ per100g: Record<string, number>; lipidCols: string[]; vitaminCols: string[] } | null>(null);
+  const [nutritionDetailsLoading, setNutritionDetailsLoading] = useState(false);
+
+  useEffect(() => {
+    const foods: any[] = foodsData?.totals || [];
+    if (foods.length === 0) { setNutritionDetails(null); return; }
+    setNutritionDetailsLoading(true);
+    axios.post('/api/recipe_related/nutrition_details', {
+      details: foods.map((f: any) => ({ desc1: f.desc1, desc2: f.desc2, portion: f.portion })),
+    })
+      .then(res => setNutritionDetails(res.data))
+      .catch(() => setNutritionDetails(null))
+      .finally(() => setNutritionDetailsLoading(false));
+  }, [foodsData]);
+
   const startDateObj = startDate ? new Date(startDate) : null;
   const endDateObj = endDate ? new Date(endDate) : new Date();
 
   return (
-    <div style={{ maxWidth: 600, margin: '0 auto', padding: 24, position: 'relative' }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, margin: 0, zIndex: 10 }}>
+    <div style={{ maxWidth: 600, margin: '0 auto', padding: 24 }}>
+      <div style={{ display: 'inline-block' }}>
         <Link href="/">
           <span className="globalButton">Back to Home Page</span>
         </Link>
       </div>
-      <h2 style={{ marginTop: 48 }}>Totals by Date Range - today's date is default end date, but modify if you want</h2>
+      <h2>Totals by Date Range - today's date is default end date, but modify if you want</h2>
       <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
         <label style={{ marginRight: 8 }}>
           Start Date:
@@ -146,6 +168,62 @@ export default function TotalsByDateRange() {
         </>
       )}
       {(totals ?? []).length === 0 && !loading && <div>No totals found for this range.</div>}
+
+      {/* Lipids & Vitamins breakdown */}
+      {nutritionDetailsLoading && <div style={{ marginTop: 16 }}>Loading nutrition details...</div>}
+      {!nutritionDetailsLoading && nutritionDetails && (() => {
+        const LABELS: Record<string, string> = {
+          omega3: 'Omega-3 (g)', omega6: 'Omega-6 (g)', cholesterol_mg: 'Cholesterol (mg)',
+          sodium_mg: 'Sodium (mg)', potassium_mg: 'Potassium (mg)', calcium_mg: 'Calcium (mg)',
+          iron_mg: 'Iron (mg)', magnesium_mg: 'Magnesium (mg)', iodine_mcg: 'Iodine (mcg)',
+          manganese_mg: 'Manganese (mg)', selenium_mcg: 'Selenium (mcg)', zinc_mg: 'Zinc (mg)',
+          vit_a_mcg: 'Vitamin A (mcg)', vit_b1_mg: 'Vitamin B1 (mg)', vit_b2_mg: 'Vitamin B2 (mg)',
+          vit_b3_mg: 'Vitamin B3 (mg)', vit_b5_mg: 'Vitamin B5 (mg)', vit_b6_mg: 'Vitamin B6 (mg)',
+          vit_b12_mcg: 'Vitamin B12 (mcg)', biotin_mcg: 'Biotin (mcg)', choline_mg: 'Choline (mg)',
+          folate_mcg: 'Folate (mcg)', vit_c_mg: 'Vitamin C (mg)', vit_d_mcg: 'Vitamin D (mcg)',
+          vit_e_mg: 'Vitamin E (mg)', vit_k_mcg: 'Vitamin K (mcg)',
+        };
+        const foods: any[] = foodsData?.totals || [];
+        const totalPortion = foods.reduce((sum: number, f: any) => sum + (Number(f.portion) || 0), 0);
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : new Date();
+        const numDays = start ? Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000) + 1) : 1;
+        const renderSection = (title: string, cols: string[]) => (
+          <div style={{ marginBottom: '1em' }}>
+            <h4 style={{ color: '#f7c1c1', margin: '0 0 4px 0' }}>{title}</h4>
+            <table style={{ fontSize: '0.9em', borderCollapse: 'collapse', width: 320 }}>
+              <thead>
+                <tr style={{ background: '#3b4144', color: '#f7c1c1' }}>
+                  <th style={{ textAlign: 'left', padding: '4px 12px' }}>Nutrient</th>
+                  <th style={{ textAlign: 'right', padding: '4px 12px' }}>Avg/Day</th>
+                  <th style={{ textAlign: 'right', padding: '4px 12px' }}>% DV</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cols.map((col, i) => {
+                  const perDay = (nutritionDetails.per100g[col] ?? 0) * totalPortion / numDays;
+                  const rda = RDA[col];
+                  const pct = perDay && rda ? Math.round((perDay / rda) * 100) : null;
+                  const display = perDay === 0 ? '—' : perDay < 1 ? perDay.toFixed(2) : perDay.toFixed(1);
+                  return (
+                    <tr key={col} style={{ background: i % 2 === 0 ? '#32232c' : '#3b2d36', color: '#c6a3dd' }}>
+                      <td style={{ textAlign: 'left', padding: '3px 12px' }}>{LABELS[col] ?? col}</td>
+                      <td style={{ textAlign: 'right', padding: '3px 12px' }}>{display}</td>
+                      <td style={{ textAlign: 'right', padding: '3px 12px' }}>{pct !== null ? `${pct}%` : '—'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        );
+        return (
+          <div style={{ borderTop: '1px solid #725e5e', paddingTop: '1em', marginTop: '1.5em', display: 'flex', gap: '2em', flexWrap: 'wrap' }}>
+            {renderSection('Lipids & Minerals', nutritionDetails.lipidCols)}
+            {renderSection('Vitamins', nutritionDetails.vitaminCols)}
+          </div>
+        );
+      })()}
     </div>
   );
 }

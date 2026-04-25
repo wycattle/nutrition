@@ -31,8 +31,19 @@ export default async function handler(req, res) {
   }
 
   // Only allow these columns for safety
-  const allowedCols = ['id', 'user_id', 'desc1', 'desc2', 'portion', 'calories', 'carb', 'fat', 'protein', 'fiber', 'gi', 'note'];
+  const allowedCols = [
+    'id', 'user_id', 'desc1', 'desc2', 'portion', 'calories', 'carb', 'fat', 'protein', 'fiber', 'gi', 'note',
+    // lipids & minerals
+    'omega3', 'omega6', 'cholesterol_mg', 'sodium_mg', 'potassium_mg', 'calcium_mg', 'iron_mg',
+    'magnesium_mg', 'iodine_mcg', 'manganese_mg', 'selenium_mcg', 'zinc_mg',
+    // vitamins
+    'vit_a_mcg', 'vit_b1_mg', 'vit_b2_mg', 'vit_b3_mg', 'vit_b5_mg', 'vit_b6_mg', 'vit_b12_mcg',
+    'biotin_mcg', 'choline_mg', 'folate_mcg', 'vit_c_mg', 'vit_d_mcg', 'vit_e_mg', 'vit_k_mcg',
+  ];
   const table = 'user_nutrition';
+  // Text columns that should keep empty strings as-is; everything else is numeric → coerce '' to null
+  const textCols = new Set(['user_id', 'desc1', 'desc2', 'note']);
+  const coerce = (col, val) => (!textCols.has(col) && val === '') ? null : val;
 
   try {
     if (action === 'insert') {
@@ -40,7 +51,7 @@ export default async function handler(req, res) {
       const insertRow = { ...row };
       delete insertRow.id;
       const cols = Object.keys(insertRow).filter(c => allowedCols.includes(c));
-      const vals = cols.map(c => insertRow[c]);
+      const vals = cols.map(c => coerce(c, insertRow[c]));
       const placeholders = cols.map((_, i) => `$${i + 1}`).join(', ');
       const sql = `INSERT INTO ${table} (${cols.join(', ')}) VALUES (${placeholders}) RETURNING *`;
       const result = await pool.query(sql, vals);
@@ -49,7 +60,7 @@ export default async function handler(req, res) {
       if (!row.id) return res.status(400).json({ error: 'Missing id for update' });
       const updateCols = Object.keys(row).filter(c => allowedCols.includes(c) && c !== 'id');
       const setClause = updateCols.map((c, i) => `${c} = $${i + 1}`).join(', ');
-      const vals = updateCols.map(c => row[c]);
+      const vals = updateCols.map(c => coerce(c, row[c]));
       vals.push(row.id);
       const sql = `UPDATE ${table} SET ${setClause} WHERE id = $${vals.length} RETURNING *`;
       const result = await pool.query(sql, vals);

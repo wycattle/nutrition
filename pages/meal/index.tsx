@@ -369,14 +369,14 @@ const Meal = () => {
 
   return (
   <div className={styles['page-root']}>
-    <div>
+    <div style={{ display: 'inline-block' }}>
       <Link href="/">
-        <span className={styles['back-to-home-page']}>Back to Home Page</span>
+        <span className="globalButton">Back to Home Page</span>
       </Link>
     </div>
 
     {/* Controls Row: food group dropdown and search box */}
-    <div style={{ display: 'flex', alignItems: 'center', width: '100vw', maxWidth: '100vw', margin: '0 auto', boxSizing: 'border-box', padding: '0 2vw' }}>
+    <div style={{ display: 'flex', alignItems: 'center', width: '100vw', maxWidth: '100vw', margin: '1.5em auto 0', boxSizing: 'border-box', padding: '0 2vw' }}>
       <div className={styles['select-food-group-container']} style={{ flex: '0 0 420px', minWidth: 320 }}>
         <label htmlFor="select-food-group-item">
           Select a food group
