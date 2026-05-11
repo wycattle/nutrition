@@ -51,5 +51,5 @@ lib/mydb.sqlite
 
 react_next_nutrition.code-workspace
 sqlite.session.sql
-package-lock.json
+# package-lock.json
 
