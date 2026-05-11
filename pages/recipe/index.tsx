@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as R from 'ramda';
 import Select from 'react-dropdown-select';
 import Link from 'next/link';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import axios from 'axios';
 import { IOption, IRecipex, IMealDetail } from '../../types_interfaces/interfaces';
 import styles from '../../styles/recipes.module.scss';
@@ -202,6 +202,8 @@ function Recipes() {
       };
       await axios.post('/api/recipe_related/recipes', updatedRecipe);
       setMessage('Recipe saved!');
+      // Invalidate nutrition cache so meal page gets fresh data
+      mutate('/api/nutrition');
     } catch (err) {
       setMessage('Error saving recipe.');
     } finally {

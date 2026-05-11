@@ -379,6 +379,22 @@ const Meal = () => {
         <span className="globalButton">Back to Home Page</span>
       </Link>
     </div>
+    <div style={{ display: 'inline-block', marginLeft: 24 }}>
+      <button
+        onClick={() => mutate('/api/nutrition', undefined, { revalidate: true })}
+        style={{
+          background: '#32232c',
+          color: '#c6a3dd',
+          border: '2px solid #725e5e',
+          borderRadius: '10px',
+          padding: '6px 18px',
+          fontSize: '16px',
+          cursor: 'pointer',
+        }}
+      >
+        Refresh Food Groups
+      </button>
+    </div>
 
     {/* Controls Row: food group dropdown and search box */}
     <div style={{ display: 'flex', alignItems: 'center', width: '100vw', maxWidth: '100vw', margin: '1.5em auto 0', boxSizing: 'border-box', padding: '0 2vw' }}>

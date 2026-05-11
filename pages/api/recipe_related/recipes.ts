@@ -55,9 +55,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Also upsert into user_nutrition so the recipe appears as a food item (per-100g values)
       const totals = calculateTotals(recipeData.details);
       const per100g = calculatePer100g(totals);
+      /**
+       * Remove any existing user_nutrition rows for this recipe name and user.
+       *
+       * This ensures that if the recipe's category or nutritional details change,
+       * there are no stale or duplicate entries left behind. We delete by (user_id, desc2)
+       * (where desc2 is the recipe name) so that any previous row for this recipe—regardless
+       * of category—will be removed before inserting the updated values below.
+       */
       await pool.query(
-        `DELETE FROM user_nutrition WHERE user_id = $1 AND desc1 = $2 AND desc2 = $3`,
-        [userId, recipeData.category ?? 'recipe', recipeData.name]
+        `DELETE FROM user_nutrition WHERE user_id = $1 AND desc2 = $2`,
+        [userId, recipeData.name]
       );
       await pool.query(
         `INSERT INTO user_nutrition (user_id, desc1, desc2, portion, calories, carb, fat, protein, fiber, note)

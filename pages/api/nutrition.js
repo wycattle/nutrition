@@ -5,7 +5,21 @@ import { authOptions } from './auth/[...nextauth]';
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
+/**
+ * API Route: /api/nutrition
+ *
+ * Always returns fresh nutrition data by disabling HTTP caching.
+ * This prevents browsers and SWR from receiving 304 Not Modified responses,
+ * ensuring that the latest nutrition and recipe changes are reflected immediately
+ * in the UI (e.g., food group dropdowns, meal creation, etc).
+ *
+ * See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+ */
+
 export default async function handler(req, res) {
+  // Disable HTTP caching for this endpoint to always return fresh data
+  res.setHeader('Cache-Control', 'no-store, must-revalidate');
+
   if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
