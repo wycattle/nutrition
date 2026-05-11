@@ -20,7 +20,7 @@ import {
   IDayPlanDetail,
   IDayPlan,
 } from '../../types_interfaces/interfaces';
-import { fetcher } from '../../utils/helper';
+import { fetcher, defaultSwrOptions } from '../../utils/swrHelper';
 import { calculateTotals, calculatePer100g } from '../../utils/methods';
 import Spinner from '../../utils/Spinner';
 
@@ -43,7 +43,7 @@ export default function DayPlanner() {
     data: planList = [],
     isLoading: plansLoading,
     mutate: mutatePlans,
-  } = useSWR<{ name: string; notes?: string }[]>('/api/day_planner/day_planner', fetcher);
+  } = useSWR<{ name: string; notes?: string }[]>('/api/day_planner/day_planner', fetcher, defaultSwrOptions);
 
   const planOptions: IOption[] = planList.map(p => ({ label: p.name, value: p.name }));
 
@@ -113,7 +113,7 @@ export default function DayPlanner() {
 
   // ── Food picker state ──────────────────────────────────────────────────
   const focusPortionRef = React.useRef<HTMLInputElement>(null);
-  const { data: nutritionData = [] } = useSWR('/api/nutrition', fetcher);
+  const { data: nutritionData = [] } = useSWR('/api/nutrition', fetcher, defaultSwrOptions);
   const [dropdownOptions, setDropdownOptions] = useState<IOption[]>([]);
   const [dropdownSelectedValue, setDropdownSelectedValue] = useState<IOption | null>(null);
   const [dropdownCheckedRows, setDropdownCheckedRows] = useState<Set<number>>(new Set());

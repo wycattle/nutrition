@@ -3,6 +3,7 @@ import path from 'path';
 import Link from 'next/link';
 import styles from '../styles/homepage.module.scss';
 
+// the about.txt is located in the Content dir
 export async function getStaticProps() {
   const content = fs.readFileSync(path.join(process.cwd(), 'Content', 'about.txt'), 'utf8');
   const paragraphs = content.split(/\n\n+/).map(p => p.trim()).filter(Boolean);

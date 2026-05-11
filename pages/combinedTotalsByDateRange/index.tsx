@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import useSWR from 'swr';
 import axios from 'axios';
 import { getApiUrl } from '../../utils/getApiUrl';
-import { fetcher } from '../../utils/helper';
+import { fetcher, defaultSwrOptions } from '../../utils/swrHelper';
 import { RDA } from '../../utils/rda';
 
 export default function CombinedTotalsByDateRange() {
@@ -41,12 +41,12 @@ export default function CombinedTotalsByDateRange() {
   const fetchKeyTotals = shouldFetch
     ? `${apiUrl}/api/meal_related/meal_totals_by_date?start=${startDate}&end=${effectiveEndDate}&t=${manualTrigger}`
     : null;
-  const { data: totalsData, error: totalsError, isValidating: loadingTotals } = useSWR(fetchKeyTotals, fetcher, { revalidateOnFocus: false });
+  const { data: totalsData, error: totalsError, isValidating: loadingTotals } = useSWR(fetchKeyTotals, fetcher, defaultSwrOptions);
 
   const fetchKeyNutrients = shouldFetch
     ? `${apiUrl}/api/meal_related/nutrient_totals_by_food?start=${startDate}&end=${effectiveEndDate}&t=${manualTrigger}`
     : null;
-  const { data: nutrientsData, error: nutrientsError, isValidating: loadingNutrients } = useSWR(fetchKeyNutrients, fetcher, { revalidateOnFocus: false });
+  const { data: nutrientsData, error: nutrientsError, isValidating: loadingNutrients } = useSWR(fetchKeyNutrients, fetcher, defaultSwrOptions);
 
   const startDateObj = startDate ? new Date(startDate) : null;
   const endDateObj = endDate ? new Date(endDate) : new Date();

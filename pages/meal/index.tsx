@@ -9,13 +9,13 @@ import Select from 'react-dropdown-select';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as R from 'ramda';
-import useSWR from 'swr';
 import axios from 'axios';
 
 import { IOption, IRecipex, IMealDetail, IMealx, IDailyMealTotalx } from '../../types_interfaces/interfaces';
-import { fetcher } from '../../utils/helper';
+import { fetcher, defaultSwrOptions } from '../../utils/swrHelper';
 import styles from '../../styles/Meal_styles.module.scss';
 import Spinner from '../../utils/Spinner';
+import useSWR, { mutate } from 'swr';
 
 // Main Meal component: handles all UI state and logic for meal creation
 const Meal = () => {
@@ -93,8 +93,12 @@ const Meal = () => {
   // Log when categories are rendered (for debugging/timing)
   // Removed effect that logs and sets state to avoid update depth errors
 
-  // Fetch nutrition data (all food items) from API using SWR and the shared fetcher utility
-  const { data: nutritionData = [], error: nutritionError } = useSWR('/api/nutrition', fetcher);
+  // Use shared SWR options for robust data freshness
+  const { data: nutritionData = [], error: nutritionError } = useSWR(
+    '/api/nutrition',
+    fetcher,
+    defaultSwrOptions
+  );
 
   // When nutrition data loads, build dropdown options for food groups
   useEffect(() => {
@@ -352,6 +356,7 @@ const Meal = () => {
         setName('');
         setSelectedCategory('');
         setMeal_recipeDate(null);
+        mutate('/api/nutrition'); // Force SWR to revalidate nutrition data
       })
       .catch(error => {
         if (axios.isAxiosError(error)) {
@@ -507,6 +512,7 @@ const Meal = () => {
         }}
       >
         <table
+          id="meal_table"
           className={styles['table-style']}
           style={{
             fontSize: '0.95em',

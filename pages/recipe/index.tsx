@@ -12,14 +12,14 @@ import axios from 'axios';
 import { IOption, IRecipex, IMealDetail } from '../../types_interfaces/interfaces';
 import styles from '../../styles/recipes.module.scss';
 import { calculatePer100g } from '../../utils/methods';
-import { fetcher } from '../../utils/helper';
+import { fetcher, defaultSwrOptions } from '../../utils/swrHelper';
 import Spinner from '../../utils/Spinner';
 import { RDA } from '../../utils/rda';
 
 function Recipes() {
   // --- Data fetching ---
   const [selectedValue, setSelectedValue] = useState<IOption | null>(null);
-  const { data: recipes = [], isLoading } = useSWR<IRecipex[]>('/api/recipe_related/recipes', fetcher);
+  const { data: recipes = [], isLoading } = useSWR<IRecipex[]>('/api/recipe_related/recipes', fetcher, defaultSwrOptions);
 
   const options: IOption[] = (recipes || []).map(recipe => ({ label: recipe.name, value: recipe.name }));
   const selectedRecipe = selectedValue ? recipes.find(r => r.name === selectedValue.value) || null : null;
@@ -43,7 +43,7 @@ function Recipes() {
   const [nutritionDetailsLoading, setNutritionDetailsLoading] = useState(false);
 
   // --- Food lookup panel state (for Add Row) ---
-  const { data: nutritionData = [] } = useSWR<IMealDetail[]>('/api/nutrition', fetcher);
+  const { data: nutritionData = [] } = useSWR<IMealDetail[]>('/api/nutrition', fetcher, defaultSwrOptions);
   const [showFoodLookup, setShowFoodLookup] = useState(false);
   const [foodGroupOptions, setFoodGroupOptions] = useState<IOption[]>([]);
   const [selectedFoodGroup, setSelectedFoodGroup] = useState<IOption | null>(null);

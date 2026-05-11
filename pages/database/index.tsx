@@ -5,7 +5,8 @@
 import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import axios from 'axios';
-import { fetcher, post } from '../../utils/helper';
+import { fetcher, post } from '../../utils/swrHelper';
+import { defaultSwrOptions } from '../../utils/swrHelper';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import homepageStyles from '../../styles/homepage.module.scss';
@@ -22,7 +23,8 @@ const DatabasePage = () => {
   // Get userId with SWR
   const { data: user, error: userError, isLoading: userLoading } = useSWR(
     session?.user?.email ? '/api/user/getUserId' : null,
-    fetcher
+    fetcher,
+    defaultSwrOptions
   );
 
   const [tableView, setTableView] = useState<'basic' | 'extended-lipids' | 'vitamins'>('basic');
@@ -49,7 +51,7 @@ const DatabasePage = () => {
   const { data: result, error, isLoading, mutate } = useSWR(
     query ? ['/api/database_related/db_query', query] : null,
     ([url, q]) => postFetcher(url, q),
-    { revalidateOnFocus: false, revalidateOnReconnect: false }
+    defaultSwrOptions
   );
 
   const handleRunQuery = () => {

@@ -1,5 +1,6 @@
 // pages/api/database_related/db_query.js
 import { Pool } from 'pg';
+import { recalcAffectedRecipes } from '../../../lib/recalcAffectedRecipes';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL, // Set your Neon connection string in .env
@@ -55,6 +56,10 @@ export default async function handler(req, res) {
       const placeholders = cols.map((_, i) => `$${i + 1}`).join(', ');
       const sql = `INSERT INTO ${table} (${cols.join(', ')}) VALUES (${placeholders}) RETURNING *`;
       const result = await pool.query(sql, vals);
+      // Recalc any recipes that use this ingredient
+      if (insertRow.user_id && insertRow.desc1 && insertRow.desc2) {
+        await recalcAffectedRecipes(pool, insertRow.user_id, insertRow.desc1, insertRow.desc2).catch(e => console.error('recalcAffectedRecipes error:', e));
+      }
       return res.status(200).json(result.rows);
     } else if (action === 'update') {
       if (!row.id) return res.status(400).json({ error: 'Missing id for update' });
@@ -64,11 +69,19 @@ export default async function handler(req, res) {
       vals.push(row.id);
       const sql = `UPDATE ${table} SET ${setClause} WHERE id = $${vals.length} RETURNING *`;
       const result = await pool.query(sql, vals);
+      // Recalc any recipes that use this ingredient
+      if (row.user_id && row.desc1 && row.desc2) {
+        await recalcAffectedRecipes(pool, row.user_id, row.desc1, row.desc2).catch(e => console.error('recalcAffectedRecipes error:', e));
+      }
       return res.status(200).json(result.rows);
     } else if (action === 'delete') {
       if (!row.id) return res.status(400).json({ error: 'Missing id for delete' });
       const sql = `DELETE FROM ${table} WHERE id = $1 RETURNING *`;
       const result = await pool.query(sql, [row.id]);
+      // Recalc any recipes that use this ingredient (using stored desc1/desc2 before deletion)
+      if (row.user_id && row.desc1 && row.desc2) {
+        await recalcAffectedRecipes(pool, row.user_id, row.desc1, row.desc2).catch(e => console.error('recalcAffectedRecipes error:', e));
+      }
       return res.status(200).json(result.rows);
     } else {
       return res.status(400).json({ error: 'Unknown action' });

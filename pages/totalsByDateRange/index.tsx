@@ -11,7 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import useSWR from 'swr';
 import axios from 'axios';
 import { getApiUrl } from '../../utils/getApiUrl';
-import { fetcher } from '../../utils/helper';
+import { fetcher, defaultSwrOptions } from '../../utils/swrHelper';
 import { RDA } from '../../utils/rda';
 
 export default function TotalsByDateRange() {
@@ -31,7 +31,7 @@ export default function TotalsByDateRange() {
   const shouldFetch = !!startDate;
   const fetchKey = shouldFetch ? `${apiUrl}/api/meal_related/meal_totals_by_date?start=${startDate}&end=${effectiveEndDate}` : null;
 
-  const { data, error, isValidating } = useSWR(fetchKey, fetcher, { revalidateOnFocus: false });
+  const { data, error, isValidating } = useSWR(fetchKey, fetcher, defaultSwrOptions);
 
   const totals: any[] = data?.totals || [];
   const loading = isValidating;
@@ -41,7 +41,7 @@ export default function TotalsByDateRange() {
   const foodsFetchKey = shouldFetch
     ? `${apiUrl}/api/meal_related/nutrient_totals_by_food?start=${startDate}&end=${effectiveEndDate}`
     : null;
-  const { data: foodsData } = useSWR(foodsFetchKey, fetcher, { revalidateOnFocus: false });
+  const { data: foodsData } = useSWR(foodsFetchKey, fetcher, defaultSwrOptions);
   const [nutritionDetails, setNutritionDetails] = useState<{ per100g: Record<string, number>; lipidCols: string[]; vitaminCols: string[] } | null>(null);
   const [nutritionDetailsLoading, setNutritionDetailsLoading] = useState(false);
 

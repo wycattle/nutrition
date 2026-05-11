@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import useSWR from 'swr';
 import { getApiUrl } from '../../utils/getApiUrl';
-import { fetcher } from '../../utils/helper';
+import { fetcher, defaultSwrOptions } from '../../utils/swrHelper';
 
 export default function NutrientTotalsByDateRange() {
   const [startDate, setStartDate] = useState('');
@@ -38,7 +38,7 @@ export default function NutrientTotalsByDateRange() {
     ? `${apiUrl}/api/meal_related/nutrient_totals_by_food?start=${startDate}&end=${effectiveEndDate}&t=${manualTrigger}`
     : null;
 
-  const { data, error, isValidating } = useSWR(fetchKey, fetcher, { revalidateOnFocus: false });
+  const { data, error, isValidating } = useSWR(fetchKey, fetcher, defaultSwrOptions);
 
   const totals: any[] = data?.totals || [];
   const loading = isValidating;
