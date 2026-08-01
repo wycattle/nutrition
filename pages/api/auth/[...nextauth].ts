@@ -1,7 +1,5 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
-import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import AzureADProvider from "next-auth/providers/azure-ad";
 import PostgresAdapter from "@auth/pg-adapter";
 
 import pool from "../../../lib/postgres";
