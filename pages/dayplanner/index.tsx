@@ -701,8 +701,7 @@ export default function DayPlanner() {
               {editRows.length > 0 && (
                 <tr style={{ background: '#32232c', color: '#c6a3dd', fontWeight: 'bold', borderTop: '2px solid #725e5e' }}>
                   <td colSpan={5} style={{ padding: '0.3em 0.5em' }}>Totals</td>
-                  <td style={{ textAlign: 'right', padding: '0.3em 0.5em' }}>{totals.portionTot.toFixed(2)}</td>
-                  <td style={{ textAlign: 'right', padding: '0.3em 0.5em' }}>{Math.round(totals.caloriesTot)}</td>
+                  <td style={{ textAlign: 'right', padding: '0.3em 0.5em' }}>{totals.portionTot ? totals.portionTot.toFixed(2) : '0.00'}</td>                  <td style={{ textAlign: 'right', padding: '0.3em 0.5em' }}>{Math.round(totals.caloriesTot)}</td>
                   <td style={{ textAlign: 'right', padding: '0.3em 0.5em' }}>{Math.round(totals.carbTot)}</td>
                   <td style={{ textAlign: 'right', padding: '0.3em 0.5em' }}>{Math.round(totals.fatTot)}</td>
                   <td style={{ textAlign: 'right', padding: '0.3em 0.5em' }}>{Math.round(totals.proteinTot)}</td>
